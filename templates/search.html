@@ -32,14 +32,14 @@
             <div class="d-none d-sm-none d-md-block">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link alpha-tab2 {%if gtype == 'alpha'%} active{% endif %}" id="alpha-tab" href="{{ url_for('uat') }}" tabindex=0 role="tab" aria-controls="alpha" aria-selected="{%if gtype == 'alpha'%}true{% else %}false{% endif %}">Index</a>
+                        <a class="nav-link alpha-tab2 {%if gtype == 'alpha'%} active{% endif %}" id="alpha-tab" href="{{ url_for('alphapg') }}" tabindex=0 role="tab" aria-controls="alpha" aria-selected="{%if gtype == 'alpha'%}true{% else %}false{% endif %}">Index</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link hierarchy-tab2 {%if gtype == 'hierarchy'%} active{% endif %}" id="hierarchy-tab" href="{{ url_for('uat') }}?view=hierarchy" role="tab" aria-controls="hierarchy" aria-selected="{%if gtype == 'hierarchy'%}true{% else %}false{% endif %}">Hierarchy</a>
+                        <a class="nav-link hierarchy-tab2 {%if gtype == 'hierarchy'%} active{% endif %}" id="hierarchy-tab" href="{{ url_for('alphapg') }}?view=hierarchy" role="tab" aria-controls="hierarchy" aria-selected="{%if gtype == 'hierarchy'%}true{% else %}false{% endif %}">Hierarchy</a>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link search-tab2 {%if gtype == 'search'%} active{% endif %}" id="search-tab" href="{{ url_for('uat') }}?view=search" role="tab" aria-controls="search" aria-selected="{%if gtype == 'search'%}true{% else %}false{% endif %}">Search</a>
+                        <a class="nav-link search-tab2 {%if gtype == 'search'%} active{% endif %}" id="search-tab" href="{{ url_for('alphapg') }}?view=search" role="tab" aria-controls="search" aria-selected="{%if gtype == 'search'%}true{% else %}false{% endif %}">Search</a>
                     </li>
 
                 </ul>

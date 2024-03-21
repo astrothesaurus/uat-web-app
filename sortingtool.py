@@ -82,7 +82,6 @@ htree += "\n</ul>"
 
 
 app = Flask(__name__, static_folder='static', static_url_path='')
-app.config['SERVER_NAME'] = config.get("SERVER_NAME", "localhost")
 
 # static landing page, points to app features
 @app.route('/')

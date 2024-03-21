@@ -1,7 +1,7 @@
-#! /usr/bin/env python
+# #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from werkzeug.serving import run_simple
-import sys, os
+#import sys, os
 #INTERP = os.path.join(os.environ['HOME'], 'uat.wolba.ch', 'bin', 'python3')
 #INTERP is present twice so that the new Python interpreter knows the actual executable path
 # if sys.executable != INTERP:

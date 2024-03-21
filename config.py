@@ -10,3 +10,5 @@ MAILTO_EMAIL_HOST = "mail.domain.com"
 MAILTO_PORT = 587
 MAILTO_EMAIL_ADDR = "email@domain.com"
 MAILTO_EMAIL_PASS = "password"
+STATIC_PATH_VOCAB = '/app/static/UAT_list.json'
+STATIC_PATH_HIERARCHY = '/app/static/UAT_list.json'

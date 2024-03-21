@@ -40,11 +40,11 @@ username = config.get("MAILTO_EMAIL_ADDR")#line[10].replace("username = ","")
 password = config.get("MAILTO_EMAIL_PASS")#line[11].replace("password = ","")
 
 
-vocab = '/app/static/UAT_list.json'
+vocab = config.get('STATIC_PATH_VOCAB', './static/UAT_list.json')
 data = json.load(open(vocab))
 alpha = sorted(data, key=lambda k: k['name']) 
 
-hierarchy = '/app/static/UAT.json'
+hierarchy = config.get('STATIC_PATH_HIERARCHY', './static/UAT.json')
 datah = json.load(open(hierarchy))
 
 def buildlist2(termlist,previous):

@@ -13,6 +13,7 @@ import utils
 from flask import Flask
 from flask import request
 from flask import render_template
+from werkzeug.middleware.proxy_fix import ProxyFix
 # from flask import jsonify
 # from flask import url_for
 # from flask import redirect
@@ -25,7 +26,7 @@ from flask import render_template
 #setupfile = '/app/static/setup.txt'
 #sf = (open(setupfile, 'r')).read()
 #line = sf.splitlines()
-config=utils.load_config()
+config = utils.load_config()
 shortname = config.get("UAT_SHORTNAME")#line[0].replace("shortname = ","")
 longname = config.get("UAT_LONGNAME") #line[1].replace("longname = ","")
 email = config.get("SENDER_EMAIL") #line[2].replace("email = ","")
@@ -81,6 +82,7 @@ htree += "\n</ul>"
 
 
 app = Flask(__name__, static_folder='static', static_url_path='')
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 # static landing page, points to app features
 @app.route('/')

@@ -1,0 +1,21 @@
+version: '3.1'
+services:
+  uat-web-app:
+    build: .
+    image: uat-web-app:latest
+    container_name: uat-web-app
+    volumes:
+    - ./:/app
+    networks:
+      - uat-web-app
+    ports:
+      - "4444:4000"
+    environment:
+      - PYTHONPATH=/app/:$PYTHONPATH
+    stdin_open: true
+    tty: true
+    user: ads
+    entrypoint: ./scripts/pytest_persistent.sh
+networks:
+  uat-web-app:
+    driver: bridge

@@ -4,7 +4,7 @@ email = myemail@mydomain.com
 version = 3.0.0
 savefile = uatsaves
 meta = <meta name="description" content="Help us improve Unified Astronomy Thesaurus!"><meta name="keywords" content="UAT,astronomy,thesaurus,sorting tool,schema tool,wolbach,AAS,astronomy thesaurus">
-url = http://mywebsite.com
+url = http://localhost
 logo = uat-logo1-b.png
 host = mail.domain.com
 port = 587

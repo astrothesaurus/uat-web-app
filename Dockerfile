@@ -15,6 +15,13 @@ RUN pip install --no-cache-dir --pre -U -r requirements.txt
 COPY dev-requirements.txt /app
 RUN pip install --no-cache-dir -U -r dev-requirements.txt
 
+COPY release.uat /release.uat
+RUN git clone https://github.com/astrothesaurus/UAT.git
+WORKDIR /app/UAT
+RUN git checkout `cat /release.uat`
+
+WORKDIR /app
+
 RUN useradd -ms /bin/bash uat-user
 
 EXPOSE 8000

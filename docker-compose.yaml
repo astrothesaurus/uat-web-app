@@ -1,0 +1,32 @@
+version: '3.1'
+services:
+  uat-web-app:
+    build: .
+    image: uat-web-app:latest
+    container_name: uat-web-app
+    volumes:
+    - ./:/app
+    networks:
+      - uat-web-app
+    environment:
+      - PYTHONPATH=/app/:$PYTHONPATH
+      - STATIC_PATH_VOCAB = '/app/UAT/UAT_list.json'
+      - STATIC_PATH_HIERARCHY = '/app/UAT/UAT.json'
+      - SORT_VERSION="5.1.0"
+    stdin_open: true
+    tty: true
+    user: uat-user
+    entrypoint: ./scripts/pytest_persistent.sh
+  uat-nginx:
+    image: nginx
+    restart: always
+    networks:
+      - uat-web-app
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+networks:
+  uat-web-app:
+    driver: bridge

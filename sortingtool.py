@@ -3,46 +3,49 @@
 
 #python common packages
 import os
-import re
-import sys
+#import re
+#import sys
 import json
 import string
+import utils
 
 #packages installed on DreamHost
 from flask import Flask
 from flask import request
 from flask import render_template
-from flask import jsonify
-from flask import url_for
-from flask import redirect
+from werkzeug.middleware.proxy_fix import ProxyFix
+# from flask import jsonify
+# from flask import url_for
+# from flask import redirect
 
 # Email libraries
-import smtplib
-from email.mime.text import MIMEText
+#import smtplib
+#from email.mime.text import MIMEText
 
 
-setupfile = './static/setup.txt'
-sf = (open(setupfile, 'r')).read()
-line = sf.splitlines()
-shortname = line[0].replace("shortname = ","")
-longname = line[1].replace("longname = ","")
-email = line[2].replace("email = ","")
-version = line[3].replace("version = ","")
-savefile = line[4].replace("savefile = ","")
-meta = line[5].replace("meta = ","")
-url = line[6].replace("url = ","")
-logo = line[7].replace("logo = ","")
-host = line[8].replace("host = ","")
-port = line[9].replace("port = ","")
-username = line[10].replace("username = ","")
-password = line[11].replace("password = ","")
+#setupfile = '/app/static/setup.txt'
+#sf = (open(setupfile, 'r')).read()
+#line = sf.splitlines()
+config = utils.load_config()
+shortname = config.get("UAT_SHORTNAME")#line[0].replace("shortname = ","")
+longname = config.get("UAT_LONGNAME") #line[1].replace("longname = ","")
+email = config.get("SENDER_EMAIL") #line[2].replace("email = ","")
+version = config.get("SORT_VERSION")#line[3].replace("version = ","")
+savefile = config.get("UAT_SAVEFILE")#line[4].replace("savefile = ","")
+meta = config.get("UAT_META")#line[5].replace("meta = ","")
+url = config.get("UAT_URL")#line[6].replace("url = ","")
+logo = config.get("UAT_LOGO")#line[7].replace("logo = ","")
+host = config.get("MAILTO_EMAIL_HOST")#line[8].replace("host = ","")
+port = config.get("MAILTO_EMAIL_PORT")#line[9].replace("port = ","")
+username = config.get("MAILTO_EMAIL_ADDR")#line[10].replace("username = ","")
+password = config.get("MAILTO_EMAIL_PASS")#line[11].replace("password = ","")
 
 
-vocab = './static/UAT_list.json'
+vocab = config.get('STATIC_PATH_VOCAB', './static/UAT_list.json')
 data = json.load(open(vocab))
 alpha = sorted(data, key=lambda k: k['name']) 
 
-hierarchy = './static/UAT.json'
+hierarchy = config.get('STATIC_PATH_HIERARCHY', './static/UAT.json')
 datah = json.load(open(hierarchy))
 
 def buildlist2(termlist,previous):
@@ -102,45 +105,47 @@ def alphapg(uatid):
     # user is trying to search the UAT
     if gtype == "search":
         element = "noelement"
+        try:
+            lookup = request.args.get('lookup')
+            lookuplist = [lookup.lower(),lookup.title(),lookup.capitalize(),lookup.upper()]
 
-        lookup = request.args.get('lookup')
-        lookuplist = [lookup.lower(),lookup.title(),lookup.capitalize(),lookup.upper()]
+            for x in alpha:
 
-        for x in alpha:
+                termdict = {}
 
-            termdict = {}
+                try:
+                    if x["status"] != "deprecated":
+                        pass
+                except KeyError:
 
-            try:
-                if x["status"] != "deprecated":
-                    pass
-            except KeyError:
+                    # is the search query in the element ids?
+                    if lookup in str(x["uri"][30:]):
+                        termdict["uri"] = str(x["uri"][30:]).replace(lookup,"<mark>"+lookup+"</mark>")
+                        termdict["name"] = x["name"]
+                        results.append(termdict)
 
-                # is the search query in the element ids?
-                if lookup in str(x["uri"][30:]):
-                    termdict["uri"] = str(x["uri"][30:]).replace(lookup,"<mark>"+lookup+"</mark>")
-                    termdict["name"] = x["name"]
-                    results.append(termdict)
+                    # is the search query in the concept?
+                    elif lookup in (x["name"]).lower():
+                        termdict["uri"] = x["uri"][30:] 
 
-                # is the search query in the concept?
-                elif lookup in (x["name"]).lower():
-                    termdict["uri"] = x["uri"][30:] 
+                        for lu in lookuplist:
+                            if lu in x["name"]:
+                                termdict["name"] = (x["name"]).replace(lu,"<mark>"+lu+"</mark>")
+                        results.append(termdict)
 
-                    for lu in lookuplist:
-                        if lu in x["name"]:
-                            termdict["name"] = (x["name"]).replace(lu,"<mark>"+lu+"</mark>")
-                    results.append(termdict)
-
-                # is the search query in the alt terms?
-                else:
-                    termdict["name"] = x["name"]
-                    termdict["uri"] = x["uri"][30:]
-                    if x["altNames"]:      
-                        for z in x["altNames"]:
-                            for lu in lookuplist:
-                                if lu in z:
-                                    termdict["altNames"] = z.replace(lu,"<mark>"+lu+"</mark>")
-                                    results.append(termdict)
-                                    break
+                    # is the search query in the alt terms?
+                    else:
+                        termdict["name"] = x["name"]
+                        termdict["uri"] = x["uri"][30:]
+                        if x["altNames"]:      
+                            for z in x["altNames"]:
+                                for lu in lookuplist:
+                                    if lu in z:
+                                        termdict["altNames"] = z.replace(lu,"<mark>"+lu+"</mark>")
+                                        results.append(termdict)
+                                        break
+        except:
+            pass
 
    # user wants to browse the uat
     else: 
@@ -203,28 +208,28 @@ def sortingtool():
 
 
 # email host, port, username, password, etc found in the static/setup.txt file
-@app.route('/email',methods=['POST'])
-def emailchanges():
-    val = request.form['testarg']
-    msg = MIMEText(val)
+# @app.route('/email',methods=['POST'])
+# def emailchanges():
+#     val = request.form['testarg']
+#     msg = MIMEText(val)
 
-    me = username
-    you = email
-    msg['Subject'] = 'Suggestions from Sorting Tool'
-    msg['From'] = me
-    msg['To'] = you
+#     me = username
+#     you = email
+#     msg['Subject'] = 'Suggestions from Sorting Tool'
+#     msg['From'] = me
+#     msg['To'] = you
 
-    #Test Info
-    #s = smtplib.SMTP('127.0.0.1:1025')
+#     #Test Info
+#     #s = smtplib.SMTP('127.0.0.1:1025')
     
-    #Live Info
-    s = smtplib.SMTP()
-    s.connect(host,port)
-    s.login(username,password)
+#     #Live Info
+#     s = smtplib.SMTP()
+#     s.connect(host,port)
+#     s.login(username,password)
     
-    #Test & Live
-    s.sendmail(me, [you], msg.as_string())
-    s.quit()
+#     #Test & Live
+#     s.sendmail(me, [you], msg.as_string())
+#     s.quit()
 
 if __name__ == '__main__':
     app.run()

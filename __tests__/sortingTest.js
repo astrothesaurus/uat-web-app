@@ -2,14 +2,9 @@ const {
     storenewsave,
     getCircularReplacer,
     cleanJSON,
-    removeSpaces,
-    checkform,
     downloadString,
-    savestuff,
-    ValidCaptcha,
-    GenerateCode,
-    TestForm
-} = require('../static/js/sorting.js');
+    savestuff
+} = require('../static/js/sorting/main.js');
 const fs = require("fs");
 const path = require("path");
 const {JSDOM} = require("jsdom");
@@ -47,13 +42,6 @@ describe('Sorting Tree Tests', () => {
         let cleanedString = cleanJSON(jsonString);
 
         expect(cleanedString).toBe('{"name":"node"}');
-    });
-
-    test('should remove spaces from a string', () => {
-        let stringWithSpaces = 'a b c d e';
-        let stringWithoutSpaces = removeSpaces(stringWithSpaces);
-
-        expect(stringWithoutSpaces).toBe('abcde');
     });
 
     test('should save the current state of the tree', () => {
@@ -97,82 +85,6 @@ describe('Sorting Tree Tests', () => {
         expect(document.body.appendChild).toHaveBeenCalledWith(mockElement);
         expect(mockElement.click).toHaveBeenCalled();
         expect(mockElement.remove).toHaveBeenCalled();
-    });
-
-    test('should not send feedback if captcha is invalid', () => {
-        global.getRoot = jest.fn().mockReturnValue({});
-        global.ValidCaptcha = jest.fn().mockReturnValue(false); // Ensure ValidCaptcha returns false
-        global.TestForm = jest.fn();
-        let form = {txtInput: {value: '12345'}};
-
-        let result = checkform(form);
-
-        expect(result).toBe(false);
-        expect(global.TestForm).not.toHaveBeenCalled();
-    });
-
-    test('should invalidate captcha when entered value is incorrect', () => {
-        document.getElementById = jest.fn((id) => {
-            if (id === 'txtCaptcha') return {value: '12345'};
-            if (id === 'txtInput') return {value: '54321'}; // Different value to ensure invalidation
-        });
-
-        let result = ValidCaptcha();
-
-        expect(result).toBe(false);
-    });
-
-    test('should generate unique captcha codes', () => {
-        const mockElements = [];
-        document.getElementById = jest.fn((id) => {
-            if (id === 'txtCaptcha') {
-                const element = {value: '', setAttribute: jest.fn()};
-                mockElements.push(element);
-                return element;
-            }
-            if (id === 'txtCaptchaDiv') {
-                const element = {innerHTML: ''};
-                mockElements.push(element);
-                return element;
-            }
-        });
-
-        const generatedCodes = new Set();
-
-        for (let i = 0; i < 10; i++) {
-            GenerateCode();
-            const captchaValue = mockElements[i * 2].value; // Access the correct mock element
-            generatedCodes.add(captchaValue);
-        }
-
-        expect(generatedCodes.size).toBe(10); // Ensure all generated codes are unique
-    });
-
-    test('should send form data and tree differences via HTTP POST request', () => {
-        global.getRoot = jest.fn().mockReturnValue({}); // Mock getRoot function
-        global.getOrig = jest.fn().mockReturnValue({}); // Mock getOrig function
-        global.difftree = jest.fn().mockReturnValue('diff'); // Mock difftree function
-        global.d3 = {
-            xhr: jest.fn().mockReturnValue({
-                header: jest.fn().mockReturnThis(),
-                post: jest.fn()
-            })
-        };
-
-        document.getElementById = jest.fn((id) => {
-            if (id === 'first_name') return {value: 'John'};
-            if (id === 'yourinst') return {value: 'Institution'};
-            if (id === 'youremail') return {value: 'john@example.com'};
-            if (id === 'notes') return {value: 'Some notes'};
-        });
-
-        TestForm();
-
-        expect(global.d3.xhr).toHaveBeenCalledWith('/email');
-        expect(global.d3.xhr().header).toHaveBeenCalledWith('Content-Type', 'application/x-www-form-urlencoded');
-        expect(global.d3.xhr().post).toHaveBeenCalledWith(
-            'testarg=Name: John\nInstituion: Institution\nEmail: john@example.com\nNotes: Some notes\n\nDifference File:\ndiff'
-        );
     });
 
 });

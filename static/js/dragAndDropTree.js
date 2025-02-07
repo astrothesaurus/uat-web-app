@@ -817,7 +817,6 @@ treeJSON = d3.json(j, function(error, treeData) {
         }
     }
 
-
     function clear_history(historytype){
         $("#"+historytype+"history").empty();
     }
@@ -856,7 +855,6 @@ treeJSON = d3.json(j, function(error, treeData) {
         changenum++;
 
     }
-
 
     $("#undobutton").on("click", function(){
         try {

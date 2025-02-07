@@ -216,17 +216,6 @@ class NewBranchEntry {
 })(jQuery);
 
 /**
- * Stores new save data into browser localStorage.
- * @param {Object} newBranch - The new branch data to save.
- * @param {Array} sortsaves - The array of saved data.
- */
-function storenewsave(newBranch, sortsaves) {
-    sortsaves.push(newBranch);
-    let jsonBranches = JSON.stringify(sortsaves);
-    window.localStorage.setItem(savefile, jsonBranches);
-}
-
-/**
  * Creates a circular reference replacer for JSON.stringify.
  * @returns {Function} - The replacer function.
  */
@@ -242,6 +231,31 @@ const getCircularReplacer = () => {
         return value;
     };
 };
+
+/**
+ * Cleans JSON string by removing unwanted properties.
+ * @param {string} jsonString - The JSON string to clean.
+ * @returns {string} - The cleaned JSON string.
+ */
+function cleanJSON(jsonString) {
+    return jsonString.replace(/_children/gm, 'children')
+        .replace(/,"children":null/gm, '')
+        .replace(/,"depth":\d*/gm, "")
+        .replace(/,"x":\d*.\d*,"y":\d*/gm, "")
+        .replace(/,"x0":\d*.\d*,"y0":\d*/gm, "")
+        .replace(/,"id":\d*/gm, "");
+}
+
+/**
+ * Stores new save data into browser localStorage.
+ * @param {Object} newBranch - The new branch data to save.
+ * @param {Array} sortsaves - The array of saved data.
+ */
+function storenewsave(newBranch, sortsaves) {
+    sortsaves.push(newBranch);
+    let jsonBranches = JSON.stringify(sortsaves);
+    window.localStorage.setItem(savefile, jsonBranches);
+}
 
 /**
  * Saves the current state of the tree.
@@ -273,20 +287,6 @@ function savestuff(saveName, sortsaves) {
 
     let newBranch = new NewBranchEntry(rootBranch, rootRecycle, rootOrig, saveName);
     storenewsave(newBranch, sortsaves);
-}
-
-/**
- * Cleans JSON string by removing unwanted properties.
- * @param {string} jsonString - The JSON string to clean.
- * @returns {string} - The cleaned JSON string.
- */
-function cleanJSON(jsonString) {
-    return jsonString.replace(/_children/gm, 'children')
-        .replace(/,"children":null/gm, '')
-        .replace(/,"depth":\d*/gm, "")
-        .replace(/,"x":\d*.\d*,"y":\d*/gm, "")
-        .replace(/,"x0":\d*.\d*,"y0":\d*/gm, "")
-        .replace(/,"id":\d*/gm, "");
 }
 
 /**
@@ -341,109 +341,13 @@ function downloadString() {
     a.remove();
 }
 
-/**
- * Sends form data and tree differences via an HTTP POST request.
- */
-function TestForm() {
-    let root = getRoot();
-    let orig = getOrig();
-    let diffStr = difftree(orig, root);
-    let url = '/email';
-    let name = document.getElementById("first_name").value;
-    let inst = document.getElementById("yourinst").value;
-    let uremail = document.getElementById("youremail").value;
-    let urnotes = document.getElementById("notes").value;
-    d3.xhr(url)
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .post(`testarg=Name: ${name}\nInstituion: ${inst}\nEmail: ${uremail}\nNotes: ${urnotes}\n\nDifference File:\n${diffStr}`);
-}
-
-/**
- * Validates the form and sends feedback if valid.
- * @param {HTMLFormElement} theform - The form element.
- * @returns {boolean} - True if the form is valid, false otherwise.
- */
-function checkform(theform) {
-    let why = "";
-
-    try {
-        let root = getRoot();
-
-        if (theform.txtInput.value === "") {
-            why += "Robot Check code should not be empty.";
-        }
-        if (theform.txtInput.value !== "") {
-            if (ValidCaptcha(theform.txtInput.value)) {
-                why += "Thank you for your feedback!";
-                TestForm();
-            } else {
-                why += "Robot Check code did not match.";
-            }
-        }
-    } catch (error) {
-        console.error("Error in checkform: ", error);
-        why += "You must select a branch to give feedback on";
-    }
-
-    if (why !== "") {
-        alert(why);
-        return false;
-    }
-}
-
-/**
- * Clears the captcha input field.
- */
-function ClearFields() {
-    document.getElementById("txtInput").value = "";
-}
-
-/**
- * Generates a new captcha code.
- */
-function GenerateCode() {
-    let code = Array.from({ length: 5 }, () => Math.ceil(Math.random() * 9)).join("");
-    document.getElementById("txtCaptcha").value = code;
-    document.getElementById("txtCaptchaDiv").innerHTML = code;
-}
-
-/**
- * Validates the entered captcha code against the generated code.
- * @returns {boolean} - True if the captcha is valid, false otherwise.
- */
-function ValidCaptcha() {
-    let str1 = removeSpaces(document.getElementById('txtCaptcha').value);
-    let str2 = removeSpaces(document.getElementById('txtInput').value);
-    if (str1 === str2) {
-        ClearFields();
-        GenerateCode();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
- * Removes spaces from a string.
- * @param {string} string - The string to remove spaces from.
- * @returns {string} - The string without spaces.
- */
-function removeSpaces(string) {
-    return string.split(' ').join("");
-}
-
 try {
     module.exports = {
-        getCircularReplacer,
         cleanJSON,
-        storenewsave,
-        removeSpaces,
-        checkform,
         downloadString,
         savestuff,
-        ValidCaptcha,
-        GenerateCode,
-        TestForm
+        getCircularReplacer,
+        storenewsave
     };
 } catch {
     // Do Nothing. This is only for tests

@@ -1,19 +1,19 @@
-const { difftree, flattenTree, compareTrees } = require('../static/js/difftree');
+const {difftree, flattenTree, compareTrees} = require('../static/js/sorting/difftree');
 
 describe('difftree', () => {
     test('should generate correct diff output between two trees', () => {
         const tree1 = {
             name: 'root',
             children: [
-                { name: 'child1' },
-                { name: 'child2' }
+                {name: 'child1'},
+                {name: 'child2'}
             ]
         };
         const tree2 = {
             name: 'root',
             children: [
-                { name: 'child2' },
-                { name: 'child3' }
+                {name: 'child2'},
+                {name: 'child3'}
             ]
         };
         const expectedDiff = '-root NT child1\n-child1\n%2Broot NT child3\n%2Bchild3\n';
@@ -26,12 +26,12 @@ describe('flattenTree', () => {
         const tree = {
             name: 'root',
             children: [
-                { name: 'child1' },
-                { name: 'child2' }
+                {name: 'child1'},
+                {name: 'child2'}
             ]
         };
         const expectedMap = {
-            root: { child1: 1, child2: 1 },
+            root: {child1: 1, child2: 1},
             child1: {},
             child2: {}
         };
@@ -44,12 +44,12 @@ describe('flattenTree', () => {
 describe('compareTrees', () => {
     test('should generate correct diff output for tree maps', () => {
         const map1 = {
-            root: { child1: 1, child2: 1 },
+            root: {child1: 1, child2: 1},
             child1: {},
             child2: {}
         };
         const map2 = {
-            root: { child2: 1, child3: 1 },
+            root: {child2: 1, child3: 1},
             child2: {},
             child3: {}
         };

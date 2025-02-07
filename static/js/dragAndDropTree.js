@@ -3,7 +3,7 @@
 
 function renderTree(j){
 treeJSON = d3.json(j, function(error, treeData) {
-    var nodenames = {};
+    let nodenames = {};
 
     //console.log(treeData);
 
@@ -27,22 +27,23 @@ treeJSON = d3.json(j, function(error, treeData) {
         treeData = j;
 
         try {
-            for (var i = 0; i < j["children"].length; i++) {
+            for (let index = 0; index < j["children"].length; index++) {
 
-                if (j["children"][i]["name"] == "recycle") {
-                    recycle = j.children[i]["children"];
+                if (j["children"][index]["name"] == "recycle") {
+                    recycle = j.children[index]["children"];
                 }
-                else if (j["children"][i]["name"] == "orphans") {
-                    recycle = j.children[i]["children"];
+                else if (j["children"][index]["name"] == "orphans") {
+                    recycle = j.children[index]["children"];
 
-                } else if (j["children"][i]["name"] == "branch") {
-                    treeData = j.children[i]["children"];
+                } else if (j["children"][index]["name"] == "branch") {
+                    treeData = j.children[index]["children"];
 
-                } else if (j["children"][i]["name"] == "orig") {
-                    orig = j.children[i]["children"];
+                } else if (j["children"][index]["name"] == "orig") {
+                    orig = j.children[index]["children"];
                 }
             }
         } catch(err){
+            console.error("Error occurred: ", err);
             alert("The JSON file you have tried to load is not compatible with the Sorting Tool.")
         }
 
@@ -72,6 +73,7 @@ treeJSON = d3.json(j, function(error, treeData) {
     var i = 0;
     var duration = 750;
     var root;
+    var panTimer;
     //var orig;
 
     // size of the diagram
@@ -96,16 +98,16 @@ treeJSON = d3.json(j, function(error, treeData) {
 
         var children = childrenFn(parent);
         if (children) {
-            var count = children.length;
-            for (var i = 0; i < count; i++) {
+            let count = children.length;
+            for (let i = 0; i < count; i++) {
                 visit(children[i], visitFn, childrenFn);
             }
         }
     }
     visit(treeData, function(d){
-       var downCasename = d.name.toLowerCase();
+       let downCasename = d.name.toLowerCase();
        nodenames[downCasename] = 1; 
-       return;
+
     }, function(d){
         return d.children;
     });
@@ -119,8 +121,9 @@ treeJSON = d3.json(j, function(error, treeData) {
     });
 
 
-    // sort the tree according to the node names
-
+    /**
+     * Sort the tree according to the node names.
+     */
     function sortTree() {
         tree.sort(function(a, b) {
             return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
@@ -130,9 +133,14 @@ treeJSON = d3.json(j, function(error, treeData) {
     //sortTree();
 
     // TODO: Pan function, can be better implemented.
-
+    /**
+     * Pans the tree in the specified direction.
+     *
+     * @param {HTMLElement} domNode - The DOM node to pan.
+     * @param {string} direction - The direction to pan ('left', 'right', 'up', or 'down').
+     */
     function pan(domNode, direction) {
-        var speed = panSpeed;
+        let speed = panSpeed;
         if (panTimer) {
             clearTimeout(panTimer);
             translateCoords = d3.transform(svgGroup.attr("transform"));
@@ -157,7 +165,9 @@ treeJSON = d3.json(j, function(error, treeData) {
     }
 
     // Define the zoom function for the zoomable tree
-
+        /**
+         * Zooms the tree.
+         */
     function zoom() {
         svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     }
@@ -166,6 +176,12 @@ treeJSON = d3.json(j, function(error, treeData) {
     // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
     var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
 
+    /**
+     * Initiates the drag operation for a tree node.
+     *
+     * @param {Object} d - The data object associated with the node being dragged.
+     * @param {HTMLElement} domNode - The DOM node element being dragged.
+     */
     function initiateDrag(d, domNode) {
 
         oldparent = d.parent;
@@ -192,10 +208,8 @@ treeJSON = d3.json(j, function(error, treeData) {
                 .data(nodes, function(d) {
                     return d.id;
                 }).filter(function(d, i) {
-                    if (d.id == draggingNode.id) {
-                        return false;
-                    }
-                    return true;
+                    return d.id != draggingNode.id;
+
                 }).remove();
         }
 
@@ -214,7 +228,7 @@ treeJSON = d3.json(j, function(error, treeData) {
     }
 
     // define the baseSvg, attaching a class for styling and the zoomListener
-    var baseSvg = d3.select("#tree-container").html("").append("svg")
+    let baseSvg = d3.select("#tree-container").html("").append("svg")
         .attr("width", viewerWidth)
         .attr("height", viewerHeight)
         .attr("class", "overlay")
@@ -274,7 +288,7 @@ treeJSON = d3.json(j, function(error, treeData) {
                 try {
                     clearTimeout(panTimer);
                 } catch (e) {
-
+                    console.error("Error in clearing timeout: ", e);
                 }
             }
 
@@ -290,7 +304,7 @@ treeJSON = d3.json(j, function(error, treeData) {
             domNode = this;
             if (selectedNode) {
             // now remove the element from the parent, and insert it into the new elements children
-                var foundNodes = [];
+                let foundNodes = [];
                 searchTree(root,draggingNode.parent.name,foundNodes);
                 foundNodes.forEach(function(d){
                     var children = (d.children) ? d.children : d._children;
@@ -302,7 +316,7 @@ treeJSON = d3.json(j, function(error, treeData) {
                             }
                         }
                     }
-                    if (index > -1) {
+                    if (index > -1 && children !== null) {
                         children.splice(index, 1);
                     }
                 });
@@ -335,7 +349,15 @@ treeJSON = d3.json(j, function(error, treeData) {
                 endDrag();
             }
         });
-        
+
+    /**
+     * Searches a tree structure for a node with the specified name.
+     * If found, adds the node to the provided path array.
+     *
+     * @param {Object} obj - The tree node to search.
+     * @param {string} search - The name of the node to search for.
+     * @param {Array} path - The array to store the path to the found node.
+     */
     function searchTree(obj,search,path){
         //if(obj.name === "Cataclysmic variable stars (31)"){
         //    console.log("CVS");
@@ -343,7 +365,7 @@ treeJSON = d3.json(j, function(error, treeData) {
         if(obj.name === search){ //if search is found return, add the object to the path and return it
             path.push(obj);
         }
-        var doCollapse = false;
+        let doCollapse = false;
         if(!(obj._children || obj.children)){
             return;
         }
@@ -352,7 +374,7 @@ treeJSON = d3.json(j, function(error, treeData) {
             tree.nodes(obj);
             doCollapse = true;
         }
-        var children = obj.children;
+        let children = obj.children;
         for(var i=0;i<children.length;i++){
             searchTree(children[i],search,path);
         }
@@ -361,7 +383,10 @@ treeJSON = d3.json(j, function(error, treeData) {
         }
     }
 
-
+    /**
+     * Ends the drag operation for a tree node.
+     * Resets the visual state of the dragged node and updates the tree layout.
+     */
     function endDrag() {
         //console.log("End drag");
         d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
@@ -397,19 +422,22 @@ treeJSON = d3.json(j, function(error, treeData) {
         }
     }
 
-    var overCircle = function(d) {
+    let overCircle = function(d) {
         //console.log("overCircle " + d.name);
         selectedNode = d;
         updateTempConnector();
     };
-    var outCircle = function(d) {
+    let outCircle = function(d) {
         //console.log("outCircle " + d.name);
         selectedNode = null;
         updateTempConnector();
 
     };
 
-    // Function to update the temporary connector indicating dragging affiliation
+    /**
+     * Updates the temporary connector indicating the dragging affiliation.
+     * This function is used to visually show the connection between the node being dragged and the potential drop target.
+     */
     var updateTempConnector = function() {
         var data = [];
         if (draggingNode !== null && selectedNode !== null) {
@@ -437,8 +465,11 @@ treeJSON = d3.json(j, function(error, treeData) {
         link.exit().remove();
     };
 
-    // Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
-
+    /**
+     * Centers the tree on the specified node.
+     * unction to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
+     * @param {Object} source - The node to center the tree on.
+     */
     function centerNode(source) {
         scale = zoomListener.scale();
         x = -source.y0;
@@ -474,12 +505,18 @@ treeJSON = d3.json(j, function(error, treeData) {
         //centerNode(d);
     }
 
+    /**
+     * Updates the tree layout based on the source node.
+     * Computes the new height, updates the nodes and links, and transitions them to their new positions.
+     *
+     * @param {Object} source - The source node to update the tree from.
+     */
     function update(source) {
         // Compute the new height, function counts total children of root node and sets tree height accordingly.
         // This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
         // This makes the layout more consistent.
-        var levelWidth = [1];
-        var childCount = function(level, n) {
+        let levelWidth = [1];
+        let childCount = function(level, n) {
 
             if (n.children && n.children.length > 0) {
                 if (levelWidth.length <= level + 1) levelWidth.push(0);
@@ -496,7 +533,7 @@ treeJSON = d3.json(j, function(error, treeData) {
         //tree = tree.size([newHeight, viewerWidth]);
 
 
-        var newHeight = ((Math.max(...levelWidth))*48);
+        let newHeight = ((Math.max(...levelWidth))*48);
         //console.log("new Height "+newHeight);
         tree = tree.size([newHeight, viewerWidth]);
 
@@ -529,7 +566,7 @@ treeJSON = d3.json(j, function(error, treeData) {
         
 
         // Enter any new nodes at the parent's previous position.
-        var nodeEnter = node.enter().append("g")
+        let nodeEnter = node.enter().append("g")
             .call(dragListener)
             .attr("class", "node")
             .attr("transform", function(d) {
@@ -615,7 +652,7 @@ treeJSON = d3.json(j, function(error, treeData) {
             });
 
         // Transition nodes to their new position.
-        var nodeUpdate = node.transition()
+        let nodeUpdate = node.transition()
             .duration(duration)
             .attr("transform", function(d) {
                 return "translate(" + d.y + "," + d.x + ")";
@@ -626,7 +663,7 @@ treeJSON = d3.json(j, function(error, treeData) {
             .style("fill-opacity", 1);
 
         // Transition exiting nodes to the parent's new position.
-        var nodeExit = node.exit().transition()
+        let nodeExit = node.exit().transition()
             .duration(duration)
             .attr("transform", function(d) {
                 return "translate(" + source.y + "," + source.x + ")";
@@ -650,8 +687,8 @@ treeJSON = d3.json(j, function(error, treeData) {
             .attr("class", "link")
             .attr("d", function(d) {
                 var o = {
-                    x: source.x0,
-                    y: source.y0
+                    x: source ? source.x0 : 0,
+                    y: source ? source.y0 : 0
                 };
                 return diagonal({
                     source: o,
@@ -718,7 +755,7 @@ treeJSON = d3.json(j, function(error, treeData) {
         } else {
             // do nothing
         }
-    };
+    }
 
 
     function fullcollapse(d) {
@@ -732,7 +769,7 @@ treeJSON = d3.json(j, function(error, treeData) {
         } else {
             // do nothing
         }
-    };
+    }
 
 
     $("#fullex").on("click", function(){
@@ -749,7 +786,13 @@ treeJSON = d3.json(j, function(error, treeData) {
         centerNode(root);
     });
 
-
+    /**
+     * Copies the structure of a tree into a new tree object.
+     * Recursively traverses the tree and duplicates each node and its children.
+     *
+     * @param {Object} tree - The tree to copy.
+     * @param {Object} newtree - The new tree object to populate with the copied structure.
+     */
     function copyTree(tree,newtree){
         newtree.name = tree.name;
         if(!tree.children){
@@ -772,14 +815,21 @@ treeJSON = d3.json(j, function(error, treeData) {
                 copyTree(c,newchild);
             });
         }
-    };
+    }
 
 
     function clear_history(historytype){
         $("#"+historytype+"history").empty();
     }
 
-
+    /**
+     * Adds a change to the history for undo or redo operations.
+     *
+     * @param {string} historytype - The type of history to add to ("undo" or "redo").
+     * @param {Object} oldparent - The original parent node before the change.
+     * @param {Array} newparents - The new parent nodes after the change.
+     * @param {Object} newchild - The child node that was moved.
+     */
     function add_to_history(historytype, oldparent, newparents, newchild){
 
         change = {
@@ -795,9 +845,9 @@ treeJSON = d3.json(j, function(error, treeData) {
             redo_list.push(change);
         }
 
-        var desc = '"'+newchild['name']+'" <i>moved from</i> "'+oldparent['name']+'" <i>to</i> "'+newparents[0]['name']+'"';
+        let desc = '"'+newchild['name']+'" <i>moved from</i> "'+oldparent['name']+'" <i>to</i> "'+newparents[0]['name']+'"';
 
-        var historyitem = $("<li></li>")
+        let historyitem = $("<li></li>")
                         .attr("id",historytype+"num"+changenum)
                         .html(desc);
 
@@ -810,7 +860,7 @@ treeJSON = d3.json(j, function(error, treeData) {
 
     $("#undobutton").on("click", function(){
         try {
-            var item = undo_list.slice(-1) 
+            let item = undo_list.slice(-1)
 
             undo_list.pop();
 
@@ -820,7 +870,7 @@ treeJSON = d3.json(j, function(error, treeData) {
             changenum = item[0]["changenum"];
 
             for (x in newparents){
-                    var childs = newparents[x]["children"];
+                    let childs = newparents[x]["children"];
                     for (y in childs){
                         if (childs[y]["name"] == newchild["name"]){
                             childs.splice(y,1);
@@ -828,7 +878,7 @@ treeJSON = d3.json(j, function(error, treeData) {
                     }
                 }
                 
-                foundNodes = [];
+                let foundNodes = [];
                 searchTree(root,oldparent.name,foundNodes);
 
                 foundNodes.forEach(function(oldparent){  
@@ -850,13 +900,13 @@ treeJSON = d3.json(j, function(error, treeData) {
                 }
         }
         catch(err) {
-            console.log(err);
+            console.log("Error performing undo: " + err);
         }
     });
 
     $("#redobutton").on("click", function(){
         try {
-            var item = redo_list.slice(-1)[0] 
+            let item = redo_list.slice(-1)[0]
 
             redo_list.pop();
             
@@ -872,7 +922,7 @@ treeJSON = d3.json(j, function(error, treeData) {
 
             }
             
-            foundNodes = [];
+            let foundNodes = [];
             var newp = newparents[0]
             searchTree(root,newp.name,foundNodes);
             foundNodes.forEach(function(newparents){  
@@ -893,14 +943,22 @@ treeJSON = d3.json(j, function(error, treeData) {
                 }
         }
         catch(err) {
-            console.log(err);
+            console.log("Error performing Redo: " + err);
         }
 
     });
 
+    /**
+     * Appends a node to the selected node in the tree.
+     * Copies the structure of the node to be appended and adds it as a child of the selected node.
+     * Ensures the selected node is expanded to show the newly added node.
+     *
+     * @param {Object} selectedNode - The node to which the new node will be appended.
+     * @param {Object} appNode - The node to be appended.
+     */
     function appendNode(selectedNode, appNode){
         var children = (selectedNode.children) ? selectedNode.children : selectedNode._children;
-        var newObject = {};
+        let newObject = {};
         copyTree(appNode,newObject);
         if(children){
             children.push(newObject);
@@ -924,7 +982,7 @@ treeJSON = d3.json(j, function(error, treeData) {
         }
         */
         nodenames[nodename] = 1;
-        var newNode = {};
+        let newNode = {};
         newNode["name"] = nodename;
         newNode["x0"] = recycle["x0"];
         newNode["y0"] = recycle["y0"];
@@ -943,6 +1001,5 @@ treeJSON = d3.json(j, function(error, treeData) {
         return orig;
     };
 
-
 }
-)};
+)}

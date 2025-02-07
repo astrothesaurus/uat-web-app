@@ -1,6 +1,5 @@
 
 from __future__ import absolute_import, unicode_literals
-import sys
 import os
 import logging
 import imp
@@ -102,7 +101,7 @@ def load_module(filename):
     try:
         with open(filename) as config_file:
             exec(compile(config_file.read(), filename, 'exec'), d.__dict__)
-    except IOError as e:
+    except IOError:
         pass
     res = {}
     from_object(d, res)

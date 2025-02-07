@@ -13,7 +13,6 @@ import utils
 from flask import Flask
 from flask import request
 from flask import render_template
-from werkzeug.middleware.proxy_fix import ProxyFix
 # from flask import jsonify
 # from flask import url_for
 # from flask import redirect
@@ -54,7 +53,7 @@ def buildlist2(termlist,previous):
     
     if "children" in termlist:
         
-        if previous == None:
+        if previous is None:
             path = current
         else:
             path = previous+"-"+current
@@ -97,7 +96,6 @@ def alphapg(uatid):
     results = []
     lookup = None
     unknown  = "no"
-    path = None
     allpaths = []
 
     gtype = request.args.get('view')
@@ -157,14 +155,14 @@ def alphapg(uatid):
                 splitpath = path.split('-')
 
                 for x in splitpath:
-                    if allpaths == []:
+                    if not allpaths:
                         allpaths.append(x)
                     else:
                         allpaths.append(allpaths[-1]+"-"+x)
             except:
                 pass
             
-            if uatid != None:
+            if uatid is not None:
                 for x in alpha:
                     if int(x["uri"][30:]) == int(uatid):
                         element = x
@@ -175,7 +173,7 @@ def alphapg(uatid):
         else:
             gtype = "alpha"
 
-        if uatid != None:
+        if uatid is not None:
             element = "noelement"
             unknown = "yes"
             for x in alpha:
@@ -197,10 +195,8 @@ def sortingtool():
     names = os.listdir(os.path.join(app.static_folder, 'topconcepts'))
     filelist = []
     for y in names:
-        filedict = {}
-        filedict["name"] = y.capitalize().replace("_"," ").replace(".json","")
-        filedict["file"] = y
-        filedict["value"] = y.replace(".","").replace("json","")
+        filedict = {"name": y.capitalize().replace("_", " ").replace(".json", ""), "file": y,
+                    "value": y.replace(".", "").replace("json", "")}
 
         filelist.append(filedict)
 

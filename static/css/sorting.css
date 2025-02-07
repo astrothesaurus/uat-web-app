@@ -34,7 +34,7 @@ html {
     width: auto;
     top: 240px;
     position: absolute;
-    right: 0px;
+    right: 0;
     overflow-y: none;
     cursor: pointer;
 }
@@ -44,7 +44,7 @@ html {
     width: auto;
     top: 240px;
     position: absolute;
-    left: 0px;
+    left: 0;
     overflow-y: none;
     cursor: pointer;
 }
@@ -54,7 +54,7 @@ html {
     width: auto;
     top: 50px;
     position: absolute;
-    left: 0px;
+    left: 0;
     overflow-y: none;
     cursor: pointer;
 }
@@ -64,7 +64,7 @@ html {
     width: auto;
     top: 55px;
     position: absolute;
-    right: 0px;
+    right: 0;
     overflow-y: none;
     cursor: pointer;
 }
@@ -205,7 +205,7 @@ div.tooltip {
     padding: 10px;
     /*font: 12px sans-serif;*/
     background: white;
-    border: 0px;
+    border: 0;
     border-radius: 8px;
     pointer-events: none;
 }

@@ -20,7 +20,30 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type='text/javascript'>
+        document.addEventListener('DOMContentLoaded', function () {
+            const links = document.querySelectorAll('a[data-uri]');
+            links.forEach(link => {
+                const uri = link.getAttribute('data-uri');
+                const href = getlink(uri);
+                if (href) {
+                    link.setAttribute('href', href);
+                }
+            });
+        });
 
+        function getlink(id) {
+            const elementId = "-" + id;
+
+            // Find the element with the id ending with the given id
+            const element = document.querySelector(`[id$="${elementId}"]`);
+
+            if (element) {
+                return element.getAttribute('href');
+            }
+            return '#'; // Return a default value if the element is not found (shouldn't happen)
+        }
+    </script>
 <span id="topm"></span>
 <div class="container-fluid">
     <div class="row">
@@ -211,11 +234,22 @@
 
                         <br/>
 
-                        {% if element.broader != None %}
+                        {% if element.broader != None and element.broader|length < 2 %}
                             <strong>Broader Concepts:</strong>
                             <ul>
                                 {% for b in element.broader %}
-                                    <li class="uat"><a href="{{b.uri[30:]}}?view={{gtype}}{% if path %}&path={{path|last}}{% endif %}">{{b.name}}</a></li>
+                                    <li class="uat">
+                                        <a href="{{b.uri[30:]}}?view={{gtype}}{% if path and path|length > 1 %}&path={{path[path|length - 2]}}{% endif %}">{{b.name}}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% elif element.broader != None %}
+                            <strong>Broader Concepts:</strong>
+                            <ul>
+                                {% for b in element.broader %}
+                                    <li class="uat">
+                                        <a id="link-{{b.uri[30:]}}" data-uri="{{b.uri[30:]}}">{{b.name}}</a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
@@ -224,7 +258,11 @@
                             <strong>Narrower Concepts:</strong>
                             <ul>
                                 {% for n in element.narrower %}
-                                    <li class="uat"><a href="{{n.uri[30:]}}?view={{gtype}}{% if path %}&path={{path|last}}{% endif %}">{{n.name}}</a></li>
+                                    <li class="uat">
+                                        <a href="{{n.uri[30:]}}?view={{gtype}}{% if path %}&path={{path|last}}-{{element.uri[30:]}}{% else %}&path={{element.uri[30:]}}{% endif %}">
+                                            {{n.name}}
+                                        </a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
@@ -233,7 +271,9 @@
                             <strong>Related Concepts:</strong>
                             <ul>
                                 {% for r in element.related %}
-                                    <li class="uat"><a href="{{r.uri[30:]}}?view={{gtype}}{% if path %}&path={{path|last}}{% endif %}">{{r.name}}</a></li>
+                                    <li class="uat">
+                                        <a id="link-{{r.uri[30:]}}" data-uri="{{r.uri[30:]}}">{{r.name}}</a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         {% endif %}

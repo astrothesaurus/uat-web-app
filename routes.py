@@ -38,7 +38,7 @@ def index_page():
     Returns:
         str: Rendered HTML template for the index page.
     """
-    return render_template("index.html")
+    return render_template("index.html", title="UAT Web App - Home")
 
 @app.route('/uat/', defaults={'uat_id': None})
 @app.route('/uat/<int:uat_id>')
@@ -53,7 +53,7 @@ def alpha_page(uat_id):
         str: Rendered HTML template for the UAT page with data.
     """
     data = retrieve_alpha_page_data(uat_id, alpha_terms, html_tree)
-    return render_template("alpha.html", **data)
+    return render_template("alpha.html", title="UAT Web App - Alphabetical Browser", **data)
 
 @app.route('/sort/')
 def sorting_tool():
@@ -64,7 +64,7 @@ def sorting_tool():
         str: Rendered HTML template for the sorting tool page with data.
     """
     data = retrieve_sorting_tool_data(app, config_obj)
-    return render_template('sorting.html', **data)
+    return render_template('sorting.html', title="UAT Web App - Sorting Tool", **data)
 
 if __name__ == '__main__':
     app.run()

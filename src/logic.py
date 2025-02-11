@@ -1,12 +1,9 @@
 """
 This module contains the business logic for the Flask application.
 """
-
 import os
 import string
 from flask import request
-
-# src/logic.py
 
 def build_html_list(term_list, previous_path):
     """

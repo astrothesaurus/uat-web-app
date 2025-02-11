@@ -6,7 +6,7 @@ from routes import app as application
 
 if __name__ == "__main__":
     """
-    Entry point for running the WSGI application using the Werkzeug development server.
+    Entry point for running the WSGI (Web Server Gateway Interface) application using the Werkzeug development server.
     The application will be served on host '0.0.0.0' and port 4000.
     """
     run_simple(

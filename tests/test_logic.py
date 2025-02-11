@@ -1,9 +1,10 @@
-# tests/test_logic.py
-
 import unittest
-from flask import Flask, request
 from unittest.mock import patch
-from src.logic import build_html_list, retrieve_alpha_page_data, retrieve_sorting_tool_data
+
+from flask import Flask
+
+from src.logic import retrieve_sorting_tool_data
+
 
 class TestLogic(unittest.TestCase):
 

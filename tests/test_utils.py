@@ -1,5 +1,3 @@
-# tests/test_utils.py
-
 import unittest
 from unittest.mock import patch, mock_open
 from src import utils

@@ -5,8 +5,8 @@
 @media (min-width: 768px) {  
 
     div.newsidebar {
-        padding-right: 20px;
-        padding-left: 20px;
+        padding-right: 1.3rem;
+        padding-left: 1.3rem;
         position:fixed;
         overflow-y: auto;
         overflow-x: hidden;
@@ -15,7 +15,7 @@
 }
 
 div.topspacing {
-    height: 80px;
+    height: 5rem;
     overflow-y: hidden;
     overflow-x: hidden;
     z-index: 8;
@@ -84,7 +84,7 @@ code {
     font-family: Consolas,"courier new";
     color: crimson;
     /*background-color: #f1f1f1;*/
-    padding: 2px;
+    padding: 0.13rem;
     font-size: 105%;
   }
 
@@ -126,7 +126,7 @@ table#basic-table, th.basic-header, td.basic-data {
 }
 
 th.basic-header, td.basic-data {
-    padding: 10px;
+    padding: 0.6rem;
 }
 
 /**** not sure what pgs these relate to ****/
@@ -141,7 +141,7 @@ th.basic-header, td.basic-data {
 
 .panel-button {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 1.3rem;
     color: #fff !important; 
     /* text-decoration: underline;*/
     text-decoration: none;
@@ -149,12 +149,12 @@ th.basic-header, td.basic-data {
 
 .panel-button:hover {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 1.3rem;
     color: #fff !important; 
     /* text-decoration: underline;*/
     text-decoration: none;
 }
 
 dd {
-    margin-left:40px;
+    margin-left:3rem;
 }

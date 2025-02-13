@@ -170,7 +170,7 @@
                 </div>
 
                 <!-- mobile up to top arrow -->
-                <div style="position:fixed;bottom:50px;right:50px;z-index: 30;" class="d-sm-block d-md-none">
+                <div style="position:fixed;bottom:3rem;right:3rem;z-index: 30;" class="d-sm-block d-md-none">
                     <span class="text-right" style="float:right"><img tabindex=0 class="totopimgm" style="width:40px;cursor:pointer;" src="{{ url_for('static', filename='img/totopm.png') }}" alt="To Top"></span>
                 </div>
 
@@ -492,7 +492,7 @@ $(document).ready(function(){
         $("#{{element.uri[30:]}}").get(0).scrollIntoView();
         $("#{{element.uri[30:]}}").css("background-color","lightgrey");
 
-        $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:15px;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}'></span>`);
+        $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:0.9rem;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}'></span>`);
     </script>
     {% endif %}
 

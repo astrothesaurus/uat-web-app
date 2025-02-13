@@ -7,10 +7,10 @@ html {
     width: auto;
     height: auto;
     max-height: 100%;
-    max-width: 380px;
+    max-width: 23.75rem;
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 0.3rem;
+    left: 0.3rem;
     /*bottom: 5px;
     right: 5px;*/
     overflow-y: auto;
@@ -20,19 +20,19 @@ html {
     display: none;
     z-index: 9;
     max-height: 100%;
-    max-width: 380px;
+    max-width: 23.75rem;
     position: absolute;
-    top: 5px;
-    left: 5px;
-    border-radius: 25px;
-    padding: 20px 10px;
+    top: 0.3rem;
+    left: 0.3rem;
+    border-radius: 1.6rem;
+    padding: 1.3rem 0.6rem;
 
 }
 
 #closeleft {
     z-index: 11;
     width: auto;
-    top: 240px;
+    top: 15rem;
     position: absolute;
     right: 0;
     overflow-y: none;
@@ -42,7 +42,7 @@ html {
 #openleft {
     z-index: 11;
     width: auto;
-    top: 240px;
+    top: 15rem;
     position: absolute;
     left: 0;
     overflow-y: none;
@@ -52,7 +52,7 @@ html {
 #closeright {
     z-index: 11;
     width: auto;
-    top: 50px;
+    top: 3rem;
     position: absolute;
     left: 0;
     overflow-y: none;
@@ -62,7 +62,7 @@ html {
 #openright {
     z-index: 11;
     width: auto;
-    top: 55px;
+    top: 3.438rem;
     position: absolute;
     right: 0;
     overflow-y: none;
@@ -74,10 +74,10 @@ html {
     width: auto;
     height: auto;
     max-height: 100%;
-    max-width: 380px;
+    max-width: 23.75rem;
     position: absolute;
-    top: 5px;
-    left: 365px;
+    top: 0.3rem;
+    left: 22.813rem;
     /*bottom: 5px;
     right: 5px;*/
     overflow-y: auto;
@@ -99,7 +99,7 @@ html {
 }
 
 #loadbutton, #exportbutton {
-    margin-top: 5px;
+    margin-top: 0.3rem;
 }
 
 #history {
@@ -111,13 +111,13 @@ html {
     width: auto;
     height: auto;
     max-height: 100%;
-    max-width: 380px;
+    max-width: 23.75rem;
     position: absolute;
-    top: 5px;
-    right: 5px;
-    border-radius: 25px;
+    top: 0.3rem;
+    right: 0.3rem;
+    border-radius: 1.6rem;
     background-color: rgba(255,255,255, 0.7);
-    padding: 20px 10px;
+    padding: 1.3rem 0.6rem;
     /*bottom: 5px;
     right: 5px;*/
     overflow-y: auto;
@@ -132,10 +132,10 @@ html {
 }
 
 #feedback, #menu {
-    border-radius: 25px;
+    border-radius: 1.6rem;
     background-color: rgba(255,255,255, 0.7);
-    padding: 20px 10px;
-    max-width: 360px;
+    padding: 1.3rem 0.6rem;
+    max-width: 22.5rem;
 }
 
 #tree-container{
@@ -145,7 +145,7 @@ html {
 
 #instructions {
     float:right;
-    width: 500px;
+    width: 31.25rem;
 }
 
 .overlay{
@@ -163,28 +163,28 @@ html {
 .node circle {
     fill: #fff;
     stroke: steelblue;
-    stroke-width: 1.5px;
+    stroke-width: 0.1rem;
 }
 
 .node text {
-    font-size:16px; 
+    font-size:1rem;
     font-family:sans-serif;
 }
    
 .link {
     fill: none;
     stroke: #ccc;
-    stroke-width: 1.5px;
+    stroke-width: 0.1rem;
 }
 
 .templink {
     fill: none;
     stroke: red;
-    stroke-width: 3px;
+    stroke-width: 0.2rem;
 }
 
 textarea {
-    max-width: 290px;
+    max-width: 18.125rem;
 }
 
 .ghostCircle.show{
@@ -202,10 +202,10 @@ textarea {
 div.tooltip {
     position: absolute;
     text-align: center;
-    padding: 10px;
+    padding: 0.6rem;
     /*font: 12px sans-serif;*/
     background: white;
     border: 0;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     pointer-events: none;
 }

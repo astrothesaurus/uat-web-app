@@ -5,9 +5,9 @@ ul.treeview {
 }
 
 div.advmenu{
-padding-left: 10px;
-padding-top: 2px;
-padding-bottom: 8px;
+padding-left: 0.6rem;
+padding-top: 0.13rem;
+padding-bottom: 0.5rem;
 font-size: 70%;
 vertical-align: baseline;
 }
@@ -28,14 +28,14 @@ padding-left: 0;
 .treeview li{ /*Style for LI elements in general (excludes an LI that contains sub lists)*/
 background: white url("/img/list.gif") no-repeat left center;
 list-style-type: none;
-padding-left: 20px;
+padding-left: 1.3rem;
 margin-left: 0;
-margin-bottom: 3px;
+margin-bottom: 0.19rem;
 }
 
 .treeview li.submenu{ /* Style for LI that contains sub lists (other ULs). */
 background: white url("/img/closed.gif") no-repeat left 1px;
-padding-left: 20px;
+padding-left: 1.3rem;
 cursor: pointer !important;
 }
 

@@ -1,6 +1,5 @@
 // Get JSON data
 
-
 function renderTree(j){
 treeJSON = d3.json(j, function(error, treeData) {
     let nodenames = {};

@@ -1,10 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 import os
-import logging
 import importlib as imp
 import sys
-import json
-import ast
 import inspect
 
 def _get_project_home_directory(extra_frames=0):
@@ -56,42 +53,14 @@ def load_config(project_home=None, extra_frames=0, app_name=None):
 
     config.update(load_configuration_module(os.path.join(project_home, 'config.py')))
     config.update(load_configuration_module(os.path.join(project_home, 'local_config.py')))
-    update_config_from_environment(app_name or config.get('SERVICE', ''), config)
+    update_config_from_environment(config)
 
     return config
 
-def update_config_from_environment(app_name, config):
-    """
-    Updates the configuration dictionary with environment variables.
-
-    :param app_name: str, name of the application.
-    :param config: dict, the configuration dictionary.
-    """
-    app_name = app_name.replace(".", "_").upper()
-    for key in list(config.keys()):
-        specific_app_key = "_".join((app_name, key))
-        if specific_app_key in os.environ:
-            replace_config_value(config, key, os.environ[specific_app_key])
-        elif key in os.environ:
-            replace_config_value(config, key, os.environ[key])
-
-def replace_config_value(config, key, new_value):
-    """
-    Replaces the value of a configuration key with a new value.
-
-    :param config: dict, the configuration dictionary.
-    :param key: str, the key to replace.
-    :param new_value: str, the new value.
-    """
-    logging.info("Overwriting constant '%s' old value '%s' with new value '%s' from environment", key, config[key], new_value)
-    try:
-        parsed_value = json.loads(new_value)
-        config[key] = parsed_value
-    except:
-        try:
-            config[key] = ast.literal_eval(new_value)
-        except:
-            config[key] = new_value
+def update_config_from_environment(conf):
+    for key in conf.keys():
+        if key in os.environ:
+            conf[key] = os.environ[key]
 
 def load_configuration_module(filename):
     """

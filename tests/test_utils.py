@@ -1,18 +1,14 @@
+import os
 import unittest
 from unittest.mock import patch, mock_open
 from src import utils
 
 class TestUtils(unittest.TestCase):
 
-    @patch.dict('os.environ', {'app_name_KEY': 'new_value'})
+    @patch.dict(os.environ, {'KEY': 'new_value'})
     def test_update_config_from_environment(self):
         conf = {'KEY': 'value'}
-        utils.update_config_from_environment('app_name', conf)
-        self.assertEqual(conf['KEY'], 'new_value')
-
-    def test_replace_config_value(self):
-        conf = {'KEY': 'value'}
-        utils.replace_config_value(conf, 'KEY', 'new_value')
+        utils.update_config_from_environment(conf)
         self.assertEqual(conf['KEY'], 'new_value')
 
     @patch('builtins.open', new_callable=mock_open, read_data='KEY = "value"')

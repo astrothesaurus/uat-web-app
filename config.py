@@ -12,3 +12,13 @@ MAILTO_EMAIL_ADDR = "email@domain.com"
 MAILTO_EMAIL_PASS = "password"
 STATIC_PATH_VOCAB = '/app/static/UAT_list.json'
 STATIC_PATH_HIERARCHY = '/app/static/UAT.json'
+
+class Config:
+    def __init__(self, config):
+        self.shortname = config.get("UAT_SHORTNAME")
+        self.longname = config.get("UAT_LONGNAME")
+        self.version = config.get("SORT_VERSION")
+        self.savefile = config.get("UAT_SAVEFILE")
+        self.meta = config.get("UAT_META")
+        self.url = config.get("UAT_URL")
+        self.logo = config.get("UAT_LOGO")

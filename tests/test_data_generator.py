@@ -3,10 +3,10 @@ from unittest.mock import patch
 
 from flask import Flask
 
-from src.logic import retrieve_sorting_tool_data
+from src.data_generator import retrieve_sorting_tool_data
 
 
-class TestLogic(unittest.TestCase):
+class TestDataGenerator(unittest.TestCase):
 
     def setUp(self):
         self.app = Flask(__name__)
@@ -15,16 +15,7 @@ class TestLogic(unittest.TestCase):
     @patch('os.listdir')
     def test_retrieve_sorting_tool_data(self, mock_listdir):
         mock_listdir.return_value = ['concept1.json', 'concept2.json']
-        config = type('Config', (object,), {
-            "shortname": "shortname",
-            "longname": "longname",
-            "version": "1.0",
-            "savefile": "savefile",
-            "meta": "meta",
-            "url": "http://example.com",
-            "logo": "logo.png"
-        })()
-        result = retrieve_sorting_tool_data(self.app, config)
+        result = retrieve_sorting_tool_data(self.app)
         self.assertEqual(len(result['filelist']), 2)
         self.assertEqual(result['filelist'][0]['name'], 'Concept1')
 

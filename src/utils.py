@@ -28,13 +28,12 @@ def _get_project_home_directory(extra_frames=0):
     sys.stderr.write("Sorry, can't find the project home; returning the location of the caller: %s\n" % directory)
     return directory
 
-def load_config(project_home=None, extra_frames=0, app_name=None):
+def load_config(project_home=None, extra_frames=0):
     """
     Loads configuration from config.py and also from local_config.py.
 
     :param project_home: str, location of the home - we'll always try to load config files from there.
     :param extra_frames: int, number of frames to look back; default is 2.
-    :param app_name: str, name of the application.
     :return: dict, the configuration dictionary.
     """
     config = {}

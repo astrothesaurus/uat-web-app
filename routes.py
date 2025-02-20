@@ -3,16 +3,14 @@ This module defines the routes for the Flask application.
 """
 import json
 
-from config import Config
 from src import utils
 from flask import Flask, render_template
-from src.logic import retrieve_alpha_page_data, retrieve_sorting_tool_data, build_html_list
+from src.data_generator import retrieve_alpha_page_data, retrieve_sorting_tool_data, build_html_list
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 
 # Load configuration
 config = utils.load_config()
-config_obj = Config(config)
 
 vocab_path = config.get('STATIC_PATH_VOCAB', './static/UAT_list.json')
 json_data = json.load(open(vocab_path))
@@ -63,7 +61,7 @@ def sorting_tool():
     Returns:
         str: Rendered HTML template for the sorting tool page with data.
     """
-    data = retrieve_sorting_tool_data(app, config_obj)
+    data = retrieve_sorting_tool_data(app)
     return render_template('sorting.html', title="UAT Web App - Sorting Tool", **data)
 
 if __name__ == '__main__':

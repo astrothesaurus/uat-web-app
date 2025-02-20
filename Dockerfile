@@ -23,7 +23,7 @@ RUN git checkout `cat /release.uat`
 WORKDIR /app
 
 # Copy the application source code
-COPY . /app
+# COPY . /app
 
 RUN useradd -ms /bin/bash uat-user
 

@@ -1,9 +1,12 @@
 """
-This module contains the business logic for the Flask application.
+This module's purpose is generating data for pages for the Flask application.
 """
 import os
 import string
 from flask import request
+
+from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, SORT_VERSION, UAT_SAVEFILE, UAT_META, UAT_URL
+
 
 def build_html_list(term_list, previous_path):
     """
@@ -136,13 +139,12 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
         "alphabet": alphabet
     }
 
-def retrieve_sorting_tool_data(app, config):
+def retrieve_sorting_tool_data(app):
     """
     Retrieves data for the sorting tool page.
 
     Args:
         app (Flask): The Flask application instance.
-        config (Config): The configuration object.
 
     Returns:
         dict: The data for the sorting tool page.
@@ -155,11 +157,11 @@ def retrieve_sorting_tool_data(app, config):
 
     return {
         "filelist": file_list,
-        "shortname": config.shortname,
-        "longname": config.longname,
-        "logo": config.logo,
-        "version": config.version,
-        "savefile": config.savefile,
-        "meta": config.meta,
-        "url": config.url
+        "shortname": UAT_SHORTNAME,
+        "longname": UAT_LONGNAME,
+        "logo": UAT_LOGO,
+        "version": SORT_VERSION,
+        "savefile": UAT_SAVEFILE,
+        "meta": UAT_META,
+        "url": UAT_URL
     }

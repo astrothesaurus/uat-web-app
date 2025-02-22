@@ -1,10 +1,13 @@
+import sys
+import os
 import unittest
 from unittest.mock import patch
-
 from flask import Flask
 
-from src.data_generator import retrieve_sorting_tool_data
+# Add the parent directory to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import data_generator
 
 class TestDataGenerator(unittest.TestCase):
 
@@ -15,7 +18,7 @@ class TestDataGenerator(unittest.TestCase):
     @patch('os.listdir')
     def test_retrieve_sorting_tool_data(self, mock_listdir):
         mock_listdir.return_value = ['concept1.json', 'concept2.json']
-        result = retrieve_sorting_tool_data(self.app)
+        result = data_generator.retrieve_sorting_tool_data(self.app)
         self.assertEqual(len(result['filelist']), 2)
         self.assertEqual(result['filelist'][0]['name'], 'Concept1')
 

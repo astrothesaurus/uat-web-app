@@ -3,9 +3,9 @@ This module defines the routes for the Flask application.
 """
 import json
 
-from src import utils
+import utils
 from flask import Flask, render_template
-from src.data_generator import retrieve_alpha_page_data, retrieve_sorting_tool_data, build_html_list
+from data_generator import retrieve_alpha_page_data, retrieve_sorting_tool_data, build_html_list
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 

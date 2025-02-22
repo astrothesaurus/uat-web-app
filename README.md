@@ -43,7 +43,7 @@ UAT Web App is a Flask web application that includes the following features:
 
 1. **Python Unit Tests:**
     ```sh
-    python -m unittest discover -s tests
+    python -m unittest discover -s uat-web-app/tests
     ```
 
 2. **JavaScript Unit Tests:**
@@ -52,11 +52,13 @@ UAT Web App is a Flask web application that includes the following features:
     ```
 
 ## Project Structure
-- `src/`: Contains the source code for the Flask application.
-- `tests/`: Contains the Python unit tests for the application.
-- `__tests__/`: Contains the JavaScript unit tests (Jest) for the application.
-- `static/`: Contains the static files (CSS, JavaScript, images, UAT data).
-- `templates/`: Contains the HTML templates.
+- `uat-web-app/`: Contains the source code for the Flask application.
+  - `data_generator.py`: Script for generating data.
+  - `utils.py`: Utility functions.
+  - `tests/`: Contains the Python unit tests for the application.
+  - `static/`: Contains the static files (CSS, JavaScript, images, UAT data).
+  - `templates/`: Contains the HTML templates.
+  - `__tests__/`: Contains JEST JavaScript tests.
 - `package.json`: Contains the JavaScript dependencies and scripts.
 - `requirements.txt`: Contains the Python dependencies.
 - `Dockerfile` and `docker-compose.yml`: Docker configuration files.

@@ -1,7 +1,12 @@
 import os
+import sys
 import unittest
 from unittest.mock import patch, mock_open
-from src import utils
+
+# Add the parent directory to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import utils
 
 class TestUtils(unittest.TestCase):
 
@@ -54,7 +59,7 @@ class TestUtils(unittest.TestCase):
     @patch('sys.path', [])
     def test_load_config(self, mock_stack, mock_getsourcefile, mock_abspath, mock_exists):
         mock_stack.return_value = [None, None, [None, None, '/path/to/module.py']]
-        with patch('src.utils.load_configuration_module', return_value={'KEY': 'value'}):
+        with patch('utils.load_configuration_module', return_value={'KEY': 'value'}):
             result = utils.load_config()
             self.assertIn('PROJECT_HOME', result)
             self.assertIn('KEY', result)

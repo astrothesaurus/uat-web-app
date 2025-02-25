@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UAT (Unified Astronomy Thesaurus) Web App is a tool for sorting and managing UAT data.">
+    <meta name="keywords" content="UAT, Unified Astronomy Thesaurus, sorting tool, alphabetical browser, hierarchical browser, search UAT">
+    {{meta|safe}}
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sorting.css') }}">
+    <title>UAT Sort</title>
+
+</head>
+
+<body>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" integrity="sha384-N8EP0Yml0jN7e0DcXlZ6rt+iqKU9Ck6f1ZQ+j2puxatnBq4k9E8Q6vqBcY34LNbn" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dragAndDropTree.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sorting/difftree.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sorting/captchaOperations.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sorting/formOperations.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sorting/main.js') }}"></script>
+
+    <script type="text/javascript" >
+        {% for x in filelist %}
+        var {{x.value}} = "../topconcepts/{{x.file}}";
+        {% endfor %}
+
+        savefile = "{{savefile}}";
+    </script>
+
+
+    <div class="container-fluid">
+        <div id="openleft"><img width="25px" src="{{ url_for('static', filename='img/right.png') }}" alt="Right"/></div>
+        
+        <div id="title">
+            {% if logo == ""%}
+                <h3>{{longname}}</h3><a href="{{url}}">return home</a><br/><br/>
+            {% else %}
+                <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="Logo"/><br /><a href="{{url}}">return home</a><br/><br />
+            {% endif %}
+        </div>
+
+        <div id="leftside">
+            
+
+            <div id="menu">
+                {% if logo == ""%}
+                    <h3>{{longname}}</h3><a href="{{url}}">return home</a><br/><br/>
+                {% else %}
+                    <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="Logo"/><br /><a href="{{url}}">return home</a><br/><br />
+                {% endif %}
+
+                Choose a branch of the {{shortname}}{% if version == "" %}{% else %} (v{{version}}){% endif %}:<br/>
+                <label for="opts"></label><select id="opts">
+                    <option value="blank" selected="selected" disabled="disabled"> </option>
+                    {% for x in filelist %}
+                     <option id="{{x.value}}" value="{{x.value}}">{{x.name}}</option>
+                    {% endfor %}
+                </select>
+                <br/>OR<br/>
+                Choose a previous save:<br/>
+                <select id="saveopts">
+                    <option id="nosave" value="none" selected="selected" disabled="disabled">No saves yet!</option>                  
+                </select>
+                <br/>OR<br/>
+                Load a previous export:<br/>
+                <input type="file" accept=".json" value="Load" id="browsebutton"/> <input type="button" value="Load" id="loadbutton">
+                <br/>OR<br/>
+                <input value="Start with a blank workspace" type=button id="blankspace"/>
+
+                <div id="treeoptions">
+                    <hr>
+                    <input type="button" value="Save As..." id="savebutton"/>
+                    <input type="button" value="Save" id="overridebutton"/>
+                    <input type="button" value="Delete" id="deletebutton"/>
+                    <br/>
+                    <input type="button" value="Export" id="exportbutton"/>
+                
+                    <br /><hr>
+                    <input type="button" value="Expand all" id="fullex"/>
+                    <input type="button" value="Collapse all" id="fullcollapse"/>
+                    <br/><br/>
+                    <input type="button" value="Undo" id="undobutton" />
+                    <input type="button" value="Redo" id="redobutton" />
+                    <br/><br/>
+                    Add Concept: <br />
+                    <label for="newnode"></label><input type="text" id="newnode" /><input type="button" value="Add Node" id="add_node" />
+                    
+                    <br/><hr>
+                    <!-- <input type="button" value="Show Feedback Form" id="showbutton"/>
+                    <input type="button" value="Hide Feedback Form" id="hidebutton"/> -->
+                </div>
+
+
+            </div>
+        <div id=closeleft><img width="25px" src="{{ url_for('static', filename='img/left.png') }}" alt="Left"/></div>
+
+
+        </div>
+
+        <div id="secondleft">
+
+            <div id="feedback">
+                <h3>Send Your Feedback</h3>
+
+                <div id="error"></div>
+
+                Changes made using the sorting tool will be automatically included in your feedback when you submit this form.<br /><br />
+                <form name="review" METHOD="POST" onsubmit="checkform(this); return false;">
+                    <table cellspacing=0 border=0 cellpadding=0>
+                        <tr>
+                            <td>Your Name:</td>
+                            <td><label for="first_name"></label><input type="text" id="first_name" /></td>
+                        </tr>
+                        <tr>
+                            <td>Your Institution:&nbsp;</td>
+                            <td><label for="yourinst"></label><input type="text" id="yourinst" /></td>
+                        </tr>
+                        <tr>
+                            <td>Your Email:</td>
+                            <td><label for="youremail"></label><input type="text" id="youremail" /></td>
+                        </tr>
+                    </table><br />
+                    Additional Notes/Comments:<br /><label for="notes"></label><textarea cols="35" rows="3" id="notes"></textarea>
+                    <br /><br />
+                    Robot Check<span style="color: #DD0000; ">*</span>:<br />
+                    <span style="color: #DD0000; ">Enter This Code >></span> <span id="txtCaptchaDiv" style="color:#000000"></span>
+                    <input type="hidden" id="txtCaptcha" />
+                    <label for="txtInput"></label><input type="text" name="txtInput" id="txtInput" size="15" />
+                    <br /><br />
+                    <input id="submitemail" type="submit" value="Submit">
+                </form>
+                <span style="color: #DD0000; ">*</span><i>Required</i><br />
+                
+            </div>
+
+            
+            
+            
+
+        </div>
+
+        <div id="main">
+            
+
+            <div id="history">
+                <div id=closeright><img width="25px" src="{{ url_for('static', filename='img/right.png') }}" alt="Right"/></div>
+                <h5>History of Changes</h5>
+                <br/>
+                <div id="undosection"><strong>Undo</strong>
+                    <ul id="undohistory"></ul>
+                </div>
+                
+                <hr/>
+                <div id="redosection"><strong>Redo</strong>
+                    <ul id="redohistory"></ul>
+                </div>
+            </div>
+            <div id="openright"><img width="25px" alt="Open History" src="{{ url_for('static', filename='img/left.png') }}"/></div>
+
+
+        <div id="tree-container">
+
+
+            <!-- <div id="instructions">
+                <span style="font-size: x-large;">
+                    <br />
+                    <br />
+                    <br />
+                    Please Read Completely Before Starting
+                </span>
+                <br />
+                <br />
+                To make suggestions using this tool...
+                <br />
+                <br />
+                1) Select a branch of the {{shortname}}, a previous save,
+                <br/>load a previous export, or start with a blank workspace<BR />
+                by choosing the appropriate option on the left.
+                <br />
+                <br />
+                2) Click on nodes and drag and drop them to a new<br />
+                location within the {{shortname}} tree.<br /><br />
+                3) New concepts may be added using the input box at<br />
+                the far left and clicking the "Add Node" button.<br /><br />
+                4) To indicate that a concept should be deleted, drag<br />
+                it to the "recycle" node.  You can also use this node to<br/>
+                temporarily store concepts as you re-arrange the structure.<br /><br />
+                A log of changes made using the sorting tool will be<BR />
+                automatically included in feedback when the "Submit"<br />
+                button is clicked.<br /><br />
+                <b>Refreshing or navigating away from the page without<BR />
+                saving or exporting will cause all work to be lost.</B>
+            </div> -->
+        </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

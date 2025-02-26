@@ -43,7 +43,8 @@ treeJSON = d3.json(j, function(error, treeData) {
             }
         } catch(err){
             console.error("Error occurred: ", err);
-            alert("The JSON file you have tried to load is not compatible with the Sorting Tool.")
+            alert("The JSON file you have tried to load is not compatible with the Sorting Tool.");
+            return;
         }
 
     } else {

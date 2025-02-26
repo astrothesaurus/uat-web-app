@@ -9,6 +9,10 @@ class NewBranchEntry {
 }
 (function ($) {
     $(document).ready(function () {
+        $('#browsebutton').val('');
+        $('#opts').val('blank');
+        $('#loadbutton').prop('disabled', true);
+
         // Load previously saved work
         let sortsaves = JSON.parse(localStorage.getItem(savefile)) || [];
         let savelist = [];
@@ -119,10 +123,16 @@ class NewBranchEntry {
             downloadString();
         });
 
+        $('#newnode').on('input', function() {
+            const newNodeInput = $(this).val().trim();
+            $('#add_node').prop('disabled', newNodeInput === '');
+        });
+
         // Load button functionality
         $('#loadbutton').click(function () {
             if (!window.FileReader) {
-                return alert('FileReader API is not supported by your browser.');
+                alert('FileReader API is not supported by your browser.');
+                return;
             }
             let input = $('#browsebutton')[0];
             if (input.files && input.files[0]) {
@@ -140,6 +150,7 @@ class NewBranchEntry {
                 fr.readAsText(file);
             } else {
                 alert("File not selected or browser incompatible.");
+                return;
             }
             $("#treeoptions, #closeleft").show();
         });
@@ -154,6 +165,12 @@ class NewBranchEntry {
             let newData = eval(d3.select(this).property('value'));
             renderTree(newData);
             $("#treeoptions, #closeleft").show();
+        });
+
+        // Change event for browsing a file
+        $('#browsebutton').on('change', function () {
+            const loadButton = document.getElementById('loadbutton');
+            loadButton.disabled = !this.files.length;
         });
 
         // Create blank workspace
@@ -202,6 +219,7 @@ class NewBranchEntry {
         $("#add_node").click(function () {
             AddNode();
             $("#newnode").val("");
+            $('#add_node').prop('disabled', true);
         });
 
         // Toggle feedback section

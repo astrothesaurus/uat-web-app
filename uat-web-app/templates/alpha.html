@@ -43,6 +43,12 @@
             }
             return '#'; // Return a default value if the element is not found (shouldn't happen)
         }
+
+        function checkInput() {
+            const input = document.getElementById('uatlookup').value;
+            const button = document.getElementById('searchButton');
+            button.disabled = input.trim() === '';
+        }
     </script>
 <span id="topm"></span>
 <div class="container-fluid">
@@ -100,7 +106,7 @@
                     <ul class="alpha">
                         <br/>
                         {% for x in alphabet %}
-                            <li tabindex=0 class="letter">{{x}}</li>
+                            <li tabindex=0 class="letter"><span>{{x}}</span></li>
                         {% endfor %}
                     </ul>
                     
@@ -157,11 +163,11 @@
 
                     <form action="" name="searchform">
                         <input type="hidden" id="uatview" name="view" value="search">
-                        <input type="text" id="uatlookup" name="lookup">
+                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()">
 <!--                         <br>
                         <input type="checkbox" id="searchdef" name="searchdef"> Also search defintions? -->
                         <br/><br/>
-                        <input type="submit" value="Search">
+                        <input type="submit" id="searchButton" value="Search" disabled>
                     </form>
                     <br/><br/>
 

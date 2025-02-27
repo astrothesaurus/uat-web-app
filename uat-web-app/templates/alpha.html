@@ -379,7 +379,6 @@ $(document).ready(function(){
 
     $(".letter").on("click", function(){
         thisletter = event.target.innerHTML;
-        console.log(thisletter);
         event.preventDefault();
         document.getElementById(thisletter).scrollIntoView(true);
         $("#letter"+thisletter).focus();

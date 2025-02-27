@@ -100,6 +100,10 @@ class NewBranchEntry {
         // Delete button functionality
         $("#deletebutton").on("click", function () {
             let saveName = $("#saveopts").val();
+            if (saveName == null || saveName === 'blank') {
+                alert("Please choose a previous save to delete.");
+                return;
+            }
             if (confirm("Are you sure you want to delete '" + saveName + "'?")) {
                 let matchIndex = sortsaves.findIndex(save => save.saveName === saveName);
                 if (matchIndex !== -1) {
@@ -196,6 +200,10 @@ class NewBranchEntry {
             $('#opts').val("blank");
             let newData = $(this).val();
             let loadNum = savelist.indexOf(newData);
+
+            if (loadNum === -1) {
+                return; // Blank was selected. Do Nothing.
+            }
 
             let loadData = sortsaves[loadNum]["rootBranch"];
             let loadRecycle = sortsaves[loadNum]["rootRecycle"];

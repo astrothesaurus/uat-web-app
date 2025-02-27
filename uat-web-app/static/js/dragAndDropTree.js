@@ -860,6 +860,9 @@ treeJSON = d3.json(j, function(error, treeData) {
         try {
             let item = undo_list.slice(-1)
 
+            if (item.length === 0){
+                return;
+            }
             undo_list.pop();
 
             newparents = item[0]["newparents"];
@@ -898,13 +901,17 @@ treeJSON = d3.json(j, function(error, treeData) {
                 }
         }
         catch(err) {
-            console.log("Error performing undo: " + err);
+            console.error("Error performing undo: " + err);
         }
     });
 
     $("#redobutton").on("click", function(){
         try {
             let item = redo_list.slice(-1)[0]
+
+            if (item === undefined){
+                return;
+            }
 
             redo_list.pop();
             
@@ -941,7 +948,7 @@ treeJSON = d3.json(j, function(error, treeData) {
                 }
         }
         catch(err) {
-            console.log("Error performing Redo: " + err);
+            console.error("Error performing Redo: " + err);
         }
 
     });

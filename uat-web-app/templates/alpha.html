@@ -102,9 +102,8 @@
                 <div class="tab-pane fade{%if gtype == 'alpha'%} show active{% endif %}" id="alpha" role="tabpanel" aria-labelledby="alpha-tab">
 
                     <div class="d-sm-block d-md-none">Browse by Index</div>
-
+                    <br/>
                     <ul class="alpha">
-                        <br/>
                         {% for x in alphabet %}
                             <li tabindex=0 class="letter"><span>{{x}}</span></li>
                         {% endfor %}
@@ -157,17 +156,17 @@
 
                 <!-- search -->
                 <div class="tab-pane fade{%if gtype == 'search'%} show active{% endif %}" id="search" role="tabpanel" aria-labelledby="search-tab">
-                    <div>Search for UAT Concepts</div>
+                    <label for="uatlookup">Search for UAT Concepts</label>
 
                     <br/>
 
                     <form action="" name="searchform">
-                        <input type="hidden" id="uatview" name="view" value="search">
-                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()">
+                        <input type="hidden" id="uatview" name="view" value="search" />
+                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()" />
 <!--                         <br>
                         <input type="checkbox" id="searchdef" name="searchdef"> Also search defintions? -->
                         <br/><br/>
-                        <input type="submit" id="searchButton" value="Search" disabled>
+                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search" disabled />
                     </form>
                     <br/><br/>
 
@@ -495,7 +494,7 @@ $(document).ready(function(){
         $("#{{element.uri[30:]}}").get(0).scrollIntoView();
         $("#{{element.uri[30:]}}").css("background-color","lightgrey");
 
-        $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:0.9rem;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}'></span>`);
+        $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:0.9rem;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}' alt="To Top"></span>`);
     </script>
     {% endif %}
 

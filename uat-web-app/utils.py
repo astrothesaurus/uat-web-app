@@ -20,10 +20,10 @@ def _get_project_home_directory(extra_frames=0):
     current_directory = directory
     max_level = 3
     while max_level:
-        requirements_file = os.path.abspath(os.path.join(current_directory, 'requirements.txt'))
+        requirements_file = os.path.abspath(os.path.join(current_directory, "requirements.txt"))
         if os.path.exists(requirements_file):
             return current_directory
-        current_directory = os.path.abspath(os.path.join(current_directory, '..'))
+        current_directory = os.path.abspath(os.path.join(current_directory, ".."))
         max_level -= 1
     sys.stderr.write("Sorry, can't find the project home; returning the location of the caller: %s\n" % directory)
     return directory
@@ -41,17 +41,17 @@ def load_config(project_home=None, extra_frames=0):
     if project_home is not None:
         project_home = os.path.abspath(project_home)
         if not os.path.exists(project_home):
-            raise Exception('{project_home} doesn\'t exist'.format(project_home=project_home))
+            raise Exception("{project_home} doesn't exist".format(project_home=project_home))
     else:
         project_home = _get_project_home_directory(extra_frames=extra_frames)
 
     if project_home not in sys.path:
         sys.path.append(project_home)
 
-    config['PROJECT_HOME'] = project_home
+    config["PROJECT_HOME"] = project_home
 
-    config.update(load_configuration_module(os.path.join(project_home, 'config.py')))
-    config.update(load_configuration_module(os.path.join(project_home, 'local_config.py')))
+    config.update(load_configuration_module(os.path.join(project_home, "config.py")))
+    config.update(load_configuration_module(os.path.join(project_home, "local_config.py")))
     update_config_from_environment(config)
 
     return config
@@ -69,11 +69,11 @@ def load_configuration_module(filename):
     :return: dict, the module's attributes as a dictionary.
     """
     filename = os.path.join(filename)
-    module = imp.import_module('config')
+    module = imp.import_module("config")
     module.__file__ = filename
     try:
         with open(filename) as config_file:
-            exec(compile(config_file.read(), filename, 'exec'), module.__dict__)
+            exec(compile(config_file.read(), filename, "exec"), module.__dict__)
     except IOError:
         pass
     result = {}

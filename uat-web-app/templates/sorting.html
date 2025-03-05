@@ -45,7 +45,7 @@
             {% if logo == ""%}
                 <h3>{{longname}}</h3><a href="{{url}}">return home</a><br/><br/>
             {% else %}
-                <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="Logo"/><br /><a href="{{url}}">return home</a><br/><br />
+                <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="UAT Sorting Tool Logo"/><br /><a href="{{url}}">return home</a><br/><br />
             {% endif %}
         </div>
 
@@ -100,7 +100,7 @@
 
 
             </div>
-        <div id=closeleft><img width="25px" src="{{ url_for('static', filename='img/left.png') }}" alt="Left"/></div>
+        <div id=closeleft><img width="25px" src="{{ url_for('static', filename='img/left.png') }}" alt="Close Menu"/></div>
 
 
         </div>
@@ -151,7 +151,7 @@
             
 
             <div id="history">
-                <div id=closeright><img width="25px" src="{{ url_for('static', filename='img/right.png') }}" alt="Right"/></div>
+                <div id=closeright><img width="25px" src="{{ url_for('static', filename='img/right.png') }}" alt="Open Menu"/></div>
                 <h5>History of Changes</h5>
                 <br/>
                 <div id="undosection"><strong>Undo</strong>

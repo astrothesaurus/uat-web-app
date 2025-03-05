@@ -56,12 +56,12 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
     unknown_status = "no"
     all_paths = []
 
-    view_type = request.args.get('view')
+    view_type = request.args.get("view")
 
     if view_type == "search":
         element = "noelement"
         try:
-            lookup_term = request.args.get('lookup')
+            lookup_term = request.args.get("lookup")
             lookup_variants = [lookup_term.lower(), lookup_term.title(), lookup_term.capitalize(), lookup_term.upper()]
 
             for term in alpha_terms:
@@ -95,8 +95,8 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
     else:
         if view_type == "hierarchy":
             try:
-                path = request.args.get('path')
-                split_path = path.split('-')
+                path = request.args.get("path")
+                split_path = path.split("-")
                 for path_segment in split_path:
                     if not all_paths:
                         all_paths.append(path_segment)
@@ -149,7 +149,7 @@ def retrieve_sorting_tool_data(app):
     Returns:
         dict: The data for the sorting tool page.
     """
-    file_names = os.listdir(os.path.join(app.static_folder, 'topconcepts'))
+    file_names = os.listdir(os.path.join(app.static_folder, "topconcepts"))
     file_list = []
     for file_name in file_names:
         file_dict = {"name": file_name.capitalize().replace("_", " ").replace(".json", ""), "file": file_name, "value": file_name.replace(".", "").replace("json", "")}

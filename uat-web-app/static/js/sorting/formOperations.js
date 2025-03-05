@@ -5,7 +5,7 @@ function TestForm() {
     let root = getRoot();
     let orig = getOrig();
     let diffStr = difftree(orig, root);
-    let url = '/email';
+    let url = "/email";
     let name = document.getElementById("first_name").value;
     let inst = document.getElementById("yourinst").value;
     let uremail = document.getElementById("youremail").value;

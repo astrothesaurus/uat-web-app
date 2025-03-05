@@ -12,11 +12,11 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 # Load configuration
 config = utils.load_config()
 
-vocab_path = config.get('STATIC_PATH_VOCAB', './static/UAT_list.json')
+vocab_path = config.get("STATIC_PATH_VOCAB", "./static/UAT_list.json")
 json_data = json.load(open(vocab_path))
-alpha_terms = sorted(json_data, key=lambda k: k['name'])
+alpha_terms = sorted(json_data, key=lambda k: k["name"])
 
-hierarchy_path = config.get('STATIC_PATH_HIERARCHY', './static/UAT.json')
+hierarchy_path = config.get("STATIC_PATH_HIERARCHY", "./static/UAT.json")
 hierarchy_data = json.load(open(hierarchy_path))
 
 html_tree = "<ul id='treemenu1' class='treeview'>"
@@ -28,7 +28,7 @@ for child in hierarchy_data["children"]:
 
 html_tree += "\n</ul>"
 
-@app.route('/')
+@app.route("/")
 def index_page():
     """
     Route for the index page.
@@ -38,8 +38,8 @@ def index_page():
     """
     return render_template("index.html", title="UAT Web App - Home")
 
-@app.route('/uat/', defaults={'uat_id': None})
-@app.route('/uat/<int:uat_id>')
+@app.route("/uat/", defaults={"uat_id": None})
+@app.route("/uat/<int:uat_id>")
 def alpha_page(uat_id):
     """
     Route for the UAT page.
@@ -53,7 +53,7 @@ def alpha_page(uat_id):
     data = retrieve_alpha_page_data(uat_id, alpha_terms, html_tree)
     return render_template("alpha.html", title="UAT Web App - Alphabetical Browser", **data)
 
-@app.route('/sort/')
+@app.route("/sort/")
 def sorting_tool():
     """
     Route for the sorting tool page.
@@ -62,7 +62,7 @@ def sorting_tool():
         str: Rendered HTML template for the sorting tool page with data.
     """
     data = retrieve_sorting_tool_data(app)
-    return render_template('sorting.html', title="UAT Web App - Sorting Tool", **data)
+    return render_template("sorting.html", title="UAT Web App - Sorting Tool", **data)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

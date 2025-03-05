@@ -9,9 +9,9 @@ class NewBranchEntry {
 }
 (function ($) {
     $(document).ready(function () {
-        $('#browsebutton').val('');
-        $('#opts').val('blank');
-        $('#loadbutton').prop('disabled', true);
+        $("#browsebutton").val("");
+        $("#opts").val("blank");
+        $("#loadbutton").prop("disabled", true);
 
         // Load previously saved work
         let sortsaves = JSON.parse(localStorage.getItem(savefile)) || [];
@@ -63,7 +63,7 @@ class NewBranchEntry {
                     if (savelist.includes(saveName)) {
                         alert("Please choose a unique name for your save file!");
                     } else {
-                        $('#opts').val("blank");
+                        $("#opts").val("blank");
                         savestuff(saveName, sortsaves);
                         savelist.push(saveName);
 
@@ -100,7 +100,7 @@ class NewBranchEntry {
         // Delete button functionality
         $("#deletebutton").on("click", function () {
             let saveName = $("#saveopts").val();
-            if (saveName == null || saveName === 'blank') {
+            if (saveName == null || saveName === "blank") {
                 alert("Please choose a previous save to delete.");
                 return;
             }
@@ -127,18 +127,18 @@ class NewBranchEntry {
             downloadString();
         });
 
-        $('#newnode').on('input', function() {
+        $("#newnode").on("input", function() {
             const newNodeInput = $(this).val().trim();
-            $('#add_node').prop('disabled', newNodeInput === '');
+            $("#add_node").prop("disabled", newNodeInput === "");
         });
 
         // Load button functionality
-        $('#loadbutton').click(function () {
+        $("#loadbutton").click(function () {
             if (!window.FileReader) {
-                alert('FileReader API is not supported by your browser.');
+                alert("FileReader API is not supported by your browser.");
                 return;
             }
-            let input = $('#browsebutton')[0];
+            let input = $("#browsebutton")[0];
             if (input.files && input.files[0]) {
                 let file = input.files[0];
                 let fr = new FileReader();
@@ -160,20 +160,20 @@ class NewBranchEntry {
         });
 
         // Initialize options and generate captcha code
-        $("opts[value='0']").attr('selected', 'selected');
+        $("opts[value='0']").attr("selected", "selected");
         GenerateCode();
 
         // Change event for options
-        $('#opts').on('change', function () {
-            $('#saveopts').val("blank");
-            let newData = eval(d3.select(this).property('value'));
+        $("#opts").on("change", function () {
+            $("#saveopts").val("blank");
+            let newData = eval(d3.select(this).property("value"));
             renderTree(newData);
             $("#treeoptions, #closeleft").show();
         });
 
         // Change event for browsing a file
-        $('#browsebutton').on('change', function () {
-            const loadButton = document.getElementById('loadbutton');
+        $("#browsebutton").on("change", function () {
+            const loadButton = document.getElementById("loadbutton");
             loadButton.disabled = !this.files.length;
         });
 
@@ -196,8 +196,8 @@ class NewBranchEntry {
         });
 
         // Load saved data
-        $('#saveopts').on('change', function () {
-            $('#opts').val("blank");
+        $("#saveopts").on("change", function () {
+            $("#opts").val("blank");
             let newData = $(this).val();
             let loadNum = savelist.indexOf(newData);
 
@@ -227,7 +227,7 @@ class NewBranchEntry {
         $("#add_node").click(function () {
             AddNode();
             $("#newnode").val("");
-            $('#add_node').prop('disabled', true);
+            $("#add_node").prop("disabled", true);
         });
 
         // Toggle feedback section
@@ -245,7 +245,7 @@ class NewBranchEntry {
  * Creates a circular reference replacer for JSON.stringify.
  * @returns {Function} - The replacer function.
  */
-const getCircularReplacer = () => {
+let getCircularReplacer = () => {
     const seen = new WeakSet();
     return (key, value) => {
         if (typeof value === "object" && value !== null) {
@@ -264,8 +264,8 @@ const getCircularReplacer = () => {
  * @returns {string} - The cleaned JSON string.
  */
 function cleanJSON(jsonString) {
-    return jsonString.replace(/_children/gm, 'children')
-        .replace(/,"children":null/gm, '')
+    return jsonString.replace(/_children/gm, "children")
+        .replace(/,"children":null/gm, "")
         .replace(/,"depth":\d*/gm, "")
         .replace(/,"x":\d*.\d*,"y":\d*/gm, "")
         .replace(/,"x0":\d*.\d*,"y0":\d*/gm, "")
@@ -319,8 +319,8 @@ function savestuff(saveName, sortsaves) {
  * Adds a new node to the tree.
  */
 function AddNode() {
-    let nodeName = $('#newnode').val();
-    let errorDiv = $('#error');
+    let nodeName = $("#newnode").val();
+    let errorDiv = $("#error");
     errorDiv.empty();
     if (nodeName) {
         addNode(nodeName, errorDiv);
@@ -358,9 +358,9 @@ function downloadString() {
 
     let exportjson = cleanJSON(JSON.stringify(section, getCircularReplacer()));
     let file = "data:text/plain;charset=utf-8," + encodeURIComponent(exportjson);
-    let a = document.createElement('a');
+    let a = document.createElement("a");
     a.href = file;
-    a.target = '_blank';
+    a.target = "_blank";
     a.download = "export.json";
     document.body.appendChild(a);
     a.click();

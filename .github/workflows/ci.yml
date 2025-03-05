@@ -81,3 +81,9 @@ jobs:
 
     - name: Run docker compose up
       run: docker compose up -d
+
+    - name: Install Playwright browsers
+      run: npx playwright install
+      
+    - name: Run Playwright tests
+      run: npm run test:playwright

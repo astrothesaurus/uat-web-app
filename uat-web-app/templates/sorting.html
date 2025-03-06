@@ -204,6 +204,49 @@
         </div>
     </div>
 
+    <!-- Alert Modal -->
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body" id="modalBodyContent">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body" id="confirmModalBody">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="confirmOkButton">OK</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirmCancelButton">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prompt Modal -->
+    <div class="modal fade" id="promptModal" tabindex="-1" aria-labelledby="promptModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+              <label id="promptModalBody" for="promptInput">Please enter a value:</label>
+              <input type="text" class="form-control" id="promptInput">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="promptOkButton">OK</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="promptCancelButton">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </body>
 
 </html>

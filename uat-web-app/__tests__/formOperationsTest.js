@@ -2,19 +2,10 @@ const {
     checkform,
     TestForm
 } = require("../static/js/sorting/formOperations.js");
-const fs = require("fs");
-const path = require("path");
-const {JSDOM} = require("jsdom");
 
-describe("Sorting Tree Tests", () => {
-    let window
+describe("Form Operations", () => {
     beforeAll(() => {
-        const html = fs.readFileSync(path.resolve(__dirname, "../templates/index.html"), "utf8");
-        const dom = new JSDOM(html, {runScripts: "dangerously"});
-        window = dom.window;
-        global.document = document;
-        global.window = window;
-        global.alert = jest.fn();
+        global.openAlertModal = jest.fn(); // Mock openAlertModal function
     });
 
     test("should not send feedback if captcha is invalid", () => {
@@ -27,6 +18,7 @@ describe("Sorting Tree Tests", () => {
 
         expect(result).toBe(false);
         expect(global.TestForm).not.toHaveBeenCalled();
+        expect(global.openAlertModal).toHaveBeenCalled();
     });
 
     test("should send form data and tree differences via HTTP POST request", () => {

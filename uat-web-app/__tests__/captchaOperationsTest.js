@@ -3,20 +3,8 @@ const {
     ValidCaptcha,
     GenerateCode
 } = require("../static/js/sorting/captchaOperations.js");
-const fs = require("fs");
-const path = require("path");
-const {JSDOM} = require("jsdom");
 
-describe("Sorting Tree Tests", () => {
-    let window
-    beforeAll(() => {
-        const html = fs.readFileSync(path.resolve(__dirname, "../templates/index.html"), "utf8");
-        const dom = new JSDOM(html, {runScripts: "dangerously"});
-        window = dom.window;
-        global.document = document;
-        global.window = window;
-        global.alert = jest.fn();
-    });
+describe("Captcha Operations", () => {
 
     test("should remove spaces from a string", () => {
         let stringWithSpaces = "a b c d e";

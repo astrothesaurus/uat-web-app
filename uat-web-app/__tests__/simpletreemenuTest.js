@@ -1,25 +1,6 @@
-const {JSDOM} = require("jsdom");
-const fs = require("fs");
-const path = require("path");
 const ddtreemenu = require("../static/js/simpletreemenu.js").ddtreemenu;
 
-describe("ddtreemenu", () => {
-    let window, document;
-
-    beforeAll(() => {
-        const html = fs.readFileSync(path.resolve(__dirname, "../templates/index.html"), "utf8");
-        const dom = new JSDOM(html, {runScripts: "dangerously"});
-        window = dom.window;
-        document = window.document;
-        global.document = document;
-        global.window = window;
-        global.alert = jest.fn();
-    });
-
-    afterAll(() => {
-        delete global.document;
-        delete global.window;
-    });
+describe("Simple Tree Menu", () => {
 
     test("should build a subtree and set attributes correctly", () => {
         const treeid = "tree1";

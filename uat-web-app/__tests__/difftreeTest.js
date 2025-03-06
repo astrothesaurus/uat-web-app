@@ -1,6 +1,6 @@
 const {difftree, flattenTree, compareTrees} = require("../static/js/sorting/difftree");
 
-describe("difftree", () => {
+describe("Diff Tree", () => {
     test("should generate correct diff output between two trees", () => {
         const tree1 = {
             name: "root",

@@ -5,20 +5,9 @@ const {
     downloadString,
     savestuff
 } = require("../static/js/sorting/main.js");
-const fs = require("fs");
-const path = require("path");
-const {JSDOM} = require("jsdom");
 
-describe("Sorting Tree Tests", () => {
-    let window
-    beforeAll(() => {
-        const html = fs.readFileSync(path.resolve(__dirname, "../templates/index.html"), "utf8");
-        const dom = new JSDOM(html, {runScripts: "dangerously"});
-        window = dom.window;
-        global.document = document;
-        global.window = window;
-        global.alert = jest.fn();
-    });
+describe("Sorting Tree", () => {
+
     test("should store new save data into localStorage", () => {
         let sortsaves = [];
         let newBranch = {name: "branch1", data: "some data"};

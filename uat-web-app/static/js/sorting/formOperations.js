@@ -43,7 +43,7 @@ function checkform(theform) {
     }
 
     if (why !== "") {
-        alert(why);
+        openAlertModal(why);
         return false;
     }
 }

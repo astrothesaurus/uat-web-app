@@ -13,12 +13,17 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 config = utils.load_config()
 
 vocab_path = config.get("STATIC_PATH_VOCAB", "./static/UAT_list.json")
-json_data = json.load(open(vocab_path))
+try:
+    json_data = json.load(open(vocab_path))
+except FileNotFoundError:
+    json_data = {}
 alpha_terms = sorted(json_data, key=lambda k: k["name"])
 
 hierarchy_path = config.get("STATIC_PATH_HIERARCHY", "./static/UAT.json")
-hierarchy_data = json.load(open(hierarchy_path))
-
+try:
+    hierarchy_data = json.load(open(hierarchy_path))
+except FileNotFoundError:
+    hierarchy_data = {"children": []}
 html_tree = "<ul id='treemenu1' class='treeview'>"
 
 for child in hierarchy_data["children"]:

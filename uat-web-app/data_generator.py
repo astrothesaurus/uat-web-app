@@ -5,7 +5,7 @@ import os
 import string
 from flask import request
 
-from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, SORT_VERSION, UAT_SAVEFILE, UAT_META, UAT_URL
+from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META, UAT_URL
 
 
 def build_html_list(term_list, previous_path):
@@ -165,7 +165,7 @@ def get_element_and_status(uat_id, alpha_terms, view_type):
 
     return element, unknown_status
 
-def retrieve_sorting_tool_data(app):
+def retrieve_sorting_tool_data(app, tag):
     """
     Retrieves data for the sorting tool page.
 
@@ -186,7 +186,7 @@ def retrieve_sorting_tool_data(app):
         "shortname": UAT_SHORTNAME,
         "longname": UAT_LONGNAME,
         "logo": UAT_LOGO,
-        "version": SORT_VERSION,
+        "version": tag,
         "savefile": UAT_SAVEFILE,
         "meta": UAT_META,
         "url": UAT_URL

@@ -19,7 +19,7 @@ class TestDataGenerator(unittest.TestCase):
     def test_retrieve_sorting_tool_data(self, mock_listdir):
         mock_listdir.return_value = ["concept1.json", "concept2.json"]
 
-        result = data_generator.retrieve_sorting_tool_data(self.app)
+        result = data_generator.retrieve_sorting_tool_data(self.app, "v.5.1.0")
 
         self.assertEqual(2, len(result["filelist"]))
         self.assertEqual("Concept1", result["filelist"][0]["name"])

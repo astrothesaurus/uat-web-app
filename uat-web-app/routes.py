@@ -2,28 +2,46 @@
 This module defines the routes for the Flask application.
 """
 import json
+import os
+from datetime import datetime, timedelta
+
+import requests
 
 import utils
 from flask import Flask, render_template
 from data_generator import retrieve_alpha_page_data, retrieve_sorting_tool_data, build_html_list
 
-app = Flask(__name__, static_folder='static', static_url_path='')
+app = Flask(__name__, static_folder="static", static_url_path="")
 
 # Load configuration
 config = utils.load_config()
 
-vocab_path = config.get("STATIC_PATH_VOCAB", "./static/UAT_list.json")
-try:
-    json_data = json.load(open(vocab_path))
-except FileNotFoundError:
-    json_data = {}
+def get_latest_uat_tag():
+    url = "https://api.github.com/repos/astrothesaurus/UAT/releases/latest"
+    response = requests.get(url)
+    if response.status_code == 200:
+        latest_release = response.json()
+        return latest_release.get("tag_name")
+    else:
+        print("Failed to get the latest release.")
+        return None
+
+tag = get_latest_uat_tag()
+def get_latest_uat_file(file_name, default_data):
+    download_url = "https://raw.githubusercontent.com/astrothesaurus/UAT/" + tag + "/" + file_name
+    response = requests.get(download_url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Failed to download the latest file" + file_name)
+        return default_data
+
+json_data = get_latest_uat_file("UAT_list.json", {})
+
 alpha_terms = sorted(json_data, key=lambda k: k["name"])
 
-hierarchy_path = config.get("STATIC_PATH_HIERARCHY", "./static/UAT.json")
-try:
-    hierarchy_data = json.load(open(hierarchy_path))
-except FileNotFoundError:
-    hierarchy_data = {"children": []}
+hierarchy_data = get_latest_uat_file("UAT.json", {"children": []})
+
 html_tree = "<ul id='treemenu1' class='treeview'>"
 
 for child in hierarchy_data["children"]:
@@ -66,7 +84,7 @@ def sorting_tool():
     Returns:
         str: Rendered HTML template for the sorting tool page with data.
     """
-    data = retrieve_sorting_tool_data(app)
+    data = retrieve_sorting_tool_data(app, tag)
     return render_template("sorting.html", title="UAT Web App - Sorting Tool", **data)
 
 if __name__ == "__main__":

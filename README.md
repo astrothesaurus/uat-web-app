@@ -74,3 +74,6 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## License
 This project is licensed under the MIT License.
+
+## Badges
+[![Coverage Status](https://coveralls.io/repos/github/astrothesaurus/uat-web-app/badge.svg?branch=main)](https://coveralls.io/github/astrothesaurus/uat-web-app?branch=main)

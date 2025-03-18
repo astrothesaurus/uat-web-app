@@ -5,7 +5,7 @@ import os
 import string
 from flask import request
 
-from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META, UAT_URL
+from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META
 
 
 def build_html_list(term_list, previous_path):
@@ -188,6 +188,5 @@ def retrieve_sorting_tool_data(app, tag):
         "logo": UAT_LOGO,
         "version": tag,
         "savefile": UAT_SAVEFILE,
-        "meta": UAT_META,
-        "url": UAT_URL
+        "meta": UAT_META
     }

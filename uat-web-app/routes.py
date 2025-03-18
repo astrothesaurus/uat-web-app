@@ -33,7 +33,7 @@ def get_latest_uat_file(file_name, default_data):
     if response.status_code == 200:
         return response.json()
     else:
-        print("Failed to download the latest file" + file_name)
+        print("Failed to download the latest file " + file_name)
         return default_data
 
 json_data = get_latest_uat_file("UAT_list.json", {})

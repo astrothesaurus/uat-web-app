@@ -26,7 +26,6 @@ def get_latest_uat_tag():
         print("Failed to get the latest release.")
         return None
 
-tag = get_latest_uat_tag()
 def get_latest_uat_file(file_name, default_data):
     download_url = "https://raw.githubusercontent.com/astrothesaurus/UAT/" + tag + "/" + file_name
     response = requests.get(download_url)
@@ -36,20 +35,57 @@ def get_latest_uat_file(file_name, default_data):
         print("Failed to download the latest file " + file_name)
         return default_data
 
-json_data = get_latest_uat_file("UAT_list.json", {})
+@app.get("/api/uat/check_version")
+def check_uat_version():
+    """
+    API for checking if the UAT version is the latest.
 
-alpha_terms = sorted(json_data, key=lambda k: k["name"])
+    Returns:
+        dict: JSON response with the UAT version.
+    """
+    new_tag = get_latest_uat_tag()
+    return {"old_tag": tag, "new_tag": new_tag, "is_latest": tag == new_tag}
 
-hierarchy_data = get_latest_uat_file("UAT.json", {"children": []})
+@app.post("/api/uat/update")
+def update_uat_version():
+    """
+    API for updating the UAT version.
 
-html_tree = "<ul id='treemenu1' class='treeview'>"
+    Returns:
+        dict: JSON response with the UAT version update status.
+    """
+    global tag, json_data, alpha_terms, hierarchy_data, html_tree
 
-for child in hierarchy_data["children"]:
-    html_tree += "\n\t<li><a id=li-" + child["uri"][30:] + " href=" + child["uri"][30:] + "?view=hierarchy>" + child["name"] + "</a>"
-    html_tree += build_html_list(child, None)
-    html_tree += "</li>"
+    if 'tag' not in globals():
+        tag = get_latest_uat_tag()
+    else:
+        tag_data = check_uat_version()
+        if tag_data["is_latest"]:
+            return {"status": "success", "tag": tag}
+        else:
+            tag = tag_data["new_tag"]
 
-html_tree += "\n</ul>"
+    # fetch json files
+    json_data = get_latest_uat_file("UAT_list.json", {})
+    hierarchy_data = get_latest_uat_file("UAT.json", {"children": []})
+
+    html_tree_parts = ["<ul id='treemenu1' class='treeview'>"]
+
+    for child in hierarchy_data["children"]:
+        html_tree_parts.append(
+            f"\n\t<li><a id=li-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>")
+        html_tree_parts.append(build_html_list(child, None))
+        html_tree_parts.append("</li>")
+
+    html_tree_parts.append("\n</ul>")
+
+    # apply changes to uat
+    alpha_terms = sorted(json_data, key=lambda k: k["name"])
+    html_tree = "".join(html_tree_parts)
+
+    return {"status": "success", "tag": tag}
+
+update_uat_version()
 
 @app.route("/")
 def index_page():

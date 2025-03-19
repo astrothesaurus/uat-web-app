@@ -19,8 +19,8 @@ def build_html_list(term_list, previous_path):
     Returns:
         str: The HTML list.
     """
+    html_tree_parts = []
     current_path = term_list["uri"][30:]
-    html_tree = ""
 
     if "children" in term_list:
         if previous_path is None:
@@ -28,15 +28,17 @@ def build_html_list(term_list, previous_path):
         else:
             path = previous_path + "-" + current_path
 
-        html_tree += "\n\t\t<ul id=ul-" + path + " class='treeview'>\n"
+        html_tree_parts.append(f"\n\t\t<ul id=ul-{path} class='treeview'>\n")
 
         for child in term_list["children"]:
-            html_tree += "\t<li><a id=li-" + path + "-" + child["uri"][30:] + " href=" + child["uri"][30:] + "?view=hierarchy&path=" + path + ">" + child["name"] + "</a>"
-            html_tree += build_html_list(child, path)
-            html_tree += "</li>\n"
+            html_tree_parts.append(
+                f"\t<li><a id=li-{path}-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy&path={path}>{child['name']}</a>")
+            html_tree_parts.append(build_html_list(child, path))
+            html_tree_parts.append("</li>\n")
 
-        html_tree += "</ul>\n"
+        html_tree_parts.append("</ul>\n")
 
+    html_tree = "".join(html_tree_parts)
     return html_tree
 
 def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):

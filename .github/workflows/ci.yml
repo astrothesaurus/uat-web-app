@@ -8,6 +8,10 @@ on:
     branches:
       - '*'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -81,3 +85,11 @@ jobs:
 
     - name: Run docker compose up
       run: docker compose up -d
+
+    - name: Install Playwright dependencies and browsers
+      run: |
+        npx playwright install-deps
+        npx playwright install
+
+    - name: Run Playwright tests
+      run: npm run test:playwright

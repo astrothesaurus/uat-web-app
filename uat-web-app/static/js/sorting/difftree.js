@@ -63,9 +63,9 @@ function difftree(tree1, tree2) {
     flattenTree(tree2, tree2Map);
 
     // Compare tree1 with tree2
-    diffout += compareTrees(tree1Map, tree2Map, '-');
+    diffout += compareTrees(tree1Map, tree2Map, "-");
     // Compare tree2 with tree1
-    diffout += compareTrees(tree2Map, tree1Map, '%2B');
+    diffout += compareTrees(tree2Map, tree1Map, "%2B");
 
     return diffout;
 }

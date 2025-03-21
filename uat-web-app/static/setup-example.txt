@@ -8,3 +8,4 @@ host = mail.domain.com
 port = 587
 username = email@domain.com
 password = password
+homepageDir = ../

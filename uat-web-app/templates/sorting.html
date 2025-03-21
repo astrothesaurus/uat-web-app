@@ -43,9 +43,9 @@
         
         <div id="title">
             {% if logo == ""%}
-                <h3>{{longname}}</h3><a href="../">return home</a><br/><br/>
+                <h3>{{longname}}</h3><a href="{{homepageDir}}">return home</a><br/><br/>
             {% else %}
-                <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="UAT Sorting Tool Logo"/><br /><a href="../">return home</a><br/><br />
+                <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="UAT Sorting Tool Logo"/><br /><a href="{{homepageDir}}">return home</a><br/><br />
             {% endif %}
         </div>
 
@@ -54,9 +54,9 @@
 
             <div id="menu">
                 {% if logo == ""%}
-                    <h3>{{longname}}</h3><a href="../">return home</a><br/><br/>
+                    <h3>{{longname}}</h3><a href="{{homepageDir}}">return home</a><br/><br/>
                 {% else %}
-                    <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="Logo"/><br /><a href="../">return home</a><br/><br />
+                    <img width="300px" src="{{ url_for('static', filename='img/') }}{{logo}}" alt="Logo"/><br /><a href="{{homepageDir}}">return home</a><br/><br />
                 {% endif %}
 
                 <label for="opts">Choose a branch of the {{shortname}}{% if version == "" %}{% else %} ({{version}}){% endif %}:</label>

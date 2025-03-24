@@ -7,6 +7,9 @@ import os
 
 import requests
 from flask import Flask, render_template
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from threading import Lock
 
 import utils
 from data_generator import retrieve_alpha_page_data, retrieve_sorting_tool_data, build_html_list
@@ -15,6 +18,13 @@ from data_generator import retrieve_alpha_page_data, retrieve_sorting_tool_data,
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__, static_folder="static", static_url_path="")
+
+# Initialize the Limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per minute"]
+)
 
 # Load configuration
 config = utils.load_config()
@@ -43,8 +53,17 @@ def get_latest_uat_file(file_name, default_data):
         logging.error("Failed to download the latest file " + file_name)
         return default_data
 
-# TODO: Make this endpoint secure
 @app.get("/api/uat/check_version")
+@limiter.limit("5 per hour", key_func=get_remote_address)
+def check_uat_version_endpoint():
+    """
+    API for checking if the UAT version is the latest.
+
+    Returns:
+        dict: JSON response with the UAT version.
+    """
+    return check_uat_version()
+
 def check_uat_version():
     """
     API for checking if the UAT version is the latest.
@@ -58,51 +77,59 @@ def check_uat_version():
 
     return {"old_tag": tag, "new_tag": new_tag, "is_latest": tag == new_tag}
 
-
+# TODO: Make this endpoint secure
 @app.post("/api/uat/update")
-def update_uat_version():
+@limiter.limit("5 per hour")
+def update_uat_version_endpoint():
     """
     API for updating the UAT version.
 
     Returns:
         dict: JSON response with the UAT version update status.
     """
+    return update_uat_version()
+
+# Create a lock object to only allow 1 person at a time to update the UAT
+update_lock = Lock()
+
+def update_uat_version():
     global tag, alpha_terms, html_tree
 
-    if 'tag' not in globals():
-        tag = get_latest_uat_tag()
-    else:
-        tag_data = check_uat_version()
-        if tag_data["is_latest"]:
-            return {"status": "success", "tag": tag}
+    # Acquire the lock before executing the method
+    with update_lock:
+        if 'tag' not in globals():
+            tag = get_latest_uat_tag()
         else:
-            tag = tag_data["new_tag"]
+            tag_data = check_uat_version()
+            if tag_data["is_latest"]:
+                return {"status": "success", "tag": tag}
+            else:
+                tag = tag_data["new_tag"]
 
-    # fetch json files
-    json_data = get_latest_uat_file("UAT_list.json", {})
-    hierarchy_data = get_latest_uat_file("UAT.json", {"children": []})
+        # fetch json files
+        json_data = get_latest_uat_file("UAT_list.json", {})
+        hierarchy_data = get_latest_uat_file("UAT.json", {"children": []})
 
-    html_tree_parts = ["<ul id='treemenu1' class='treeview'>"]
+        html_tree_parts = ["<ul id='treemenu1' class='treeview'>"]
 
-    for child in hierarchy_data["children"]:
-        html_tree_parts.append(
-            f"\n\t<li><a id=li-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>")
-        html_tree_parts.append(build_html_list(child, None))
-        html_tree_parts.append("</li>")
+        for child in hierarchy_data["children"]:
+            html_tree_parts.append(
+                f"\n\t<li><a id=li-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>")
+            html_tree_parts.append(build_html_list(child, None))
+            html_tree_parts.append("</li>")
 
-    html_tree_parts.append("\n</ul>")
+        html_tree_parts.append("\n</ul>")
 
-    # apply changes to uat
-    alpha_terms = sorted(json_data, key=lambda k: k["name"])
-    html_tree = "".join(html_tree_parts)
+        # apply changes to uat
+        alpha_terms = sorted(json_data, key=lambda k: k["name"])
+        html_tree = "".join(html_tree_parts)
 
-    return {"status": "success", "tag": tag}
-
+        return {"status": "success", "tag": tag}
 
 update_uat_version()
 
-
 @app.route("/")
+@limiter.limit("20 per minute", key_func=get_remote_address)
 def index_page():
     """
     Route for the index page.
@@ -115,6 +142,7 @@ def index_page():
 
 @app.route("/uat/", defaults={"uat_id": None})
 @app.route("/uat/<int:uat_id>")
+@limiter.limit("20 per minute", key_func=get_remote_address)
 def alpha_page(uat_id):
     """
     Route for the UAT page.
@@ -132,6 +160,7 @@ def alpha_page(uat_id):
 
 
 @app.route("/sort/")
+@limiter.limit("20 per minute", key_func=get_remote_address)
 def sorting_tool():
     """
     Route for the sorting tool page.

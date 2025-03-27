@@ -217,11 +217,9 @@ treeJSON = d3.json(j, function(error, treeData) {
         parentLink = tree.links(tree.nodes(draggingNode.parent));
         svgGroup.selectAll("path.link").filter(function(d, i) {
 
-            if (d.target.id == draggingNode.id) {
-                return true;
-            }
+            return d.target.id == draggingNode.id;
 
-            return false;
+
         }).remove();
 
         dragStarted = null;
@@ -590,7 +588,7 @@ treeJSON = d3.json(j, function(error, treeData) {
                     tip.html(d.note)  
                         .style("left", (d3.event.pageX) + "px")     
                         .style("top", (d3.event.pageY - 28) + "px");
-                };
+                }
             })
             .on("mouseout", function() {
                 // Remove the info text on mouse out.

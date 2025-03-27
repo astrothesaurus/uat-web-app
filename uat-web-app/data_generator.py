@@ -176,6 +176,7 @@ def retrieve_sorting_tool_data(app, tag):
 
     Returns:
         dict: The data for the sorting tool page.
+        tag: The tag for the UAT version.
     """
     file_names = os.listdir(os.path.join(app.static_folder, "topconcepts"))
     file_list = []

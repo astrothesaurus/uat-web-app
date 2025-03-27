@@ -9,6 +9,10 @@ class NewBranchEntry {
 }
 (function ($) {
     $(document).ready(function () {
+        $("#browsebutton").val("");
+        $("#opts").val("blank");
+        $("#loadbutton").prop("disabled", true);
+
         // Load previously saved work
         let sortsaves = JSON.parse(localStorage.getItem(savefile)) || [];
         let savelist = [];
@@ -52,30 +56,33 @@ class NewBranchEntry {
         $("#savebutton").on("click", function () {
             try {
                 let root = getRoot();
-                let saveName = prompt("Name for save file?");
-                if (saveName == null) {
-                    alert("Data Not Saved");
-                } else if (/^\w+( \w+)*$/.test(saveName)) {
-                    if (savelist.includes(saveName)) {
-                        alert("Please choose a unique name for your save file!");
-                    } else {
-                        $('#opts').val("blank");
-                        savestuff(saveName, sortsaves);
-                        savelist.push(saveName);
+                showPromptModal("Name for save file?", function(saveName) {
+                  if (saveName !== null) {
+                    if (/^\w+( \w+)*$/.test(saveName)) {
+                        if (savelist.includes(saveName)) {
+                            openAlertModal("Please choose a unique name for your save file!");
+                        } else {
+                            $("#opts").val("blank");
+                            savestuff(saveName, sortsaves);
+                            savelist.push(saveName);
 
-                        if ($("#nosave").length > 0) {
-                            $("#nosave, #blank").remove();
-                            $("#saveopts").append($("<option></option>").val("blank").attr("id", "blank").text(" ").attr("disabled", "disabled"));
+                            if ($("#nosave").length > 0) {
+                                $("#nosave, #blank").remove();
+                                $("#saveopts").append($("<option></option>").val("blank").attr("id", "blank").text(" ").attr("disabled", "disabled"));
+                            }
+
+                            $("#saveopts").append($("<option></option>").val(saveName).text(saveName).attr("selected", "selected").attr("id", "save-" + saveName));
                         }
-
-                        $("#saveopts").append($("<option></option>").val(saveName).text(saveName).attr("selected", "selected").attr("id", "save-" + saveName));
+                    } else {
+                        openAlertModal("The save name can only include letters, numbers, spaces, and underscores.");
                     }
-                } else {
-                    alert("The save name can only include letters, numbers, spaces, and underscores.");
-                }
+                  } else {
+                    openAlertModal("Data Not Saved");
+                  }
+                });
             } catch (error) {
                 console.error("Saving failed: ", error);
-                alert("You have nothing to save.");
+                openAlertModal("You have nothing to save.");
             }
         });
 
@@ -83,35 +90,45 @@ class NewBranchEntry {
         $("#overridebutton").on("click", function () {
             let saveName = $("#saveopts").val();
             if (saveName == null || saveName === "blank") {
-                alert("You have nothing to save, try 'Save As...'.");
-            } else if (confirm("Are you sure you want to save over '" + saveName + "'?")) {
+                openAlertModal("You have nothing to save, try 'Save As...'.");
+                return;
+            }
+            showConfirmModal("Are you sure you want to save over '" + saveName + "'?", function(result) {
+              if (result) {
                 let match = sortsaves.findIndex(save => save["saveName"] === saveName);
                 if (match !== -1) {
                     sortsaves.splice(match, 1);
                     savestuff(saveName, sortsaves);
                 }
-            }
+              }
+            });
         });
 
         // Delete button functionality
         $("#deletebutton").on("click", function () {
             let saveName = $("#saveopts").val();
-            if (confirm("Are you sure you want to delete '" + saveName + "'?")) {
-                let matchIndex = sortsaves.findIndex(save => save.saveName === saveName);
-                if (matchIndex !== -1) {
-                    sortsaves.splice(matchIndex, 1);
-                }
-
-                $("#save-" + saveName).remove();
-                savelist.splice(savelist.indexOf(saveName), 1);
-
-                if (sortsaves.length === 0) {
-                    $("#saveopts").append($("<option></option>").val("none").attr("id", "nosave").attr("selected", "selected").attr("disabled", "disabled").text("No saves yet!"));
-                    localStorage.removeItem(savefile);
-                } else {
-                    localStorage.setItem(savefile, JSON.stringify(sortsaves));
-                }
+            if (saveName == null || saveName === "blank") {
+                openAlertModal("Please choose a previous save to delete.");
+                return;
             }
+            showConfirmModal("Are you sure you want to delete '" + saveName + "'?", function(result) {
+                if (result) {
+                    let matchIndex = sortsaves.findIndex(save => save.saveName === saveName);
+                    if (matchIndex !== -1) {
+                        sortsaves.splice(matchIndex, 1);
+                    }
+
+                    $("#save-" + saveName).remove();
+                    savelist.splice(savelist.indexOf(saveName), 1);
+
+                    if (sortsaves.length === 0) {
+                        $("#saveopts").append($("<option></option>").val("none").attr("id", "nosave").attr("selected", "selected").attr("disabled", "disabled").text("No saves yet!"));
+                        localStorage.removeItem(savefile);
+                    } else {
+                        localStorage.setItem(savefile, JSON.stringify(sortsaves));
+                    }
+                }
+            });
         });
 
         // Export button functionality
@@ -119,12 +136,18 @@ class NewBranchEntry {
             downloadString();
         });
 
+        $("#newnode").on("input", function() {
+            const newNodeInput = $(this).val().trim();
+            $("#add_node").prop("disabled", newNodeInput === "");
+        });
+
         // Load button functionality
-        $('#loadbutton').click(function () {
+        $("#loadbutton").click(function () {
             if (!window.FileReader) {
-                return alert('FileReader API is not supported by your browser.');
+                openAlertModal("FileReader API is not supported by your browser.");
+                return;
             }
-            let input = $('#browsebutton')[0];
+            let input = $("#browsebutton")[0];
             if (input.files && input.files[0]) {
                 let file = input.files[0];
                 let fr = new FileReader();
@@ -134,51 +157,65 @@ class NewBranchEntry {
                         renderTree(testjson);
                     } catch (err) {
                         console.error("JSON parsing failed: ", err);
-                        alert("The JSON file you have tried to load is not compatible with the Sorting Tool.");
+                        openAlertModal("The JSON file you have tried to load is not compatible with the Sorting Tool.");
                     }
                 };
                 fr.readAsText(file);
             } else {
-                alert("File not selected or browser incompatible.");
+                openAlertModal("File not selected or browser incompatible.");
+                return;
             }
             $("#treeoptions, #closeleft").show();
         });
 
         // Initialize options and generate captcha code
-        $("opts[value='0']").attr('selected', 'selected');
+        $("opts[value='0']").attr("selected", "selected");
         GenerateCode();
 
         // Change event for options
-        $('#opts').on('change', function () {
-            $('#saveopts').val("blank");
-            let newData = eval(d3.select(this).property('value'));
+        $("#opts").on("change", function () {
+            $("#saveopts").val("blank");
+            let newData = eval(d3.select(this).property("value"));
             renderTree(newData);
             $("#treeoptions, #closeleft").show();
         });
 
+        // Change event for browsing a file
+        $("#browsebutton").on("change", function () {
+            const loadButton = document.getElementById("loadbutton");
+            loadButton.disabled = !this.files.length;
+        });
+
         // Create blank workspace
         $("#blankspace").on("click", function () {
-            let rootname = prompt("Name your root node:");
-            if (rootname == null) {
-                alert("Blank workspace not created.");
-            } else if (/^\w+( \w+)*$/.test(rootname)) {
-                let treeDataExtend = {
-                    "name": "root",
-                    "children": [
-                        { "name": "branch", "children": { "name": rootname } },
-                        { "name": "recycle", "children": { "name": "recycle" } }
-                    ]
-                };
-                renderTree(treeDataExtend);
-                $("#treeoptions, #closeleft").show();
-            }
+            showPromptModal("Name your root node:", function(rootname) {
+              if (rootname !== null) {
+                if (/^\w+( \w+)*$/.test(rootname)) {
+                    let treeDataExtend = {
+                        "name": "root",
+                        "children": [
+                            { "name": "branch", "children": { "name": rootname } },
+                            { "name": "recycle", "children": { "name": "recycle" } }
+                        ]
+                    };
+                    renderTree(treeDataExtend);
+                    $("#treeoptions, #closeleft").show();
+                }
+              } else {
+                openAlertModal("Blank workspace not created.");
+              }
+            });
         });
 
         // Load saved data
-        $('#saveopts').on('change', function () {
-            $('#opts').val("blank");
+        $("#saveopts").on("change", function () {
+            $("#opts").val("blank");
             let newData = $(this).val();
             let loadNum = savelist.indexOf(newData);
+
+            if (loadNum === -1) {
+                return; // Blank was selected. Do Nothing.
+            }
 
             let loadData = sortsaves[loadNum]["rootBranch"];
             let loadRecycle = sortsaves[loadNum]["rootRecycle"];
@@ -202,6 +239,7 @@ class NewBranchEntry {
         $("#add_node").click(function () {
             AddNode();
             $("#newnode").val("");
+            $("#add_node").prop("disabled", true);
         });
 
         // Toggle feedback section
@@ -219,7 +257,7 @@ class NewBranchEntry {
  * Creates a circular reference replacer for JSON.stringify.
  * @returns {Function} - The replacer function.
  */
-const getCircularReplacer = () => {
+let getCircularReplacer = () => {
     const seen = new WeakSet();
     return (key, value) => {
         if (typeof value === "object" && value !== null) {
@@ -238,8 +276,8 @@ const getCircularReplacer = () => {
  * @returns {string} - The cleaned JSON string.
  */
 function cleanJSON(jsonString) {
-    return jsonString.replace(/_children/gm, 'children')
-        .replace(/,"children":null/gm, '')
+    return jsonString.replace(/_children/gm, "children")
+        .replace(/,"children":null/gm, "")
         .replace(/,"depth":\d*/gm, "")
         .replace(/,"x":\d*.\d*,"y":\d*/gm, "")
         .replace(/,"x0":\d*.\d*,"y0":\d*/gm, "")
@@ -293,8 +331,8 @@ function savestuff(saveName, sortsaves) {
  * Adds a new node to the tree.
  */
 function AddNode() {
-    let nodeName = $('#newnode').val();
-    let errorDiv = $('#error');
+    let nodeName = $("#newnode").val();
+    let errorDiv = $("#error");
     errorDiv.empty();
     if (nodeName) {
         addNode(nodeName, errorDiv);
@@ -332,13 +370,71 @@ function downloadString() {
 
     let exportjson = cleanJSON(JSON.stringify(section, getCircularReplacer()));
     let file = "data:text/plain;charset=utf-8," + encodeURIComponent(exportjson);
-    let a = document.createElement('a');
+    let a = document.createElement("a");
     a.href = file;
-    a.target = '_blank';
+    a.target = "_blank";
     a.download = "export.json";
     document.body.appendChild(a);
     a.click();
     a.remove();
+}
+
+function openAlertModal(message) {
+    let myModal = new bootstrap.Modal(document.getElementById("modal"), {
+        backdrop: 'static',
+        keyboard: false
+    });
+    document.getElementById("modalBodyContent").textContent = message;
+    myModal.show();
+}
+
+function showConfirmModal(message, callback) {
+    // Update the modal body text
+    document.getElementById("confirmModalBody").textContent = message;
+
+    // Show the modal
+    let confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"), {
+        backdrop: 'static',
+        keyboard: false
+    });
+    confirmModal.show();
+
+    // Handle the OK button click
+    document.getElementById("confirmOkButton").onclick = function () {
+        callback(true);
+        confirmModal.hide();
+    };
+
+    // Handle the Cancel button click
+    document.getElementById("confirmCancelButton").onclick = function () {
+        callback(false);
+        confirmModal.hide();
+    };
+}
+
+function showPromptModal(message, callback) {
+    // Update the modal body text
+    document.getElementById("promptModalBody").textContent = message;
+
+    // Show the modal
+    let promptModal = new bootstrap.Modal(document.getElementById("promptModal"), {
+        backdrop: 'static',
+        keyboard: false
+    });
+    promptModal.show();
+
+    // Handle the OK button click
+    document.getElementById("promptOkButton").onclick = function () {
+        const userInput = document.getElementById("promptInput").value;
+        callback(userInput);
+        promptModal.hide();
+    };
+
+    // Handle the Cancel button click
+    document.getElementById("promptCancelButton").onclick = function () {
+        callback(null);
+        promptModal.hide();
+    };
 }
 
 try {

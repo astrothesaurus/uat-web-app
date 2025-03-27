@@ -50,6 +50,11 @@ UAT Web App is a Flask web application that includes the following features:
     ```sh
     npm test
     ```
+   
+3**Playwright End-to-end Tests:**
+    ```sh
+    npm run test:playwright
+    ```
 
 ## Project Structure
 - `uat-web-app/`: Contains the source code for the Flask application.
@@ -60,6 +65,7 @@ UAT Web App is a Flask web application that includes the following features:
   - `templates/`: Contains the HTML templates.
   - `__tests__/`: Contains JEST JavaScript tests.
 - `package.json`: Contains the JavaScript dependencies and scripts.
+- `tests/`: Contains the Playwright end-to-end tests for the application.
 - `requirements.txt`: Contains the Python dependencies.
 - `Dockerfile` and `docker-compose.yml`: Docker configuration files.
 
@@ -68,3 +74,6 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## License
 This project is licensed under the MIT License.
+
+## Badges
+[![Coverage Status](https://coveralls.io/repos/github/astrothesaurus/uat-web-app/badge.svg?branch=main)](https://coveralls.io/github/astrothesaurus/uat-web-app?branch=main)

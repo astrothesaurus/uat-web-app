@@ -7,6 +7,7 @@ from unittest.mock import patch, mock_open
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import routes
 
+
 class TestFlaskEndpoints(unittest.TestCase):
 
     def setUp(self):
@@ -43,14 +44,12 @@ class TestFlaskEndpoints(unittest.TestCase):
         self.assertEqual(data['new_tag'], data['old_tag'])
         self.assertTrue(data['is_latest'])
 
-    @patch('uat-web-app.routes.get_latest_uat_file')
-    def test_update_uat_version(self, mock_get_latest_uat_file):
-        mock_get_latest_uat_file.return_value = {"children": []}
-
+    def test_update_uat_version(self):
         response = self.app.post('/api/uat/update')
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertEqual('success', data['status'])
+
 
 if __name__ == "__main__":
     unittest.main()

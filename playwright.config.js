@@ -1,6 +1,7 @@
 module.exports = {
     testDir: './tests',
     timeout: 12000,
+    fullyParallel: true,
     use: {
         headless: true,
         viewport: { width: 1280, height: 720 },

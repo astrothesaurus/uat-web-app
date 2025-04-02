@@ -20,7 +20,7 @@ function ClearFields() {
  * @returns {string} - The string without spaces.
  */
 function removeSpaces(string) {
-    return string.split(' ').join("");
+    return string.split(" ").join("");
 }
 
 /**
@@ -28,8 +28,8 @@ function removeSpaces(string) {
  * @returns {boolean} - True if the captcha is valid, false otherwise.
  */
 function ValidCaptcha() {
-    let str1 = removeSpaces(document.getElementById('txtCaptcha').value);
-    let str2 = removeSpaces(document.getElementById('txtInput').value);
+    let str1 = removeSpaces(document.getElementById("txtCaptcha").value);
+    let str2 = removeSpaces(document.getElementById("txtInput").value);
     if (str1 === str2) {
         ClearFields();
         GenerateCode();

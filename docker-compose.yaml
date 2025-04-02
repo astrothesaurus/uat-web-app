@@ -10,9 +10,6 @@ services:
       - uat-web-app
     environment:
       - PYTHONPATH=/app/:$PYTHONPATH
-      - STATIC_PATH_VOCAB = '/app/UAT/UAT_list.json'
-      - STATIC_PATH_HIERARCHY = '/app/UAT/UAT.json'
-      - SORT_VERSION="5.1.0"
     stdin_open: true
     tty: true
     user: uat-user

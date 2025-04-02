@@ -3,16 +3,25 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jquery": "^3.7.1",
-    "jsdom": "^26.0.0"
+    "jsdom": "^26.0.0",
+    "playwright": "^1.50.1"
   },
   "dependencies": {
+    "@playwright/test": "^1.50.1",
     "jquery": "^3.7.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:jest": "jest --coverage",
+    "test:playwright": "npx playwright test"
   },
   "jest": {
     "testEnvironment": "jest-environment-jsdom",
-    "setupFilesAfterEnv": ["./jest.setup.js"]
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ],
+    "testMatch": [
+      "**/__tests__/*Test.js"
+    ]
   }
 }

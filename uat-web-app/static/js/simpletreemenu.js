@@ -1,10 +1,16 @@
 let persisteduls = {};
 let ddtreemenu = {};
 
-ddtreemenu.closefolder = "/img/closed.gif"; // Set image path to "closed" folder image
-ddtreemenu.openfolder = "/img/open.gif"; // Set image path to "open" folder image
+ddtreemenu.closefolder = { src: "/img/closed.gif", alt: "Expand folder" }; // Set image path to "closed" folder image
+ddtreemenu.openfolder = { src: "/img/open.gif", alt: "Collapse folder" }; // Set image path to "open" folder image
 
 ////////// No need to edit beyond here ///////////////////////////
+
+// Function to set background image with label
+ddtreemenu.setBackgroundImage = function (element, folder) {
+    element.style.backgroundImage = "url(" + folder.src + ")";
+    element.setAttribute("aria-label", folder.alt);
+};
 
 /**
  * Expands a UL element and any of its parent ULs.
@@ -15,12 +21,12 @@ ddtreemenu.expandSubTree = function (treeid, ulelement) {
     let rootnode = document.getElementById(treeid);
     let currentnode = ulelement;
     currentnode.style.display = "block";
-    currentnode.parentNode.style.backgroundImage = "url(" + ddtreemenu.openfolder + ")";
+    ddtreemenu.setBackgroundImage(currentnode.parentNode, ddtreemenu.openfolder);
     while (currentnode !== rootnode) {
         if (currentnode.tagName === "UL") {
             currentnode.style.display = "block";
             currentnode.setAttribute("rel", "open");
-            currentnode.parentNode.style.backgroundImage = "url(" + ddtreemenu.openfolder + ")";
+                ddtreemenu.setBackgroundImage(currentnode.parentNode, ddtreemenu.openfolder);
         }
         currentnode = currentnode.parentNode;
     }
@@ -68,7 +74,7 @@ ddtreemenu.buildSubTree = function (treeid, ulelement, index) {
         if (ddtreemenu.searcharray(persisteduls[treeid], index)) {
             ulelement.setAttribute("rel", "open");
             ulelement.style.display = "block";
-            ulelement.parentNode.style.backgroundImage = "url(" + ddtreemenu.openfolder + ")";
+            ddtreemenu.setBackgroundImage(ulelement.parentNode, ddtreemenu.openfolder);
         } else {
             ulelement.setAttribute("rel", "closed");
         }
@@ -82,11 +88,11 @@ ddtreemenu.buildSubTree = function (treeid, ulelement, index) {
         if (submenu.getAttribute("rel") === "closed") {
             submenu.style.display = "block";
             submenu.setAttribute("rel", "open");
-            ulelement.parentNode.style.backgroundImage = "url(" + ddtreemenu.openfolder + ")";
+            ddtreemenu.setBackgroundImage(ulelement.parentNode, ddtreemenu.openfolder);
         } else if (submenu.getAttribute("rel") === "open") {
             submenu.style.display = "none";
             submenu.setAttribute("rel", "closed");
-            ulelement.parentNode.style.backgroundImage = "url(" + ddtreemenu.closefolder + ")";
+            ddtreemenu.setBackgroundImage(ulelement.parentNode, ddtreemenu.closefolder);
         }
         ddtreemenu.preventpropagate(e);
     };
@@ -188,7 +194,11 @@ ddtreemenu.flatten = function (treeid, action) {
         ultags[i].style.display = (action === "expand") ? "block" : "none";
         let relvalue = (action === "expand") ? "open" : "closed";
         ultags[i].setAttribute("rel", relvalue);
-        ultags[i].parentNode.style.backgroundImage = (action === "expand") ? "url(" + ddtreemenu.openfolder + ")" : "url(" + ddtreemenu.closefolder + ")";
+        if (action === "expand") {
+            ddtreemenu.setBackgroundImage(ultags[i].parentNode, ddtreemenu.openfolder);
+        } else {
+            ddtreemenu.setBackgroundImage(ultags[i].parentNode, ddtreemenu.closefolder);
+        }
     }
 };
 

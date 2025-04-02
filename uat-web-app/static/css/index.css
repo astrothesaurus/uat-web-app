@@ -68,9 +68,15 @@ li.letter {
     text-align: center;
     list-style: none;
     float: left;
-    cursor:pointer;
 }
 
+li.letter span {
+    text-transform: uppercase;
+}
+
+li.letter span:hover {
+    cursor: pointer;
+}
 
 li.uat {
     list-style: none;

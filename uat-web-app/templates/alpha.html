@@ -10,8 +10,8 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 
-    <script type='text/javascript' src="{{ url_for('static', filename='js/simpletreemenu.js') }}"></script>
-    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/simpletree.css') }}" />
+    <script type="text/javascript" src="{{ url_for('static', filename='js/simpletreemenu.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/simpletree.css') }}" />
 
     <title>UAT Browse & Search</title>
 
@@ -20,15 +20,20 @@
 <body>
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-    <script type='text/javascript'>
-        document.addEventListener('DOMContentLoaded', function () {
-            const links = document.querySelectorAll('a[data-uri]');
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll("a[data-uri]");
             links.forEach(link => {
-                const uri = link.getAttribute('data-uri');
+                const uri = link.getAttribute("data-uri");
                 const href = getlink(uri);
                 if (href) {
-                    link.setAttribute('href', href);
+                    link.setAttribute("href", href);
                 }
+            });
+            let closedFolders = document.querySelectorAll('.treeview li.submenu');
+            closedFolders.forEach(function(folder) {
+                folder.style.backgroundImage = "url('/img/closed.gif')";
+                folder.setAttribute("aria-label", "Expand folder");
             });
         });
 
@@ -39,9 +44,15 @@
             const element = document.querySelector(`[id$="${elementId}"]`);
 
             if (element) {
-                return element.getAttribute('href');
+                return element.getAttribute("href");
             }
-            return '#'; // Return a default value if the element is not found (shouldn't happen)
+            return "#"; // Return a default value if the element is not found (shouldn't happen)
+        }
+
+        function checkInput() {
+            const input = document.getElementById("uatlookup").value;
+            const button = document.getElementById("searchButton");
+            button.disabled = input.trim() === "";
         }
     </script>
 <span id="topm"></span>
@@ -96,11 +107,10 @@
                 <div class="tab-pane fade{%if gtype == 'alpha'%} show active{% endif %}" id="alpha" role="tabpanel" aria-labelledby="alpha-tab">
 
                     <div class="d-sm-block d-md-none">Browse by Index</div>
-
+                    <br/>
                     <ul class="alpha">
-                        <br/>
                         {% for x in alphabet %}
-                            <li tabindex=0 class="letter">{{x}}</li>
+                            <li tabindex=0 class="letter"><span>{{x}}</span></li>
                         {% endfor %}
                     </ul>
                     
@@ -108,7 +118,7 @@
                     
                     {% for x in alphabet %}
                         <span id="{{x}}" class="anchor"></span>
-                        <span style="width:50%;float:left" id="letter{{x}}" tabindex=0>{{x|upper}}</span> <span class="text-right d-none d-sm-none d-md-block" style="width:50%;float:right"><img tabindex=0 class="totopimg" style="width:15px;cursor:pointer;" src="{{ url_for('static', filename='/img/totop1.png') }}" alt="To Top"/>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span style="width:50%;float:left" id="letter{{x}}" tabindex=0>{{x|upper}}</span> <span class="text-right d-none d-sm-none d-md-block" style="width:50%;float:right"><img tabindex=0 class="totopimg" style="width:15px;cursor:pointer;" src="{{ url_for('static', filename='/img/totop1.png') }}" alt="Return to the Top"/>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <table class=table>
                                 {% for el in alpha %}
                                     {% if el.status != "deprecated" %}
@@ -135,14 +145,14 @@
                 <!-- hierarchy -->
                 <div class="tab-pane fade{%if gtype == 'hierarchy'%} show active{% endif %}" id="hierarchy" role="tabpanel" aria-labelledby="hierarchy-tab">
                     <div class="d-sm-block d-md-none">Browse By Hierarchy</div><br/>
-                    <div class='advmenu'>
+                    <div class="advmenu">
                         <a href="javascript:ddtreemenu.flatten('treemenu1', 'expand')">expand all</a> | <a href="javascript:ddtreemenu.flatten('treemenu1', 'collapse')">collapse all</a>
                     </div>
 
                     {{htree|safe}}
 
-                    <script type='text/javascript'>
-                        ddtreemenu.createTree('treemenu1', false)
+                    <script type="text/javascript">
+                        ddtreemenu.createTree("treemenu1", false)
                     </script>
 
 
@@ -151,17 +161,17 @@
 
                 <!-- search -->
                 <div class="tab-pane fade{%if gtype == 'search'%} show active{% endif %}" id="search" role="tabpanel" aria-labelledby="search-tab">
-                    <div>Search for UAT Concepts</div>
+                    <label for="uatlookup">Search for UAT Concepts</label>
 
                     <br/>
 
                     <form action="" name="searchform">
-                        <input type="hidden" id="uatview" name="view" value="search">
-                        <input type="text" id="uatlookup" name="lookup">
+                        <input type="hidden" id="uatview" name="view" value="search" />
+                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()" />
 <!--                         <br>
                         <input type="checkbox" id="searchdef" name="searchdef"> Also search defintions? -->
                         <br/><br/>
-                        <input type="submit" value="Search">
+                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search" disabled />
                     </form>
                     <br/><br/>
 
@@ -188,7 +198,7 @@
 
                     {% for y in results %} 
                         <p>
-                            <strong><a href="{{y.uri|replace('<mark>', '')|replace('</mark>', '')}}">{{y.name|safe}}</a></strong> (http://astrothesaurus.org/uat/{{y.uri|safe}})
+                            <strong><a href="{{y.uri|replace('<mark>', '')|replace('</mark>', '')}}">{{y.name|safe}}</a></strong> (https://astrothesaurus.org/uat/{{y.uri|safe}})
                             {% if y.altNames %}
                                 <br/><i>Alternate term:</i> {{y.altNames|safe }}
                             {% endif %}
@@ -200,7 +210,7 @@
 
                     {% for y in defresults %} 
                         <p>
-                            <strong><a href="{{y.uri|replace('<mark>', '')|replace('</mark>', '')}}">{{y.name|safe}}</a></strong> (http://astrothesaurus.org/uat/{{y.uri|safe}})
+                            <strong><a href="{{y.uri|replace('<mark>', '')|replace('</mark>', '')}}">{{y.name|safe}}</a></strong> (https://astrothesaurus.org/uat/{{y.uri|safe}})
                             <br/><i>Definition:</i> {{y.definition|safe }}
                         </p>
                     {% endfor %}
@@ -229,7 +239,7 @@
 
                         <div id="content">
                             <p class="h3 text-break">{% if element.deprecated == True %}Deprecated: {% endif %}{{element.name}}</p>
-                            <a href="http://astrothesaurus.org/uat/{{element.uri[30:]}}"><span class="h5 text-break">http://astrothesaurus.org/uat/{{element.uri[30:]}}</span></a>
+                            <a href="http://astrothesaurus.org/uat/{{element.uri[30:]}}"><span class="h5 text-break">https://astrothesaurus.org/uat/{{element.uri[30:]}}</span></a>
                         </div>
 
                         <br/>
@@ -345,20 +355,20 @@
 
 $(document).ready(function(){
 
-    localStorage.setItem('currentTab', '{{gtype}}');
-    localStorage.setItem('currentElement', '{{element}}');
+    localStorage.setItem("currentTab", "{{gtype}}");
+    localStorage.setItem("currentElement", "{{element}}");
 
-    let currentTab = localStorage.getItem('currentTab');
-    let currentElement = localStorage.getItem('currentElement');
+    let currentTab = localStorage.getItem("currentTab");
+    let currentElement = localStorage.getItem("currentElement");
 
     if (currentElement != "noelement") {
         let windowSize = $(window).width();
         if(windowSize < 768){
-            $("#hierarchy").removeClass('active');
-            $("#search").removeClass('active');
-            $("#alpha").removeClass('active');
-            $('.'+currentTab+'-tab').removeClass("active");//
-            $('.'+currentTab+'-tab').attr("aria-selected", "false");
+            $("#hierarchy").removeClass("active");
+            $("#search").removeClass("active");
+            $("#alpha").removeClass("active");
+            $("."+currentTab+"-tab").removeClass("active");//
+            $("."+currentTab+"-tab").attr("aria-selected", "false");
         }
     }
 
@@ -373,7 +383,6 @@ $(document).ready(function(){
 
     $(".letter").on("click", function(){
         thisletter = event.target.innerHTML;
-        console.log(thisletter);
         event.preventDefault();
         document.getElementById(thisletter).scrollIntoView(true);
         $("#letter"+thisletter).focus();
@@ -402,73 +411,73 @@ $(document).ready(function(){
     });
 
 
-    $('.alpha-tab').click(function (e) {
-        localStorage.setItem('currentTab', 'alpha');
-        localStorage.setItem('inactive1', 'hierarchy');
-        localStorage.setItem('inactive2', 'search');
+    $(".alpha-tab").click(function (e) {
+        localStorage.setItem("currentTab", "alpha");
+        localStorage.setItem("inactive1", "hierarchy");
+        localStorage.setItem("inactive2", "search");
 
         if ($(this).hasClass("active")) {
             console.log("has class");
            
-            $("#alpha").removeClass('active');
+            $("#alpha").removeClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $('.alpha-tab').removeClass("active");//
-            $('.alpha-tab').attr("aria-selected", "false");
+            $(".alpha-tab").removeClass("active");//
+            $(".alpha-tab").attr("aria-selected", "false");
         }
     });
 
-    $('.hierarchy-tab').click(function (e) {
-        localStorage.setItem('currentTab', 'hierarchy');
-        localStorage.setItem('inactive1', 'search');
-        localStorage.setItem('inactive2', 'alpha');
+    $(".hierarchy-tab").click(function (e) {
+        localStorage.setItem("currentTab", "hierarchy");
+        localStorage.setItem("inactive1", "search");
+        localStorage.setItem("inactive2", "alpha");
 
         if ($(this).hasClass("active")) {
            
-            $("#hierarchy").removeClass('active');
+            $("#hierarchy").removeClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $('.hierarchy-tab').removeClass("active");//
-            $('.hierarchy-tab').attr("aria-selected", "false");
+            $(".hierarchy-tab").removeClass("active");//
+            $(".hierarchy-tab").attr("aria-selected", "false");
         }
     });
 
-    $('.search-tab').click(function (e) {
-        localStorage.setItem('currentTab', 'search');
-        localStorage.setItem('inactive1', 'hierarchy');
-        localStorage.setItem('inactive2', 'alpha');
+    $(".search-tab").click(function (e) {
+        localStorage.setItem("currentTab", "search");
+        localStorage.setItem("inactive1", "hierarchy");
+        localStorage.setItem("inactive2", "alpha");
 
         if ($(this).hasClass("active")) {
            
-            $("#search").removeClass('active');
+            $("#search").removeClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $('.search-tab').removeClass("active");//
-            $('.search-tab').attr("aria-selected", "false");
+            $(".search-tab").removeClass("active");//
+            $(".search-tab").attr("aria-selected", "false");
         }
     });
 
-    $(window).on('resize', function(e){
+    $(window).on("resize", function(e){
         let windowSize = $(window).width(); // Could've done $(this).width()
 
         if(windowSize > 768){
-            let currentTab = localStorage.getItem('currentTab');
-            let inactive1 = localStorage.getItem('inactive1');
-            let inactive2 = localStorage.getItem('inactive2');
+            let currentTab = localStorage.getItem("currentTab");
+            let inactive1 = localStorage.getItem("inactive1");
+            let inactive2 = localStorage.getItem("inactive2");
 
-            $("#"+currentTab).addClass('active');
+            $("#"+currentTab).addClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $('.'+inactive1+'-tab2').removeClass("active");
-            $('.'+inactive2+'-tab2').removeClass("active");
-            $('.'+currentTab+'-tab2').addClass("active");//
-            $('.'+currentTab+'-tab2').attr("aria-selected", "true");
-            $('.'+inactive1+'-tab').removeClass("active");
-            $('.'+inactive2+'-tab').removeClass("active");
-            $('.'+currentTab+'-tab').addClass("active");//
-            $('.'+currentTab+'-tab').attr("aria-selected", "true");
-            $('.'+currentTab).addClass("active");//
-            $('.'+currentTab).attr("aria-selected", "true");
+            $("."+inactive1+"-tab2").removeClass("active");
+            $("."+inactive2+"-tab2").removeClass("active");
+            $("."+currentTab+"-tab2").addClass("active");//
+            $("."+currentTab+"-tab2").attr("aria-selected", "true");
+            $("."+inactive1+"-tab").removeClass("active");
+            $("."+inactive2+"-tab").removeClass("active");
+            $("."+currentTab+"-tab").addClass("active");//
+            $("."+currentTab+"-tab").attr("aria-selected", "true");
+            $("."+currentTab).addClass("active");//
+            $("."+currentTab).attr("aria-selected", "true");
         }
     });
 
@@ -490,7 +499,7 @@ $(document).ready(function(){
         $("#{{element.uri[30:]}}").get(0).scrollIntoView();
         $("#{{element.uri[30:]}}").css("background-color","lightgrey");
 
-        $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:0.9rem;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}'></span>`);
+        $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:0.9rem;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}' alt="To Top"></span>`);
     </script>
     {% endif %}
 

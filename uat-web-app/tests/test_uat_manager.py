@@ -15,10 +15,10 @@ class TestUatManager(unittest.TestCase):
         # Mock the response to simulate a failed request
         mock_get.return_value.status_code = 404
 
-        with self.assertLogs(level='ERROR') as log:
-            result = uat_manager.get_latest_uat_tag()
-            self.assertIn('Failed to get the latest release.', log.output[0])
-            self.assertIsNone(result)
+        with self.assertRaises(Exception) as context:
+            uat_manager.get_latest_uat_tag()
+
+        self.assertIn('Failed to fetch the UAT latest release version from ', str(context.exception))
 
 
 if __name__ == '__main__':

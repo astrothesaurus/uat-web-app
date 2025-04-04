@@ -17,7 +17,7 @@ def fetch_url(url, error_message):
 
 def get_latest_uat_tag():
     url = os.getenv("UAT_API_URL", "https://api.github.com/repos/astrothesaurus/UAT/releases/latest")
-    error_message = "Failed to fetch the UAT latest release version from github " + url
+    error_message = "Failed to fetch the UAT latest release version from " + url
     return fetch_url(url, error_message).get("tag_name")
 
 def build_html_tree(hierarchy_data):
@@ -43,7 +43,7 @@ class UATManager:
         if not root_url.endswith("/"):
             root_url += "/"
         download_url = root_url + self.tag + "/" + file_name
-        error_message = "Failed to download the latest UAT file from GitHub " + download_url
+        error_message = "Failed to download the latest UAT file from " + download_url
         return fetch_url(download_url, error_message)
 
     def check_uat_version(self):

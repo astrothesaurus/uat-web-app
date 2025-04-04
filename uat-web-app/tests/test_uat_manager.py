@@ -18,7 +18,7 @@ class TestUatManager(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             uat_manager.get_latest_uat_tag()
 
-        self.assertIn('Failed to fetch the UAT latest release version from github', str(context.exception))
+        self.assertIn('Failed to fetch the UAT latest release version from ', str(context.exception))
 
 
 if __name__ == '__main__':

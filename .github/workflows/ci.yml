@@ -66,13 +66,17 @@ jobs:
         env:
           DOCKER_TLS_CERTDIR: ""
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Run docker build and compose
-        run: docker compose up -d --build
-      - name: Install Playwright dependencies and browsers
-        run: |
-          npm install @playwright/test
-          npx playwright install-deps && npx playwright install
-      - name: Run Playwright tests
-        run: npm run test:playwright
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Build Docker image
+      run: docker compose build
+    - name: Run docker compose
+      run: docker compose up -d
+    - name: Install Playwright Tests
+      run: npm install @playwright/test
+    - name: Install Playwright browsers
+      run: npx playwright install
+    - name: Install Playwright dependencies
+      run: npx playwright install-deps
+    - name: Run Playwright tests
+      run: npm run test:playwright

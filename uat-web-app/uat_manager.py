@@ -3,6 +3,7 @@ import os
 from threading import Lock
 
 import requests
+from flask import abort
 
 from data_generator import build_html_list
 
@@ -14,8 +15,9 @@ def get_latest_uat_tag():
         latest_release = response.json()
         return latest_release.get("tag_name")
     else:
-        logging.error("Failed to get the latest release.")
-        return None
+        error_message = "Failed to fetch the UAT latest release version from github " + url
+        logging.error(error_message)
+        abort(response.status_code, description=error_message)
 
 
 class UATManager:
@@ -26,7 +28,7 @@ class UATManager:
         self.update_lock = Lock()
         self.update_uat_version()
 
-    def get_latest_uat_file(self, file_name, default_data):
+    def get_latest_uat_file(self, file_name):
         root_url = os.getenv("UAT_RAW_URL", "https://raw.githubusercontent.com/astrothesaurus/UAT/")
         if not root_url.endswith("/"):
             root_url = root_url + "/"
@@ -35,8 +37,9 @@ class UATManager:
         if response.status_code == 200:
             return response.json()
         else:
-            logging.error("Failed to download the latest file " + file_name)
-            return default_data
+            error_message = "Failed to download the latest UAT file from github " + download_url
+            logging.error(error_message)
+            abort(response.status_code, description=error_message)
 
     def check_uat_version(self):
         new_tag = get_latest_uat_tag()
@@ -56,8 +59,8 @@ class UATManager:
                 else:
                     self.tag = tag_data["new_tag"]
 
-            json_data = self.get_latest_uat_file("UAT_list.json", {})
-            hierarchy_data = self.get_latest_uat_file("UAT.json", {"children": []})
+            json_data = self.get_latest_uat_file("UAT_list.json")
+            hierarchy_data = self.get_latest_uat_file("UAT.json")
 
             html_tree_parts = ["<ul id='treemenu1' class='treeview'>"]
 

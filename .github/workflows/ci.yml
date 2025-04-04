@@ -68,6 +68,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set execute permissions for pytest_persistent.sh
+        run: chmod +x scripts/pytest_persistent.sh
       - name: Build docker compose
         run: docker compose build
       - name: Run docker compose up

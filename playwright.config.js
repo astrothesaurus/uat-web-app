@@ -8,7 +8,7 @@ module.exports = {
         baseURL: 'http://localhost',
         ignoreHTTPSErrors: true,
     },
-    workers: process.env.CI ? 1 : undefined, // Use 1 worker in CI, otherwise use the default number of workers
+    workers: process.env.CI ? 2 : undefined, // Use 2 worker in CI, otherwise use the default number of workers
     projects: [
         {
             name: 'chromium',

@@ -14,7 +14,7 @@ def fetch_url(url, error_message):
         url (str): The URL to fetch.
         error_message (str): The error message to log and include in the response if the request fails.
     Returns:
-        Response: The HTTP response object if the request is successful.
+        dict: The parsed JSON data from the HTTP response if the request is successful.
     Raises:
         werkzeug.exceptions.HTTPException: If the request fails, aborts with the corresponding HTTP status code.
     """

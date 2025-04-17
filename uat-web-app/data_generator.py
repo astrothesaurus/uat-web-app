@@ -86,8 +86,8 @@ def search_terms(lookup_term, alpha_terms):
         list: The search results.
     """
     results = []
-    lookup_term = lookup_term.strip()
     if lookup_term:
+        lookup_term = lookup_term.strip()
         lookup_variants = [lookup_term.lower(), lookup_term.title(), lookup_term.capitalize(), lookup_term.upper()]
 
         for term in alpha_terms:

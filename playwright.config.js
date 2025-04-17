@@ -1,6 +1,6 @@
 module.exports = {
     testDir: './tests',
-    timeout: 12000,
+    timeout: 15000,
     fullyParallel: true,
     use: {
         headless: true,

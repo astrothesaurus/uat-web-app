@@ -87,6 +87,7 @@ def search_terms(lookup_term, alpha_terms):
     """
     results = []
     if lookup_term:
+        lookup_term = lookup_term.strip()
         lookup_variants = [lookup_term.lower(), lookup_term.title(), lookup_term.capitalize(), lookup_term.upper()]
 
         for term in alpha_terms:
@@ -99,7 +100,7 @@ def search_terms(lookup_term, alpha_terms):
                     term_dict["uri"] = str(term["uri"][30:]).replace(lookup_term, "<mark>" + lookup_term + "</mark>")
                     term_dict["name"] = term["name"]
                     results.append(term_dict)
-                elif lookup_term in (term["name"]).lower():
+                elif lookup_term.lower() in (term["name"]).lower():
                     term_dict["uri"] = term["uri"][30:]
                     for lookup_variant in lookup_variants:
                         if lookup_variant in term["name"]:

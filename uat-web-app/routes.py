@@ -76,7 +76,7 @@ def alpha_page(uat_id):
     Returns:
         str: Rendered HTML template for the UAT page with data.
     """
-    data = retrieve_alpha_page_data(uat_id, uat_manager.alpha_terms, uat_manager.html_tree)
+    data = retrieve_alpha_page_data(uat_id, uat_manager.alphabetical_terms, uat_manager.html_hierarchy_tree)
     return render_template("alpha.html", title="UAT Web App - Alphabetical Browser", **data)
 
 
@@ -89,7 +89,7 @@ def sorting_tool():
     Returns:
         str: Rendered HTML template for the sorting tool page with data.
     """
-    data = retrieve_sorting_tool_data(app, uat_manager.tag)
+    data = retrieve_sorting_tool_data(app, uat_manager.current_tag)
     return render_template("sorting.html", title="UAT Web App - Sorting Tool", **data)
 
 

@@ -6,6 +6,10 @@ import requests
 from flask import abort
 
 from data_generator import build_html_list
+from uat_transform import process_rdf_file
+
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def fetch_url(url, error_message):
     """
@@ -20,10 +24,11 @@ def fetch_url(url, error_message):
     """
     response = requests.get(url)
     if response.status_code == 200:
-        return response.json()
+        return response
     else:
         logging.error(error_message)
         abort(response.status_code, description=error_message)
+
 
 def get_latest_uat_tag():
     """
@@ -35,7 +40,12 @@ def get_latest_uat_tag():
     """
     url = os.getenv("UAT_API_URL", "https://api.github.com/repos/astrothesaurus/UAT/releases/latest")
     error_message = "Failed to fetch the UAT latest release version from " + url
-    return fetch_url(url, error_message).get("tag_name")
+    response = fetch_url(url, error_message)
+    try:
+        return response.json().get("tag_name")
+    except ValueError as e:
+        logging.error(f"JSON decoding error: {e}")
+        abort(500, description="Invalid JSON response from api github server")
 
 def build_html_tree(hierarchy_data):
     """
@@ -48,11 +58,13 @@ def build_html_tree(hierarchy_data):
     html_tree_parts = ["<ul id='treemenu1' class='treeview'>"]
     for child in hierarchy_data["children"]:
         html_tree_parts.append(
-            f"\n\t<li><a id=li-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>")
+            f"\n\t<li><a id=li-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>"
+        )
         html_tree_parts.append(build_html_list(child, None))
         html_tree_parts.append("</li>")
     html_tree_parts.append("\n</ul>")
     return "".join(html_tree_parts)
+
 
 class UATManager:
     """
@@ -102,13 +114,19 @@ class UATManager:
             if self.current_tag is None:
                 self.current_tag = get_latest_uat_tag()
             else:
-                tag_data = self.check_uat_version()
-                if tag_data["is_latest"]:
-                    return {"status": "success", "current_tag": self.current_tag}
-                self.current_tag = tag_data["new_tag"]
+                version_data = self.check_uat_version()
+                if version_data["is_latest"]:
+                    return {"status": "success", "tag": self.current_tag}
+                self.current_tag = version_data["new_tag"]
 
-            self.alphabetical_terms = sorted(self.get_latest_uat_file("UAT_list.json"), key=lambda k: k["name"])
-            hierarchy_data = self.get_latest_uat_file("UAT.json")
+            uat_file_content = self.get_latest_uat_file("UAT.rdf").text
+
+            (
+                all_terms,
+                hierarchy_data,
+            ) = process_rdf_file(uat_file_content)
+
+            self.alphabetical_terms = sorted(all_terms, key=lambda term: term["name"])
             self.html_hierarchy_tree = build_html_tree(hierarchy_data)
 
-            return {"status": "success", "current_tag": self.current_tag}
+            return {"status": "success", "tag": self.current_tag}

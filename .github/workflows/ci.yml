@@ -73,7 +73,7 @@ jobs:
         run: npm install -g coveralls
       - name: Run Python tests with coverage
         run: |
-          coverage run --source=uat-web-app -m unittest discover -s uat-web-app/tests
+          coverage run --source=uat-web-app --omit=uat-web-app/tests/* -m unittest discover -s uat-web-app/tests
           coverage report
           coverage xml
           coverage lcov -o python-coverage.info

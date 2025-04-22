@@ -7,7 +7,7 @@ test("Hierarchy view test", async ({page}) => {
     expect(listLength).toBeGreaterThan(1);
 });
 
-test("Hierarchy exoplanet test", async ({ page }) => {
+test("Hierarchy exoplanet test", async ({page}) => {
     await page.goto("/uat/498?view=hierarchy&path=486");
 
     // Helper function to get and verify text content

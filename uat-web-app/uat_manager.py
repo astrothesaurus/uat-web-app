@@ -7,6 +7,7 @@ from flask import abort
 
 from data_generator import build_html_list
 
+
 def fetch_url(url, error_message):
     """
     Sends a GET request to the specified URL and handles errors.
@@ -25,6 +26,7 @@ def fetch_url(url, error_message):
         logging.error(error_message)
         abort(response.status_code, description=error_message)
 
+
 def get_latest_uat_tag():
     """
     Retrieves the latest release tag of the Unified Astronomy Thesaurus (UAT) from the GitHub API.
@@ -36,6 +38,7 @@ def get_latest_uat_tag():
     url = os.getenv("UAT_API_URL", "https://api.github.com/repos/astrothesaurus/UAT/releases/latest")
     error_message = "Failed to fetch the UAT latest release version from " + url
     return fetch_url(url, error_message).get("tag_name")
+
 
 def build_html_tree(hierarchy_data):
     """
@@ -54,11 +57,13 @@ def build_html_tree(hierarchy_data):
     html_tree_parts.append("\n</ul>")
     return "".join(html_tree_parts)
 
+
 class UATManager:
     """
     Manages the Unified Astronomy Thesaurus (UAT) data, including fetching the latest version,
     updating the local version, and providing access to hierarchical and alphabetical term data.
     """
+
     def __init__(self):
         self.current_tag = None
         self.alphabetical_terms = None

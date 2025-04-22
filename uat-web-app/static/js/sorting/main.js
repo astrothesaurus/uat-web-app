@@ -1,4 +1,5 @@
 let savefile;
+
 class NewBranchEntry {
     constructor(rootBranch, rootRecycle, rootOrig, saveName) {
         this.rootBranch = rootBranch;
@@ -7,6 +8,7 @@ class NewBranchEntry {
         this.saveName = saveName;
     }
 }
+
 (function ($) {
     $(document).ready(function () {
         $("#browsebutton").val("");
@@ -56,29 +58,29 @@ class NewBranchEntry {
         $("#savebutton").on("click", function () {
             try {
                 let root = getRoot();
-                showPromptModal("Name for save file?", function(saveName) {
-                  if (saveName !== null) {
-                    if (/^\w+( \w+)*$/.test(saveName)) {
-                        if (savelist.includes(saveName)) {
-                            openAlertModal("Please choose a unique name for your save file!");
-                        } else {
-                            $("#opts").val("blank");
-                            savestuff(saveName, sortsaves);
-                            savelist.push(saveName);
+                showPromptModal("Name for save file?", function (saveName) {
+                    if (saveName !== null) {
+                        if (/^\w+( \w+)*$/.test(saveName)) {
+                            if (savelist.includes(saveName)) {
+                                openAlertModal("Please choose a unique name for your save file!");
+                            } else {
+                                $("#opts").val("blank");
+                                savestuff(saveName, sortsaves);
+                                savelist.push(saveName);
 
-                            if ($("#nosave").length > 0) {
-                                $("#nosave, #blank").remove();
-                                $("#saveopts").append($("<option></option>").val("blank").attr("id", "blank").text(" ").attr("disabled", "disabled"));
+                                if ($("#nosave").length > 0) {
+                                    $("#nosave, #blank").remove();
+                                    $("#saveopts").append($("<option></option>").val("blank").attr("id", "blank").text(" ").attr("disabled", "disabled"));
+                                }
+
+                                $("#saveopts").append($("<option></option>").val(saveName).text(saveName).attr("selected", "selected").attr("id", "save-" + saveName));
                             }
-
-                            $("#saveopts").append($("<option></option>").val(saveName).text(saveName).attr("selected", "selected").attr("id", "save-" + saveName));
+                        } else {
+                            openAlertModal("The save name can only include letters, numbers, spaces, and underscores.");
                         }
                     } else {
-                        openAlertModal("The save name can only include letters, numbers, spaces, and underscores.");
+                        openAlertModal("Data Not Saved");
                     }
-                  } else {
-                    openAlertModal("Data Not Saved");
-                  }
                 });
             } catch (error) {
                 console.error("Saving failed: ", error);
@@ -93,14 +95,14 @@ class NewBranchEntry {
                 openAlertModal("You have nothing to save, try 'Save As...'.");
                 return;
             }
-            showConfirmModal("Are you sure you want to save over '" + saveName + "'?", function(result) {
-              if (result) {
-                let match = sortsaves.findIndex(save => save["saveName"] === saveName);
-                if (match !== -1) {
-                    sortsaves.splice(match, 1);
-                    savestuff(saveName, sortsaves);
+            showConfirmModal("Are you sure you want to save over '" + saveName + "'?", function (result) {
+                if (result) {
+                    let match = sortsaves.findIndex(save => save["saveName"] === saveName);
+                    if (match !== -1) {
+                        sortsaves.splice(match, 1);
+                        savestuff(saveName, sortsaves);
+                    }
                 }
-              }
             });
         });
 
@@ -111,7 +113,7 @@ class NewBranchEntry {
                 openAlertModal("Please choose a previous save to delete.");
                 return;
             }
-            showConfirmModal("Are you sure you want to delete '" + saveName + "'?", function(result) {
+            showConfirmModal("Are you sure you want to delete '" + saveName + "'?", function (result) {
                 if (result) {
                     let matchIndex = sortsaves.findIndex(save => save.saveName === saveName);
                     if (matchIndex !== -1) {
@@ -136,7 +138,7 @@ class NewBranchEntry {
             downloadString();
         });
 
-        $("#newnode").on("input", function() {
+        $("#newnode").on("input", function () {
             const newNodeInput = $(this).val().trim();
             $("#add_node").prop("disabled", newNodeInput === "");
         });
@@ -188,22 +190,22 @@ class NewBranchEntry {
 
         // Create blank workspace
         $("#blankspace").on("click", function () {
-            showPromptModal("Name your root node:", function(rootname) {
-              if (rootname !== null) {
-                if (/^\w+( \w+)*$/.test(rootname)) {
-                    let treeDataExtend = {
-                        "name": "root",
-                        "children": [
-                            { "name": "branch", "children": { "name": rootname } },
-                            { "name": "recycle", "children": { "name": "recycle" } }
-                        ]
-                    };
-                    renderTree(treeDataExtend);
-                    $("#treeoptions, #closeleft").show();
+            showPromptModal("Name your root node:", function (rootname) {
+                if (rootname !== null) {
+                    if (/^\w+( \w+)*$/.test(rootname)) {
+                        let treeDataExtend = {
+                            "name": "root",
+                            "children": [
+                                {"name": "branch", "children": {"name": rootname}},
+                                {"name": "recycle", "children": {"name": "recycle"}}
+                            ]
+                        };
+                        renderTree(treeDataExtend);
+                        $("#treeoptions, #closeleft").show();
+                    }
+                } else {
+                    openAlertModal("Blank workspace not created.");
                 }
-              } else {
-                openAlertModal("Blank workspace not created.");
-              }
             });
         });
 
@@ -310,15 +312,15 @@ function savestuff(saveName, sortsaves) {
         delete root["children"][i]["parent"];
 
         if (root["children"][i]["name"] === "recycle" || root["children"][i]["name"] === "orphan") {
-            recycle = { "name": "recycle", "children": root["children"][i] };
+            recycle = {"name": "recycle", "children": root["children"][i]};
             recycle1 = JSON.stringify(recycle, getCircularReplacer());
         } else {
-            branch = { "name": "branch", "children": root["children"][i] };
+            branch = {"name": "branch", "children": root["children"][i]};
             root1 = JSON.stringify(branch, getCircularReplacer());
         }
     }
 
-    let orig1 = { "name": "orig", "children": orig };
+    let orig1 = {"name": "orig", "children": orig};
     let rootBranch = cleanJSON(root1);
     let rootRecycle = cleanJSON(recycle1);
     let rootOrig = JSON.stringify(orig1);
@@ -352,19 +354,19 @@ function downloadString() {
         delete root["children"][i]["parent"];
 
         if (root["children"][i]["name"] === "recycle") {
-            recycle = { "name": "recycle", "children": root["children"][i] };
+            recycle = {"name": "recycle", "children": root["children"][i]};
         } else {
-            branch = { "name": "branch", "children": root["children"][i] };
+            branch = {"name": "branch", "children": root["children"][i]};
         }
     }
 
-    let orig1 = { "name": "orig", "children": orig };
+    let orig1 = {"name": "orig", "children": orig};
     let section = {
         "name": "root",
         "children": [
-            { "name": "branch", "children": branch["children"] },
-            { "name": "recycle", "children": recycle["children"] },
-            { "name": "orig", "children": orig1["children"] }
+            {"name": "branch", "children": branch["children"]},
+            {"name": "recycle", "children": recycle["children"]},
+            {"name": "orig", "children": orig1["children"]}
         ]
     };
 

@@ -1,8 +1,10 @@
 from __future__ import absolute_import, unicode_literals
-import os
+
 import importlib as imp
-import sys
 import inspect
+import os
+import sys
+
 
 def _get_project_home_directory(extra_frames=0):
     """
@@ -27,6 +29,7 @@ def _get_project_home_directory(extra_frames=0):
         max_level -= 1
     sys.stderr.write("Sorry, can't find the project home; returning the location of the caller: %s\n" % directory)
     return directory
+
 
 def load_config(project_home=None, extra_frames=0):
     """
@@ -56,10 +59,12 @@ def load_config(project_home=None, extra_frames=0):
 
     return config
 
+
 def update_config_from_environment(conf):
     for key in conf.keys():
         if key in os.environ:
             conf[key] = os.environ[key]
+
 
 def load_configuration_module(filename):
     """
@@ -79,6 +84,7 @@ def load_configuration_module(filename):
     result = {}
     update_config_from_object(module, result)
     return result
+
 
 def update_config_from_object(from_obj, to_obj):
     """

@@ -5,7 +5,7 @@ services:
     image: uat-web-app:latest
     container_name: uat-web-app
     volumes:
-    - ./:/app
+      - ./:/app
     networks:
       - uat-web-app
     environment:

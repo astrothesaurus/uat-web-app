@@ -1,8 +1,10 @@
 # #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from werkzeug.serving import run_simple
+
 from routes import app as application
-#application = loadapp("config:/home/path/to/site/production.ini")
+
+# application = loadapp("config:/home/path/to/site/production.ini")
 
 if __name__ == "__main__":
     """

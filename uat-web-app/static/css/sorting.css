@@ -95,7 +95,7 @@ html {
 }
 
 #hidebutton, #openleft, #treeoptions, #treeoptions1, #feedback, #history, #closeleft, #closeright, #openright {
- display: none;
+    display: none;
 }
 
 #loadbutton, #exportbutton {
@@ -116,7 +116,7 @@ html {
     top: 0.3rem;
     right: 0.3rem;
     border-radius: 1.6rem;
-    background-color: rgba(255,255,255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     padding: 1.3rem 0.6rem;
     /*bottom: 5px;
     right: 5px;*/
@@ -133,33 +133,33 @@ html {
 
 #feedback, #menu {
     border-radius: 1.6rem;
-    background-color: rgba(255,255,255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     padding: 1.3rem 0.6rem;
     max-width: 22.5rem;
 }
 
-#tree-container{
-    float:right;
-    top:0;
+#tree-container {
+    float: right;
+    top: 0;
 }
 
 #instructions {
-    float:right;
+    float: right;
     width: 31.25rem;
 }
 
-.overlay{
-    background-color:#EEE;
+.overlay {
+    background-color: #EEE;
     z-index: -1;
     left: 0;
-    padding:0;
+    padding: 0;
     margin: 0;
 }
 
 .node {
     cursor: pointer;
 }
-   
+
 .node circle {
     fill: #fff;
     stroke: steelblue;
@@ -167,10 +167,10 @@ html {
 }
 
 .node text {
-    font-size:1rem;
-    font-family:sans-serif;
+    font-size: 1rem;
+    font-family: sans-serif;
 }
-   
+
 .link {
     fill: none;
     stroke: #ccc;
@@ -187,15 +187,15 @@ textarea {
     max-width: 18.125rem;
 }
 
-.ghostCircle.show{
-    display:block;
+.ghostCircle.show {
+    display: block;
 }
 
-.ghostCircle, .activeDrag .ghostCircle{
+.ghostCircle, .activeDrag .ghostCircle {
     display: none;
 }
 
-.error{
+.error {
     color: red;
 }
 

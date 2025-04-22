@@ -4,9 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="UAT (Unified Astronomy Thesaurus) Web App is a tool for sorting and managing UAT data.">
-    <meta name="keywords" content="UAT, Unified Astronomy Thesaurus, sorting tool, alphabetical browser, hierarchical browser, search UAT">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <meta name="description"
+          content="UAT (Unified Astronomy Thesaurus) Web App is a tool for sorting and managing UAT data.">
+    <meta name="keywords"
+          content="UAT, Unified Astronomy Thesaurus, sorting tool, alphabetical browser, hierarchical browser, search UAT">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <title>UAT Web Apps</title>
 
@@ -17,23 +20,24 @@
 <div class="container">
     <div class="row">
         <div class="col-3">
-                <img src="{{ url_for('static', filename='img/uat-logo.png') }}" width="100%" alt="UAT Logo"/>
+            <img src="{{ url_for('static', filename='img/uat-logo.png') }}" width="100%" alt="UAT Logo"/>
         </div>
-            <div class="col-9">
-                <p class="h2">You've reached the UAT Web Apps Home Page!</p>
+        <div class="col-9">
+            <p class="h2">You've reached the UAT Web Apps Home Page!</p>
             <br/><br/>
             <p>You can find a few different web applications here:</p>
-                <ul>
-                    <li><a href="/sort/">UAT Sorting Tool</a></li>
-                    <li><a href="/uat/">UAT Alphabetical Browser</a></li>
-                    <li><a href="/uat/?view=hierarchy">UAT Hierarchical Browser</a></li>
-                    <li><a href="/uat/?view=search">Search the UAT</a></li>
-                </ul>
+            <ul>
+                <li><a href="/sort/">UAT Sorting Tool</a></li>
+                <li><a href="/uat/">UAT Alphabetical Browser</a></li>
+                <li><a href="/uat/?view=hierarchy">UAT Hierarchical Browser</a></li>
+                <li><a href="/uat/?view=search">Search the UAT</a></li>
+            </ul>
         </div>
     </div>
     <div class="row">
         <div class="col-12">
-            <p class="text-center">To learn more about the Unified Astronomy Thesaurus, visit the <a href="https://astrothesaurus.org">main website</a>.</p>
+            <p class="text-center">To learn more about the Unified Astronomy Thesaurus, visit the <a
+                    href="https://astrothesaurus.org">main website</a>.</p>
         </div>
     </div>
 </div>

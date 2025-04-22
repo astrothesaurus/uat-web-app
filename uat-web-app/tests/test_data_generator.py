@@ -1,13 +1,15 @@
-import sys
 import os
+import sys
 import unittest
 from unittest.mock import patch
+
 from flask import Flask
 
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import data_generator
+
 
 class TestDataGenerator(unittest.TestCase):
 
@@ -106,9 +108,12 @@ class TestDataGenerator(unittest.TestCase):
 
     def test_search_terms_with_no_results(self):
         alpha_terms = [
-            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes", "altNames": ["Astro processes"], "status": "active"},
-            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism", "altNames": [], "status": "active"},
-            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory", "altNames": ["Magnetic fields"], "status": "deprecated"}
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
+             "altNames": ["Astro processes"], "status": "active"},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism", "altNames": [],
+             "status": "active"},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"], "status": "deprecated"}
         ]
         lookup_term = "Nonexistent"
         expected_results = []
@@ -119,9 +124,12 @@ class TestDataGenerator(unittest.TestCase):
 
     def test_search_terms_with_none_lookup_term(self):
         alpha_terms = [
-            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes", "altNames": ["Astro processes"], "status": "active"},
-            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism", "altNames": [], "status": "active"},
-            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory", "altNames": ["Magnetic fields"], "status": "deprecated"}
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
+             "altNames": ["Astro processes"], "status": "active"},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism", "altNames": [],
+             "status": "active"},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"], "status": "deprecated"}
         ]
         lookup_term = None
         expected_results = []
@@ -129,6 +137,7 @@ class TestDataGenerator(unittest.TestCase):
         results = data_generator.search_terms(lookup_term, alpha_terms)
 
         self.assertEqual(expected_results, results)
+
 
 if __name__ == "__main__":
     unittest.main()

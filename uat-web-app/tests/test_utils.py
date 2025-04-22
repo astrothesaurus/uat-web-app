@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 import utils
 
+
 class TestUtils(unittest.TestCase):
 
     @patch.dict(os.environ, {"KEY": "new_value"})
@@ -76,6 +77,7 @@ class TestUtils(unittest.TestCase):
             self.assertIn("PROJECT_HOME", result)
             self.assertIn("KEY", result)
             self.assertEqual("value", result["KEY"])
+
 
 if __name__ == "__main__":
     unittest.main()

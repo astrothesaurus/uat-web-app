@@ -2,12 +2,12 @@
 
 /* all CSS for small screens, but if larger screen then....*/
 /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
-@media (min-width: 768px) {  
+@media (min-width: 768px) {
 
     div.newsidebar {
         padding-right: 1.3rem;
         padding-left: 1.3rem;
-        position:fixed;
+        position: fixed;
         overflow-y: auto;
         overflow-x: hidden;
         max-height: calc(100vh);
@@ -86,13 +86,13 @@ li.uat {
 /**** resource pages ****/
 
 /* source: https://www.w3schools.com/tags/tag_code.asp */
-code { 
-    font-family: Consolas,"courier new";
+code {
+    font-family: Consolas, "courier new";
     color: crimson;
     /*background-color: #f1f1f1;*/
     padding: 0.13rem;
     font-size: 105%;
-  }
+}
 
 pre {
     background-color: #444444;
@@ -118,7 +118,7 @@ pre {
 }
 
 .card-body {
-    padding: 0 .3rem ;
+    padding: 0 .3rem;
 }
 
 /**basic-table is on the basic topics page**/
@@ -138,7 +138,7 @@ th.basic-header, td.basic-data {
 /**** not sure what pgs these relate to ****/
 
 .panel-heading {
-  background-color: #014e6d!important;
+    background-color: #014e6d !important;
 }
 
 .panel-button a {
@@ -148,7 +148,7 @@ th.basic-header, td.basic-data {
 .panel-button {
     font-weight: bold;
     font-size: 1.3rem;
-    color: #fff !important; 
+    color: #fff !important;
     /* text-decoration: underline;*/
     text-decoration: none;
 }
@@ -156,11 +156,11 @@ th.basic-header, td.basic-data {
 .panel-button:hover {
     font-weight: bold;
     font-size: 1.3rem;
-    color: #fff !important; 
+    color: #fff !important;
     /* text-decoration: underline;*/
     text-decoration: none;
 }
 
 dd {
-    margin-left:3rem;
+    margin-left: 3rem;
 }

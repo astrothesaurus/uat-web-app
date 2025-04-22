@@ -4,7 +4,7 @@ module.exports = {
     fullyParallel: true,
     use: {
         headless: true,
-        viewport: { width: 1280, height: 720 },
+        viewport: {width: 1280, height: 720},
         baseURL: 'http://localhost',
         ignoreHTTPSErrors: true,
     },
@@ -12,15 +12,15 @@ module.exports = {
     projects: [
         {
             name: 'chromium',
-            use: { browserName: 'chromium' },
+            use: {browserName: 'chromium'},
         },
         {
             name: 'firefox',
-            use: { browserName: 'firefox' },
+            use: {browserName: 'firefox'},
         },
         {
             name: 'webkit',
-            use: { browserName: 'webkit' },
+            use: {browserName: 'webkit'},
         },
     ],
 };

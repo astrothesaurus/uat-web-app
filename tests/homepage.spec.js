@@ -1,7 +1,7 @@
 // tests/homepage.spec.js
-const { test, expect } = require("@playwright/test");
+const {test, expect} = require("@playwright/test");
 
-test("homepage tests", async ({ page }) => {
+test("homepage tests", async ({page}) => {
     await page.goto("/");
     await test.step("Check homepage title", async () => {
         const title = await page.title();

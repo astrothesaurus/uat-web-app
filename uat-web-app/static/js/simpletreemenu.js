@@ -138,7 +138,7 @@ ddtreemenu.getCookie = function (Name) {
  */
 ddtreemenu.setCookie = function (name, value, days) {
     let expireDate = new Date();
-    let expstring = expireDate.setDate(expireDate.getDate() + parseInt(days));
+    expireDate.setDate(expireDate.getDate() + parseInt(days));
     document.cookie = name + "=" + value + "; expires=" + expireDate.toGMTString() + "; path=/";
 };
 

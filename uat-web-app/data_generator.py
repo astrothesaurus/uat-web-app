@@ -174,6 +174,7 @@ def retrieve_sorting_tool_data(app, tag):
 
     Args:
         app (Flask): The Flask application instance.
+        tag (str): The tag for the UAT version.
 
     Returns:
         dict: The data for the sorting tool page.

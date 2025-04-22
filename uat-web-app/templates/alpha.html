@@ -239,7 +239,7 @@
 
                         <div id="content">
                             <p class="h3 text-break">{% if element.deprecated == True %}Deprecated: {% endif %}{{element.name}}</p>
-                            <a href="http://astrothesaurus.org/uat/{{element.uri[30:]}}"><span class="h5 text-break">https://astrothesaurus.org/uat/{{element.uri[30:]}}</span></a>
+                            <a href="https://astrothesaurus.org/uat/{{element.uri[30:]}}"><span class="h5 text-break">https://astrothesaurus.org/uat/{{element.uri[30:]}}</span></a>
                         </div>
 
                         <br/>
@@ -367,8 +367,7 @@ $(document).ready(function(){
             $("#hierarchy").removeClass("active");
             $("#search").removeClass("active");
             $("#alpha").removeClass("active");
-            $("."+currentTab+"-tab").removeClass("active");//
-            $("."+currentTab+"-tab").attr("aria-selected", "false");
+            $("."+currentTab+"-tab").removeClass("active").attr("aria-selected", "false");//
         }
     }
 
@@ -379,9 +378,7 @@ $(document).ready(function(){
             document.getElementById(thisletter).scrollIntoView(true);
             $("#letter"+thisletter).focus();
         }
-    });
-
-    $(".letter").on("click", function(){
+    }).on("click", function(){
         thisletter = event.target.innerHTML;
         event.preventDefault();
         document.getElementById(thisletter).scrollIntoView(true);
@@ -394,15 +391,11 @@ $(document).ready(function(){
             document.getElementById("alpha-tab").scrollIntoView(true); 
             $("#alpha-tab").focus();
         }
-    });
-
-
-    $(".totopimg").on("click", function(){
+    }).on("click", function(){
         event.preventDefault();
         document.getElementById("alpha-tab").scrollIntoView(true);
         $("#alpha-tab").focus();
     });
-
 
     $(".totopimgm").on("click", function(){
             event.preventDefault();
@@ -422,8 +415,7 @@ $(document).ready(function(){
             $("#alpha").removeClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $(".alpha-tab").removeClass("active");//
-            $(".alpha-tab").attr("aria-selected", "false");
+            $(".alpha-tab").removeClass("active").attr("aria-selected", "false");
         }
     });
 
@@ -437,8 +429,7 @@ $(document).ready(function(){
             $("#hierarchy").removeClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $(".hierarchy-tab").removeClass("active");//
-            $(".hierarchy-tab").attr("aria-selected", "false");
+            $(".hierarchy-tab").removeClass("active").attr("aria-selected", "false");
         }
     });
 
@@ -452,8 +443,7 @@ $(document).ready(function(){
             $("#search").removeClass("active");
             e.preventDefault();
             e.stopPropagation();
-            $(".search-tab").removeClass("active");//
-            $(".search-tab").attr("aria-selected", "false");
+            $(".search-tab").removeClass("active").attr("aria-selected", "false");
         }
     });
 
@@ -470,14 +460,11 @@ $(document).ready(function(){
             e.stopPropagation();
             $("."+inactive1+"-tab2").removeClass("active");
             $("."+inactive2+"-tab2").removeClass("active");
-            $("."+currentTab+"-tab2").addClass("active");//
-            $("."+currentTab+"-tab2").attr("aria-selected", "true");
+            $("."+currentTab+"-tab2").addClass("active").attr("aria-selected", "true");
             $("."+inactive1+"-tab").removeClass("active");
             $("."+inactive2+"-tab").removeClass("active");
-            $("."+currentTab+"-tab").addClass("active");//
-            $("."+currentTab+"-tab").attr("aria-selected", "true");
-            $("."+currentTab).addClass("active");//
-            $("."+currentTab).attr("aria-selected", "true");
+            $("."+currentTab+"-tab").addClass("active").attr("aria-selected", "true");
+            $("."+currentTab).addClass("active").attr("aria-selected", "true");
         }
     });
 

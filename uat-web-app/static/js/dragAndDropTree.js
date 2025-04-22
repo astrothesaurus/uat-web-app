@@ -120,18 +120,6 @@ treeJSON = d3.json(j, function(error, treeData) {
         return d.children && d.children.length > 0 ? d.children : null;
     });
 
-
-    /**
-     * Sort the tree according to the node names.
-     */
-    function sortTree() {
-        tree.sort(function(a, b) {
-            return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
-        });
-    }
-    // Sort the tree initially incase the JSON isn't in a sorted order.
-    //sortTree();
-
     // TODO: Pan function, can be better implemented.
     /**
      * Pans the tree in the specified direction.
@@ -233,14 +221,9 @@ treeJSON = d3.json(j, function(error, treeData) {
         .call(zoomListener);
 
 
-            $(".overlay").css("cursor", "grab");
-            
-            $(".overlay").on("mousedown", function(){
+            $(".overlay").css("cursor", "grab").on("mousedown", function(){
                 $(".overlay").css("cursor", "grabbing");
-            });
-
-
-            $(".overlay").on("mouseup", function(){
+            }).on("mouseup", function(){
                 $(".overlay").css("cursor", "grab");
             });
 
@@ -268,18 +251,19 @@ treeJSON = d3.json(j, function(error, treeData) {
             }
 
             // get coords of mouseEvent relative to svg container to allow for panning
-            relCoords = d3.mouse($("svg").get(0));
+            let svgElement = $("svg");
+            relCoords = d3.mouse(svgElement.get(0));
             if (relCoords[0] < panBoundary) {
                 panTimer = true;
                 pan(this, "left");
-            } else if (relCoords[0] > ($("svg").width() - panBoundary)) {
+            } else if (relCoords[0] > (svgElement.width() - panBoundary)) {
 
                 panTimer = true;
                 pan(this, "right");
             } else if (relCoords[1] < panBoundary) {
                 panTimer = true;
                 pan(this, "up");
-            } else if (relCoords[1] > ($("svg").height() - panBoundary)) {
+            } else if (relCoords[1] > (svgElement.height() - panBoundary)) {
                 panTimer = true;
                 pan(this, "down");
             } else {
@@ -972,7 +956,6 @@ treeJSON = d3.json(j, function(error, treeData) {
         // Make sure that the node being added to is expanded so user can see added node is correctly moved
         expand(selectedNode);
         //collapse(selectedNode.children);
-        //sortTree();
     }
 
     addNode = function(nodename,errorElement){

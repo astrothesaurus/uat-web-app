@@ -299,9 +299,7 @@
                             <ul>
                                 {% for b in element.broader %}
                                     <li class="uat">
-                                        <a href="{{ b.uri[30:] }}?view=
-
-                                                {{ gtype }}{% if path and path|length > 1 %}&path={{ path[path|length - 2] }}{% endif %}">{{ b.name }}</a>
+                                        <a href="{{ b.uri[30:] }}?view={{ gtype }}{% if path and path|length > 1 %}&path={{ path[path|length - 2] }}{% endif %}">{{ b.name }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -321,8 +319,7 @@
                             <ul>
                                 {% for n in element.narrower %}
                                     <li class="uat">
-                                        <a href="{{ n.uri[30:] }}?view={{ gtype }}{% if path %}&path={{ path|last }}-
-                                            {{ element.uri[30:] }}{% else %}&path={{ element.uri[30:] }}{% endif %}">
+                                        <a href="{{ n.uri[30:] }}?view={{ gtype }}{% if path %}&path={{ path|last }}-{{ element.uri[30:] }}{% else %}&path={{ element.uri[30:] }}{% endif %}">
                                             {{ n.name }}
                                         </a>
                                     </li>

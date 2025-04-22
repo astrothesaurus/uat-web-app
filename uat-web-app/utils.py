@@ -17,7 +17,8 @@ def _get_project_home_directory(extra_frames=0):
     frame = inspect.stack()[2 + extra_frames]
     module = inspect.getsourcefile(frame[0])
     if not module:
-        raise Exception("Sorry, wasn't able to guess your location. Let devs know about this issue.")
+        raise Exception("Sorry, wasn't able to guess your location. "
+                        "Let devs know about this issue.")
     directory = os.path.dirname(module)
     current_directory = directory
     max_level = 3
@@ -27,7 +28,8 @@ def _get_project_home_directory(extra_frames=0):
             return current_directory
         current_directory = os.path.abspath(os.path.join(current_directory, ".."))
         max_level -= 1
-    sys.stderr.write("Sorry, can't find the project home; returning the location of the caller: %s\n" % directory)
+    sys.stderr.write("Sorry, can't find the project home; returning the location of the caller:"
+                     " %s\n" % directory)
     return directory
 
 
@@ -35,7 +37,8 @@ def load_config(project_home=None, extra_frames=0):
     """
     Loads configuration from config.py and also from local_config.py.
 
-    :param project_home: str, location of the home - we'll always try to load config files from there.
+    :param project_home: str, location of the home -
+                        we'll always try to load config files from there.
     :param extra_frames: int, number of frames to look back; default is 2.
     :return: dict, the configuration dictionary.
     """
@@ -88,7 +91,8 @@ def load_configuration_module(filename):
 
 def update_config_from_object(from_obj, to_obj):
     """
-    Updates the values from the given object. Only the uppercase variables in that object are stored in the config.
+    Updates the values from the given object.
+    Only the uppercase variables in that object are stored in the config.
 
     :param from_obj: object, the object to load attributes from.
     :param to_obj: dict, the dictionary to update with attributes.

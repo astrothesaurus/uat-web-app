@@ -8,7 +8,7 @@ from flask import Flask
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import data_generator
+import data_generator  # noqa: E402
 
 
 class TestDataGenerator(unittest.TestCase):
@@ -49,7 +49,8 @@ class TestDataGenerator(unittest.TestCase):
         previous_path = None
         expected_html = (
             "\n\t\t<ul id=ul-104 class='treeview'>\n"
-            "\t<li><a id=li-104-102 href=102?view=hierarchy&path=104>Astrophysical magnetism</a></li>\n"
+            "\t<li><a id=li-104-102 href=102?view=hierarchy&path=104>"
+            "Astrophysical magnetism</a></li>\n"
             "</ul>\n"
         )
         result = data_generator.build_html_list(term_list, previous_path)
@@ -64,7 +65,8 @@ class TestDataGenerator(unittest.TestCase):
                     "uri": "http://astrothesaurus.org/uat/102",
                     "name": "Astrophysical magnetism",
                     "children": [
-                        {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory"}
+                        {"uri": "http://astrothesaurus.org/uat/321",
+                         "name": "Cosmic magnetic fields theory"}
                     ]
                 }
             ]
@@ -74,7 +76,8 @@ class TestDataGenerator(unittest.TestCase):
             "\n\t\t<ul id=ul-104 class='treeview'>\n"
             "\t<li><a id=li-104-102 href=102?view=hierarchy&path=104>Astrophysical magnetism</a>"
             "\n\t\t<ul id=ul-104-102 class='treeview'>\n"
-            "\t<li><a id=li-104-102-321 href=321?view=hierarchy&path=104-102>Cosmic magnetic fields theory</a></li>\n"
+            "\t<li><a id=li-104-102-321 href=321?view=hierarchy&path=104-102>"
+            "Cosmic magnetic fields theory</a></li>\n"
             "</ul>\n"
             "</li>\n"
             "</ul>\n"
@@ -98,7 +101,8 @@ class TestDataGenerator(unittest.TestCase):
         ]
         uat_id = 102
         view_type = "hierarchy"
-        expected_element = {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism"}
+        expected_element = {"uri": "http://astrothesaurus.org/uat/102",
+                            "name": "Astrophysical magnetism"}
         expected_status = "no"
 
         element, status = data_generator.get_element_and_status(uat_id, alpha_terms, view_type)
@@ -110,8 +114,8 @@ class TestDataGenerator(unittest.TestCase):
         alpha_terms = [
             {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
              "altNames": ["Astro processes"], "status": "active"},
-            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism", "altNames": [],
-             "status": "active"},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
+             "altNames": [], "status": "active"},
             {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
              "altNames": ["Magnetic fields"], "status": "deprecated"}
         ]
@@ -126,8 +130,8 @@ class TestDataGenerator(unittest.TestCase):
         alpha_terms = [
             {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
              "altNames": ["Astro processes"], "status": "active"},
-            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism", "altNames": [],
-             "status": "active"},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
+             "altNames": [], "status": "active"},
             {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
              "altNames": ["Magnetic fields"], "status": "deprecated"}
         ]

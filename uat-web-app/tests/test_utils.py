@@ -6,7 +6,7 @@ from unittest.mock import patch, mock_open
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import utils
+import utils  # noqa: E402
 
 
 class TestUtils(unittest.TestCase):
@@ -44,7 +44,8 @@ class TestUtils(unittest.TestCase):
     @patch("os.path.abspath", side_effect=lambda x: x)
     @patch("inspect.getsourcefile", return_value="/path/to/module.py")
     @patch("inspect.stack")
-    def test_get_project_home_directory(self, mock_stack, mock_getsourcefile, mock_abspath, mock_exists):
+    def test_get_project_home_directory(self, mock_stack,
+                                        mock_getsourcefile, mock_abspath, mock_exists):
         mock_stack.return_value = [None, None, [None, None, "/path/to/module.py"]]
 
         result = utils._get_project_home_directory()
@@ -55,7 +56,8 @@ class TestUtils(unittest.TestCase):
     @patch("sys.stderr.write")
     @patch("inspect.getsourcefile", return_value="/path/to/module.py")
     @patch("inspect.stack")
-    def test_get_project_home_directory_not_found(self, mock_stack, mock_getsourcefile, mock_stderr, mock_exists):
+    def test_get_project_home_directory_not_found(self, mock_stack,
+                                                  mock_getsourcefile, mock_stderr, mock_exists):
         mock_stack.return_value = [None, None, [None, None, "/path/to/module.py"]]
         result = utils._get_project_home_directory()
 

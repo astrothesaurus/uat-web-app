@@ -13,11 +13,11 @@ def fetch_url(url, error_message):
     Sends a GET request to the specified URL and handles errors.
     Args:
         url (str): The URL to fetch.
-        error_message (str): The error message to log and include in the response if the request fails.
+        error_message (str): The error message to log and include in the response.
     Returns:
         dict: The parsed JSON data from the HTTP response if the request is successful.
     Raises:
-        werkzeug.exceptions.HTTPException: If the request fails, aborts with the corresponding HTTP status code.
+        HTTPException: If the request fails, aborts with the corresponding HTTP status code.
     """
     response = requests.get(url)
     if response.status_code == 200:
@@ -33,9 +33,10 @@ def get_latest_uat_tag():
     Returns:
         str: The latest release tag name.
     Raises:
-        werkzeug.exceptions.HTTPException: If the request fails or the response contains invalid JSON.
+        HTTPException: If the request fails or the response contains invalid JSON.
     """
-    url = os.getenv("UAT_API_URL", "https://api.github.com/repos/astrothesaurus/UAT/releases/latest")
+    url = os.getenv("UAT_API_URL",
+                    "https://api.github.com/repos/astrothesaurus/UAT/releases/latest")
     error_message = "Failed to fetch the UAT latest release version from " + url
     return fetch_url(url, error_message).get("tag_name")
 
@@ -51,7 +52,8 @@ def build_html_tree(hierarchy_data):
     html_tree_parts = ["<ul id='treemenu1' class='treeview'>"]
     for child in hierarchy_data["children"]:
         html_tree_parts.append(
-            f"\n\t<li><a id=li-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>")
+            f"\n\t<li><a id=li-{child['uri'][30:]} "
+            f"href={child['uri'][30:]}?view=hierarchy>{child['name']}</a>")
         html_tree_parts.append(build_html_list(child, None))
         html_tree_parts.append("</li>")
     html_tree_parts.append("\n</ul>")
@@ -79,7 +81,8 @@ class UATManager:
          Returns:
              Response: The HTTP response containing the file data.
          """
-        root_url = os.getenv("UAT_RAW_URL", "https://raw.githubusercontent.com/astrothesaurus/UAT/")
+        root_url = os.getenv("UAT_RAW_URL",
+                             "https://raw.githubusercontent.com/astrothesaurus/UAT/")
         if not root_url.endswith("/"):
             root_url += "/"
         download_url = root_url + self.current_tag + "/" + file_name
@@ -90,12 +93,15 @@ class UATManager:
         """
           Checks if the local UAT version is the latest available version.
           Returns:
-              dict: A dictionary containing the old tag, new tag, and whether the local version is the latest.
+              dict: A dictionary containing the old tag, new tag, and
+              whether the local version is the latest.
           """
         new_tag = get_latest_uat_tag()
         if self.current_tag is None:
             self.update_uat_version()
-        return {"old_tag": self.current_tag, "new_tag": new_tag, "is_latest": self.current_tag == new_tag}
+        return {"old_tag": self.current_tag,
+                "new_tag": new_tag,
+                "is_latest": self.current_tag == new_tag}
 
     def update_uat_version(self):
         """
@@ -112,7 +118,8 @@ class UATManager:
                     return {"status": "success", "current_tag": self.current_tag}
                 self.current_tag = tag_data["new_tag"]
 
-            self.alphabetical_terms = sorted(self.get_latest_uat_file("UAT_list.json"), key=lambda k: k["name"])
+            self.alphabetical_terms = sorted(self.get_latest_uat_file("UAT_list.json"),
+                                             key=lambda k: k["name"])
             hierarchy_data = self.get_latest_uat_file("UAT.json")
             self.html_hierarchy_tree = build_html_tree(hierarchy_data)
 

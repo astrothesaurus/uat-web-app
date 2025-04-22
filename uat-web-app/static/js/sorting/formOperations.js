@@ -24,7 +24,6 @@ function checkform(theform) {
     let why = "";
 
     try {
-        var root = getRoot();
 
         if (theform.txtInput.value === "") {
             why += "Robot Check code should not be empty.";

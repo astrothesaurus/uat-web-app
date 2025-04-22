@@ -1,6 +1,6 @@
 // Get JSON data
 
-function renderTree(j) {
+function renderTree(j) { // eslint-disable-line no-unused-vars
     treeJSON = d3.json(j, function (error, treeData) {
             let nodenames = {};
 
@@ -60,7 +60,6 @@ function renderTree(j) {
             treeData = treeDataExtend;
 
             // Calculate total nodes, max label length
-            var totalNodes = 0;
             var maxLabelLength = 0;
             // variables for drag/drop
             var selectedNode = null;
@@ -114,7 +113,6 @@ function renderTree(j) {
 
             // Call visit function to establish maxLabelLength
             visit(treeData, function (d) {
-                totalNodes++;
                 maxLabelLength = Math.max(d.name.length, maxLabelLength);
             }, function (d) {
                 return d.children && d.children.length > 0 ? d.children : null;
@@ -179,7 +177,7 @@ function renderTree(j) {
                 d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
                 d3.select(domNode).attr("class", "node activeDrag");
 
-                svgGroup.selectAll("g.node").sort(function (a, b) { // select the parent and sort the path's
+                svgGroup.selectAll("g.node").sort(function (a) { // select the parent and sort the path's
                     if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
                     else return -1; // a is the hovered element, bring "a" to the front
                 });
@@ -195,7 +193,7 @@ function renderTree(j) {
                     nodesExit = svgGroup.selectAll("g.node")
                         .data(nodes, function (d) {
                             return d.id;
-                        }).filter(function (d, i) {
+                        }).filter(function (d) {
                             return d.id != draggingNode.id;
 
                         }).remove();
@@ -203,7 +201,7 @@ function renderTree(j) {
 
                 // remove parent link
                 parentLink = tree.links(tree.nodes(draggingNode.parent));
-                svgGroup.selectAll("path.link").filter(function (d, i) {
+                svgGroup.selectAll("path.link").filter(function (d) {
 
                     return d.target.id == draggingNode.id;
 
@@ -409,7 +407,7 @@ function renderTree(j) {
                 selectedNode = d;
                 updateTempConnector();
             };
-            let outCircle = function (d) {
+            let outCircle = function () {
                 //console.log("outCircle " + d.name);
                 selectedNode = null;
                 updateTempConnector();
@@ -551,12 +549,11 @@ function renderTree(j) {
                 let nodeEnter = node.enter().append("g")
                     .call(dragListener)
                     .attr("class", "node")
-                    .attr("transform", function (d) {
+                    .attr("transform", function () {
                         return "translate(" + source.y0 + "," + source.x0 + ")";
                     })
                     .on("click", click)
                     .on("mouseover", function (d) {
-                        var g = d3.select(this); // The node
                         // The class is used to remove the additional text later;
                         // console.log(typeof d.note);
 
@@ -647,7 +644,7 @@ function renderTree(j) {
                 // Transition exiting nodes to the parent's new position.
                 let nodeExit = node.exit().transition()
                     .duration(duration)
-                    .attr("transform", function (d) {
+                    .attr("transform", function () {
                         return "translate(" + source.y + "," + source.x + ")";
                     })
                     .remove();
@@ -667,7 +664,7 @@ function renderTree(j) {
                 // Enter any new links at the parent's previous position.
                 link.enter().insert("path", "g")
                     .attr("class", "link")
-                    .attr("d", function (d) {
+                    .attr("d", function () {
                         var o = {
                             x: source ? source.x0 : 0,
                             y: source ? source.y0 : 0
@@ -686,7 +683,7 @@ function renderTree(j) {
                 // Transition exiting nodes to the parent's new position.
                 link.exit().transition()
                     .duration(duration)
-                    .attr("d", function (d) {
+                    .attr("d", function () {
                         var o = {
                             x: source.x,
                             y: source.y
@@ -956,15 +953,7 @@ function renderTree(j) {
                 //collapse(selectedNode.children);
             }
 
-            addNode = function (nodename, errorElement) {
-                /*
-                if(nodenames[nodename.toLowerCase()]){
-                    var errorMsg = document.createTextNode("name already exists");
-                    errorElement.classname += "error";
-                    errorElement.appendChild(errorMsg);
-                    return;
-                }
-                */
+            addNode = function (nodename) {
                 nodenames[nodename] = 1;
                 let newNode = {};
                 newNode["name"] = nodename;

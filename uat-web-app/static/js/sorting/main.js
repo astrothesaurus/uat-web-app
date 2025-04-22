@@ -57,7 +57,6 @@ class NewBranchEntry {
         // Save button functionality
         $("#savebutton").on("click", function () {
             try {
-                let root = getRoot();
                 showPromptModal("Name for save file?", function (saveName) {
                     if (saveName !== null) {
                         if (/^\w+( \w+)*$/.test(saveName)) {

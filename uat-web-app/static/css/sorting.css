@@ -11,8 +11,9 @@ html {
     position: absolute;
     top: 0.3rem;
     left: 0.3rem;
-    /*bottom: 5px;
-    right: 5px;*/
+
+    /* bottom: 5px;
+    right: 5px; */
     overflow-y: auto;
 }
 
@@ -35,7 +36,7 @@ html {
     top: 15rem;
     position: absolute;
     right: 0;
-    overflow-y: none;
+    overflow-y: unset;
     cursor: pointer;
 }
 
@@ -45,7 +46,7 @@ html {
     top: 15rem;
     position: absolute;
     left: 0;
-    overflow-y: none;
+    overflow-y: unset;
     cursor: pointer;
 }
 
@@ -55,7 +56,7 @@ html {
     top: 3rem;
     position: absolute;
     left: 0;
-    overflow-y: none;
+    overflow-y: unset;
     cursor: pointer;
 }
 
@@ -65,7 +66,7 @@ html {
     top: 3.438rem;
     position: absolute;
     right: 0;
-    overflow-y: none;
+    overflow-y: unset;
     cursor: pointer;
 }
 
@@ -78,8 +79,9 @@ html {
     position: absolute;
     top: 0.3rem;
     left: 22.813rem;
-    /*bottom: 5px;
-    right: 5px;*/
+
+    /* bottom: 5px;
+    right: 5px; */
     overflow-y: auto;
 }
 
@@ -103,10 +105,10 @@ html {
 }
 
 #history {
-    /*float:right;
+    /* float:right;
     width:100px;
     z-index: 10;
-    background-color: green;*/
+    background-color: green; */
     z-index: 10;
     width: auto;
     height: auto;
@@ -116,10 +118,11 @@ html {
     top: 0.3rem;
     right: 0.3rem;
     border-radius: 1.6rem;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(255 255 255 / 70%);
     padding: 1.3rem 0.6rem;
-    /*bottom: 5px;
-    right: 5px;*/
+
+    /* bottom: 5px;
+    right: 5px; */
     overflow-y: auto;
 }
 
@@ -133,7 +136,7 @@ html {
 
 #feedback, #menu {
     border-radius: 1.6rem;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(255 255 255 / 70%);
     padding: 1.3rem 0.6rem;
     max-width: 22.5rem;
 }
@@ -187,11 +190,11 @@ textarea {
     max-width: 18.125rem;
 }
 
-.ghostCircle.show {
+.ghost-circle.show {
     display: block;
 }
 
-.ghostCircle, .activeDrag .ghostCircle {
+.ghost-circle, .active-drag .ghost-circle {
     display: none;
 }
 
@@ -203,7 +206,8 @@ div.tooltip {
     position: absolute;
     text-align: center;
     padding: 0.6rem;
-    /*font: 12px sans-serif;*/
+
+    /* font: 12px sans-serif; */
     background: white;
     border: 0;
     border-radius: 0.5rem;

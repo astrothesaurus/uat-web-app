@@ -1,23 +1,21 @@
 /**** full site ****/
 
-/* all CSS for small screens, but if larger screen then....*/
-/* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
-@media (min-width: 768px) {
+/**** all CSS for small screens, but if larger screen then.... ****/
 
+/**** Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint ****/
+@media (width >= 768px) {
     div.newsidebar {
         padding-right: 1.3rem;
         padding-left: 1.3rem;
         position: fixed;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden auto;
         max-height: calc(100vh);
     }
 }
 
 div.topspacing {
     height: 5rem;
-    overflow-y: hidden;
-    overflow-x: hidden;
+    overflow: hidden;
     z-index: 8;
     background-color: blue;
 }
@@ -28,15 +26,15 @@ div.mainstuff {
 
 .nav-link {
     display: block;
-    padding: .5rem .5rem;
+    padding: .5rem;
+}
+
+a {
+    color: #b4083a;
 }
 
 /* default bootstrap constrast isn't good enough */
 a:hover, a:active {
-    color: #b4083a;
-}
-
-a {
     color: #b4083a;
 }
 
@@ -87,16 +85,17 @@ li.uat {
 
 /* source: https://www.w3schools.com/tags/tag_code.asp */
 code {
-    font-family: Consolas, "courier new";
+    font-family: Consolas, "courier new", monospace;
     color: crimson;
-    /*background-color: #f1f1f1;*/
+
+    /* background-color: #f1f1f1; */
     padding: 0.13rem;
     font-size: 105%;
 }
 
 pre {
-    background-color: #444444;
-    color: #cccccc;
+    background-color: #444;
+    color: #ccc;
     width: 80%;
     overflow-x: scroll;
 }
@@ -121,7 +120,7 @@ pre {
     padding: 0 .3rem;
 }
 
-/**basic-table is on the basic topics page**/
+/** basic-table is on the basic topics page **/
 
 table#basic-table {
     border-collapse: collapse;
@@ -149,7 +148,8 @@ th.basic-header, td.basic-data {
     font-weight: bold;
     font-size: 1.3rem;
     color: #fff !important;
-    /* text-decoration: underline;*/
+
+    /* text-decoration: underline; */
     text-decoration: none;
 }
 
@@ -157,7 +157,8 @@ th.basic-header, td.basic-data {
     font-weight: bold;
     font-size: 1.3rem;
     color: #fff !important;
-    /* text-decoration: underline;*/
+
+    /* text-decoration: underline; */
     text-decoration: none;
 }
 

@@ -173,9 +173,9 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
                 oldparent = d.parent;
 
                 draggingNode = d;
-                d3.select(domNode).select(".ghostCircle").attr("pointer-events", "none");
-                d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
-                d3.select(domNode).attr("class", "node activeDrag");
+                d3.select(domNode).select(".ghost-circle").attr("pointer-events", "none");
+                d3.selectAll(".ghost-circle").attr("class", "ghost-circle show");
+                d3.select(domNode).attr("class", "node active-drag");
 
                 svgGroup.selectAll("g.node").sort(function (a) { // select the parent and sort the path's
                     if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
@@ -369,10 +369,10 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
              */
             function endDrag() {
                 //console.log("End drag");
-                d3.selectAll(".ghostCircle").attr("class", "ghostCircle");
+                d3.selectAll(".ghost-circle").attr("class", "ghost-circle");
                 d3.select(domNode).attr("class", "node");
                 // now restore the mouseover event or we won"t be able to drag a 2nd time
-                d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
+                d3.select(domNode).select(".ghost-circle").attr("pointer-events", "");
                 updateTempConnector();
                 if (draggingNode !== null) {
                     collapse(draggingNode); //< --- collapse the node in question at all times when dropped.
@@ -599,7 +599,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
 
                 // phantom node to give us mouseover in a radius around it
                 nodeEnter.append("circle")
-                    .attr("class", "ghostCircle")
+                    .attr("class", "ghost-circle")
                     .attr("r", 30)
                     .attr("opacity", 0.2) // change this to zero to hide the target area
                     .style("fill", "red")

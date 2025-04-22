@@ -1,4 +1,3 @@
-/*============================ RESET ============================*/
 ul.treeview {
     margin: 0;
     padding: 0;
@@ -12,13 +11,13 @@ div.advmenu {
     vertical-align: baseline;
 }
 
+a:active, .advmenu a:hover {
+    text-decoration: none;
+}
+
 .advmenu a:link {
     color: #24041b;
     text-decoration: underline;
-}
-
-.advmenu a:hover, a:active {
-    text-decoration: none;
 }
 
 .treeview ul {
@@ -26,7 +25,7 @@ div.advmenu {
     padding-left: 0;
 }
 
-.treeview li { /*Style for LI elements in general (excludes an LI that contains sub lists)*/
+.treeview li { /* Style for LI elements in general (excludes an LI that contains sub lists) */
     background: white url("/img/list.gif") no-repeat left center;
     list-style-type: none;
     padding-left: 1.3rem;
@@ -40,10 +39,10 @@ div.advmenu {
     cursor: pointer !important;
 }
 
-.treeview li.submenu ul { /*Style for ULs that are children of LIs (submenu) */
-    display: none; /*Hide them by default. Don't delete. */
+.treeview li.submenu ul { /* Style for ULs that are children of LIs (submenu) */
+    display: none; /* Hide them by default. Don't delete. */
 }
 
-.treeview .submenu ul li { /*Style for LIs of ULs that are children of LIs (submenu) */
+.treeview .submenu ul li { /* Style for LIs of ULs that are children of LIs (submenu) */
     cursor: default;
 }

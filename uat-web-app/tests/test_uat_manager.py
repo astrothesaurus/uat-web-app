@@ -6,7 +6,7 @@ from unittest.mock import patch
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import uat_manager
+import uat_manager  # noqa: E402
 
 
 class TestUatManager(unittest.TestCase):
@@ -18,7 +18,8 @@ class TestUatManager(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             uat_manager.get_latest_uat_tag()
 
-        self.assertIn('Failed to fetch the UAT latest release version from ', str(context.exception))
+        self.assertIn('Failed to fetch the UAT latest release version from ',
+                      str(context.exception))
 
 
 if __name__ == '__main__':

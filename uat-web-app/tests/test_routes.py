@@ -5,7 +5,7 @@ from unittest.mock import patch, mock_open
 
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import routes
+import routes  # noqa: E402
 
 
 class TestFlaskEndpoints(unittest.TestCase):

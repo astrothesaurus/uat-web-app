@@ -13,6 +13,40 @@ permissions:
   id-token: write
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npx eslint .
+
+      - name: Run Stylelint
+        run: npx stylelint "**/*.css"
+
+      - name: Run HTMLHint
+        run: npx htmlhint "**/*.html"
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install flake8
+
+      - name: Run Flake8
+        run: flake8 .
+
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +73,7 @@ jobs:
         run: npm install -g coveralls
       - name: Run Python tests with coverage
         run: |
-          coverage run --source=uat-web-app -m unittest discover -s uat-web-app/tests
+          coverage run --source=uat-web-app --omit=uat-web-app/tests/* -m unittest discover -s uat-web-app/tests
           coverage report
           coverage xml
           coverage lcov -o python-coverage.info
@@ -66,17 +100,17 @@ jobs:
         env:
           DOCKER_TLS_CERTDIR: ""
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Build Docker image
-      run: docker compose build
-    - name: Run docker compose
-      run: docker compose up -d
-    - name: Install Playwright Tests
-      run: npm install @playwright/test
-    - name: Install Playwright browsers
-      run: npx playwright install
-    - name: Install Playwright dependencies
-      run: npx playwright install-deps
-    - name: Run Playwright tests
-      run: npm run test:playwright
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker compose build
+      - name: Run docker compose
+        run: docker compose up -d
+      - name: Install Playwright Tests
+        run: npm install @playwright/test
+      - name: Install Playwright browsers
+        run: npx playwright install
+      - name: Install Playwright dependencies
+        run: npx playwright install-deps
+      - name: Run Playwright tests
+        run: npm run test:playwright

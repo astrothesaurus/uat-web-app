@@ -2,7 +2,7 @@
  * Generates a new captcha code.
  */
 function GenerateCode() {
-    let code = Array.from({ length: 5 }, () => Math.ceil(Math.random() * 9)).join("");
+    let code = Array.from({length: 5}, () => Math.ceil(Math.random() * 9)).join("");
     document.getElementById("txtCaptcha").value = code;
     document.getElementById("txtCaptchaDiv").innerHTML = code;
 }

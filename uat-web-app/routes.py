@@ -76,7 +76,8 @@ def alpha_page(uat_id):
     Returns:
         str: Rendered HTML template for the UAT page with data.
     """
-    data = retrieve_alpha_page_data(uat_id, uat_manager.alphabetical_terms, uat_manager.html_hierarchy_tree)
+    data = retrieve_alpha_page_data(uat_id, uat_manager.alphabetical_terms,
+                                    uat_manager.html_hierarchy_tree)
     return render_template("alpha.html", title="UAT Web App - Alphabetical Browser", **data)
 
 

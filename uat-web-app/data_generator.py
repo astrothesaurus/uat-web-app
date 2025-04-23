@@ -3,6 +3,7 @@ This module's purpose is generating data for pages for the Flask application.
 """
 import os
 import string
+
 from flask import request
 
 from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META, HOMEPAGE_DIR
@@ -32,7 +33,8 @@ def build_html_list(term_list, previous_path):
 
         for child in term_list["children"]:
             html_tree_parts.append(
-                f"\t<li><a id=li-{path}-{child['uri'][30:]} href={child['uri'][30:]}?view=hierarchy&path={path}>{child['name']}</a>")
+                f"\t<li><a id=li-{path}-{child['uri'][30:]} "
+                f"href={child['uri'][30:]}?view=hierarchy&path={path}>{child['name']}</a>")
             html_tree_parts.append(build_html_list(child, path))
             html_tree_parts.append("</li>\n")
 
@@ -40,6 +42,7 @@ def build_html_list(term_list, previous_path):
 
     html_tree = "".join(html_tree_parts)
     return html_tree
+
 
 def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
     """
@@ -74,6 +77,7 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
         "alphabet": alphabet
     }
 
+
 def search_terms(lookup_term, alpha_terms):
     """
     Searches for terms in the alpha terms list.
@@ -88,7 +92,8 @@ def search_terms(lookup_term, alpha_terms):
     results = []
     if lookup_term:
         lookup_term = lookup_term.strip()
-        lookup_variants = [lookup_term.lower(), lookup_term.title(), lookup_term.capitalize(), lookup_term.upper()]
+        lookup_variants = [lookup_term.lower(), lookup_term.title(),
+                           lookup_term.capitalize(), lookup_term.upper()]
 
         for term in alpha_terms:
             term_dict = {}
@@ -97,26 +102,31 @@ def search_terms(lookup_term, alpha_terms):
                     pass
             except KeyError:
                 if lookup_term in str(term["uri"][30:]):
-                    term_dict["uri"] = str(term["uri"][30:]).replace(lookup_term, "<mark>" + lookup_term + "</mark>")
+                    term_dict["uri"] = str(term["uri"][30:]).replace(lookup_term, "<mark>" +
+                                                                     lookup_term + "</mark>")
                     term_dict["name"] = term["name"]
                     results.append(term_dict)
                 elif lookup_term.lower() in (term["name"]).lower():
                     term_dict["uri"] = term["uri"][30:]
-                    for lookup_variant in lookup_variants:
-                        if lookup_variant in term["name"]:
-                            term_dict["name"] = (term["name"]).replace(lookup_variant, "<mark>" + lookup_variant + "</mark>")
+                    for variant in lookup_variants:
+                        if variant in term["name"]:
+                            term_dict["name"] = (term["name"]).replace(variant, "<mark>" +
+                                                                       variant + "</mark>")
                     results.append(term_dict)
                 else:
                     term_dict["name"] = term["name"]
                     term_dict["uri"] = term["uri"][30:]
-                    if term["altNames"]:
-                        for alt_name in term["altNames"]:
-                            for lookup_variant in lookup_variants:
-                                if lookup_variant in alt_name:
-                                    term_dict["altNames"] = alt_name.replace(lookup_variant, "<mark>" + lookup_variant + "</mark>")
-                                    results.append(term_dict)
-                                    break
+                    if not term["altNames"]:
+                        continue
+                    for alt_name in term["altNames"]:
+                        for variant in lookup_variants:
+                            if variant in alt_name:
+                                term_dict["altNames"] = alt_name.replace(variant, "<mark>" +
+                                                                         variant + "</mark>")
+                                results.append(term_dict)
+                                break
     return results
+
 
 def get_paths(path):
     """
@@ -137,6 +147,7 @@ def get_paths(path):
             else:
                 all_paths.append(all_paths[-1] + "-" + path_segment)
     return all_paths
+
 
 def get_element_and_status(uat_id, alpha_terms, view_type):
     """
@@ -168,12 +179,14 @@ def get_element_and_status(uat_id, alpha_terms, view_type):
 
     return element, unknown_status
 
+
 def retrieve_sorting_tool_data(app, tag):
     """
     Retrieves data for the sorting tool page.
 
     Args:
         app (Flask): The Flask application instance.
+        tag (str): The tag for the UAT version.
 
     Returns:
         dict: The data for the sorting tool page.
@@ -182,7 +195,9 @@ def retrieve_sorting_tool_data(app, tag):
     file_names = os.listdir(os.path.join(app.static_folder, "topconcepts"))
     file_list = []
     for file_name in file_names:
-        file_dict = {"name": file_name.capitalize().replace("_", " ").replace(".json", ""), "file": file_name, "value": file_name.replace(".", "").replace("json", "")}
+        file_dict = {"name": file_name.capitalize().replace("_", " ").replace(".json", ""),
+                     "file": file_name,
+                     "value": file_name.replace(".", "").replace("json", "")}
         file_list.append(file_dict)
 
     return {

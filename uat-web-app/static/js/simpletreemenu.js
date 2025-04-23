@@ -1,8 +1,8 @@
 let persisteduls = {};
 let ddtreemenu = {};
 
-ddtreemenu.closefolder = { src: "/img/closed.gif", alt: "Expand folder" }; // Set image path to "closed" folder image
-ddtreemenu.openfolder = { src: "/img/open.gif", alt: "Collapse folder" }; // Set image path to "open" folder image
+ddtreemenu.closefolder = {src: "/img/closed.gif", alt: "Expand folder"}; // Set image path to "closed" folder image
+ddtreemenu.openfolder = {src: "/img/open.gif", alt: "Collapse folder"}; // Set image path to "open" folder image
 
 ////////// No need to edit beyond here ///////////////////////////
 
@@ -26,7 +26,7 @@ ddtreemenu.expandSubTree = function (treeid, ulelement) {
         if (currentnode.tagName === "UL") {
             currentnode.style.display = "block";
             currentnode.setAttribute("rel", "open");
-                ddtreemenu.setBackgroundImage(currentnode.parentNode, ddtreemenu.openfolder);
+            ddtreemenu.setBackgroundImage(currentnode.parentNode, ddtreemenu.openfolder);
         }
         currentnode = currentnode.parentNode;
     }
@@ -138,7 +138,7 @@ ddtreemenu.getCookie = function (Name) {
  */
 ddtreemenu.setCookie = function (name, value, days) {
     let expireDate = new Date();
-    let expstring = expireDate.setDate(expireDate.getDate() + parseInt(days));
+    expireDate.setDate(expireDate.getDate() + parseInt(days));
     document.cookie = name + "=" + value + "; expires=" + expireDate.toGMTString() + "; path=/";
 };
 

@@ -82,7 +82,7 @@ class UATManager:
              Response: The HTTP response containing the file data.
          """
         root_url = os.getenv("UAT_RAW_URL",
-                             "https://raw.githubusercontent.com/astrothesaurus/UAT/")
+                             "https://raw.githubusercontent.com/astrothesaurus/UAT")
         if not root_url.endswith("/"):
             root_url += "/"
         download_url = root_url + self.current_tag + "/" + file_name

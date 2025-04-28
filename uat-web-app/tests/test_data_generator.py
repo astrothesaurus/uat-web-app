@@ -110,14 +110,31 @@ class TestDataGenerator(unittest.TestCase):
         self.assertEqual(expected_element, element)
         self.assertEqual(expected_status, status)
 
+    def test_get_element_and_status_unknown_type(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes"},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism"},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory"}
+        ]
+        uat_id = 102
+        view_type = "unknown"
+        expected_element = {"uri": "http://astrothesaurus.org/uat/102",
+                            "name": "Astrophysical magnetism"}
+        expected_status = "no"
+
+        element, status = data_generator.get_element_and_status(uat_id, alpha_terms, view_type)
+
+        self.assertEqual(expected_element, element)
+        self.assertEqual(expected_status, status)
+
     def test_search_terms_with_no_results(self):
         alpha_terms = [
             {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
              "altNames": ["Astro processes"], "status": "active"},
             {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
-             "altNames": [], "status": "active"},
+             "altNames": []},
             {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
-             "altNames": ["Magnetic fields"], "status": "deprecated"}
+             "altNames": ["Magnetic fields"]}
         ]
         lookup_term = "Nonexistent"
         expected_results = []
@@ -141,6 +158,55 @@ class TestDataGenerator(unittest.TestCase):
         results = data_generator.search_terms(lookup_term, alpha_terms)
 
         self.assertEqual(expected_results, results)
+
+    def test_search_terms_name_no_status(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
+             "altNames": ["Astro processes"]},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
+             "altNames": []},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "Magnetic"
+        expected_results = [{'name': 'Cosmic <mark>magnetic</mark> fields theory', 'uri': '321'}]
+
+        results = data_generator.search_terms(lookup_term, alpha_terms)
+
+        self.assertEqual(expected_results, results)
+
+    def test_search_terms_uri_no_status(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
+             "altNames": ["Astro processes"]},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
+             "altNames": []},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "321"
+        expected_results = [{'name': 'Cosmic magnetic fields theory', 'uri': '<mark>321</mark>'}]
+
+        results = data_generator.search_terms(lookup_term, alpha_terms)
+
+        self.assertEqual(expected_results, results)
+
+    def test_search_terms_alt_name_no_status(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
+             "altNames": ["Astro processes"]},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
+             "altNames": []},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "Astro processes"
+        expected_results = [{'altNames': '<mark>Astro processes</mark>',
+                             'name': 'Astrophysical processes', 'uri': '104'}]
+
+        results = data_generator.search_terms(lookup_term, alpha_terms)
+
+        self.assertTrue(expected_results, results)
 
 
 if __name__ == "__main__":

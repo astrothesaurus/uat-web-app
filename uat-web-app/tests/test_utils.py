@@ -80,6 +80,18 @@ class TestUtils(unittest.TestCase):
             self.assertIn("KEY", result)
             self.assertEqual("value", result["KEY"])
 
+    @patch("os.path.exists", return_value=False)
+    def test_load_config_with_nonexistent_project_home(self, mock_exists):
+        project_home = "/nonexistent/path"
+
+        with self.assertRaises(Exception) as context:
+            utils.load_config(project_home=project_home)
+
+        self.assertIn(
+            "path doesn't exist",
+            str(context.exception)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

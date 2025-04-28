@@ -39,6 +39,25 @@ describe("flattenTree", () => {
         flattenTree(tree, treeMap);
         expect(treeMap).toEqual(expectedMap);
     });
+
+    test("should process _children property and add them to the tree map", () => {
+        const tree = {
+            name: "root",
+            _children: [
+                {name: "child1"},
+                {name: "child2"}
+            ]
+        };
+        const treeMap = {};
+
+        flattenTree(tree, treeMap);
+
+        expect(treeMap).toEqual({
+            root: {child1: 1, child2: 1},
+            child1: {},
+            child2: {}
+        });
+    });
 });
 
 describe("compareTrees", () => {

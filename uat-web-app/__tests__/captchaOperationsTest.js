@@ -13,10 +13,27 @@ describe("Captcha Operations", () => {
         expect(stringWithoutSpaces).toBe("abcde");
     });
 
+    test("should validate captcha when entered value is correct", () => {
+        const mockElements = [];
+        document.getElementById = jest.fn((id) => {
+            if (id === "txtCaptcha") return {value: "54321"};
+            if (id === "txtInput") return {value: "54321"};
+            if (id === "txtCaptchaDiv") {
+                const element = {innerHTML: ""};
+                mockElements.push(element);
+                return element;
+            }
+        });
+
+        let result = ValidCaptcha();
+
+        expect(result).toBe(true);
+    });
+
     test("should invalidate captcha when entered value is incorrect", () => {
         document.getElementById = jest.fn((id) => {
             if (id === "txtCaptcha") return {value: "12345"};
-            if (id === "txtInput") return {value: "54321"}; // Different value to ensure invalidation
+            if (id === "txtInput") return {value: "54321"};
         });
 
         let result = ValidCaptcha();

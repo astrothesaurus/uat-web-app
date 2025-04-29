@@ -444,7 +444,11 @@ try {
         downloadString,
         savestuff,
         getCircularReplacer,
-        storenewsave
+        storenewsave,
+        AddNode,
+        openAlertModal,
+        showConfirmModal,
+        showPromptModal
     };
 } catch {
     // Do Nothing. This is only for tests

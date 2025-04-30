@@ -23,7 +23,7 @@ limiter = Limiter(
 config = utils.load_config()
 
 # Initialize the UATManager
-uat_manager = UATManager()
+uat_manager = UATManager(app)
 
 
 @app.get("/api/uat/check_version")
@@ -35,7 +35,7 @@ def check_uat_version_endpoint():
     Returns:
         dict: JSON response with the UAT version.
     """
-    return uat_manager.check_uat_version()
+    return uat_manager.check_uat_version(app)
 
 
 # TODO: Make this endpoint secure
@@ -48,7 +48,7 @@ def update_uat_version_endpoint():
     Returns:
         dict: JSON response with the UAT version update status.
     """
-    return uat_manager.update_uat_version()
+    return uat_manager.update_uat_version(app)
 
 
 @app.route("/")

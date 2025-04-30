@@ -1,5 +1,7 @@
+import json
 import logging
 import os
+import re
 from threading import Lock
 
 import requests
@@ -66,12 +68,12 @@ class UATManager:
     updating the local version, and providing access to hierarchical and alphabetical term data.
     """
 
-    def __init__(self):
+    def __init__(self, app):
         self.current_tag = None
         self.alphabetical_terms = None
         self.html_hierarchy_tree = None
         self.update_lock = Lock()
-        self.update_uat_version()
+        self.update_uat_version(app)
 
     def get_latest_uat_file(self, file_name):
         """
@@ -89,7 +91,7 @@ class UATManager:
         error_message = "Failed to download the latest UAT file from " + download_url
         return fetch_url(download_url, error_message)
 
-    def check_uat_version(self):
+    def check_uat_version(self, app):
         """
           Checks if the local UAT version is the latest available version.
           Returns:
@@ -98,12 +100,12 @@ class UATManager:
           """
         new_tag = get_latest_uat_tag()
         if self.current_tag is None:
-            self.update_uat_version()
+            self.update_uat_version(app)
         return {"old_tag": self.current_tag,
                 "new_tag": new_tag,
                 "is_latest": self.current_tag == new_tag}
 
-    def update_uat_version(self):
+    def update_uat_version(self, app):
         """
         Updates the local UAT version to the latest available version.
         Returns:
@@ -113,7 +115,7 @@ class UATManager:
             if self.current_tag is None:
                 self.current_tag = get_latest_uat_tag()
             else:
-                tag_data = self.check_uat_version()
+                tag_data = self.check_uat_version(app)
                 if tag_data["is_latest"]:
                     return {"status": "success", "current_tag": self.current_tag}
                 self.current_tag = tag_data["new_tag"]
@@ -122,5 +124,22 @@ class UATManager:
                                              key=lambda k: k["name"])
             hierarchy_data = self.get_latest_uat_file("UAT.json")
             self.html_hierarchy_tree = build_html_tree(hierarchy_data)
+
+            childrenterms = hierarchy_data['children']
+
+            topconcepts_path = os.path.join(app.static_folder, "topconcepts")
+            os.makedirs(topconcepts_path, exist_ok=True)
+            for file_name in os.listdir(topconcepts_path):
+                file_path = os.path.join(topconcepts_path, file_name)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+
+            for term in childrenterms:
+                name = term['name']
+                if name is not None:  # skip deprecated concepts
+                    file_name = re.sub(r"[ ()]", "_", name.lower())
+                    file_path = os.path.join(topconcepts_path, f"{file_name}.json")
+                    with open(file_path, 'w') as file:
+                        json.dump(term, file)
 
             return {"status": "success", "current_tag": self.current_tag}

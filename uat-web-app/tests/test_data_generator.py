@@ -206,7 +206,7 @@ class TestDataGenerator(unittest.TestCase):
 
         results = data_generator.search_terms(lookup_term, alpha_terms)
 
-        self.assertTrue(expected_results, results)
+        self.assertEquals(expected_results, results)
 
 
 if __name__ == "__main__":

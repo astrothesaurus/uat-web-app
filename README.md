@@ -33,14 +33,16 @@ UAT Web App is a Flask web application that includes the following features:
     ```sh
     npm install
     ```
-4. Create local static/setup.txt file (Use setup.txt.example as a template)
+
+4. **Create a local `static/setup.txt` file**:
+    - Use `setup.txt.example` as a template.
+    - Place the file in the `uat-web-app/static/` directory.
 
 ### Running the Application
 
 **Using Docker:**
 ```sh
 docker compose up
-```
 
 ### Running Unit Tests
 
@@ -76,7 +78,7 @@ npm run test:playwright
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any changes.
-
+For more details, refer to the CONTRIBUTING.md file (if available).
 ## License
 
 This project is licensed under the MIT License.

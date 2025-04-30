@@ -1,5 +1,6 @@
 Deployment/*
 uat-web-app/static/setup.txt
+uat-web-app/static/topconcepts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

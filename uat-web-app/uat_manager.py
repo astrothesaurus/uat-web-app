@@ -72,6 +72,7 @@ class UATManager:
         self.current_tag = None
         self.alphabetical_terms = None
         self.html_hierarchy_tree = None
+        self.file_list = []
         self.update_lock = Lock()
         self.update_uat_version(app)
 
@@ -125,21 +126,16 @@ class UATManager:
             hierarchy_data = self.get_latest_uat_file("UAT.json")
             self.html_hierarchy_tree = build_html_tree(hierarchy_data)
 
-            childrenterms = hierarchy_data['children']
-
-            topconcepts_path = os.path.join(app.static_folder, "topconcepts")
-            os.makedirs(topconcepts_path, exist_ok=True)
-            for file_name in os.listdir(topconcepts_path):
-                file_path = os.path.join(topconcepts_path, file_name)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-
-            for term in childrenterms:
+            self.file_list = []
+            for term in hierarchy_data['children']:
                 name = term['name']
                 if name is not None:  # skip deprecated concepts
                     file_name = re.sub(r"[ ()]", "_", name.lower())
-                    file_path = os.path.join(topconcepts_path, f"{file_name}.json")
-                    with open(file_path, 'w') as file:
-                        json.dump(term, file)
+                    file_dict = {
+                        "name": file_name.capitalize().replace("_", " ").replace(".json", ""),
+                        "file": json.dumps(term),
+                        "value": file_name
+                    }
+                    self.file_list.append(file_dict)
 
             return {"status": "success", "current_tag": self.current_tag}

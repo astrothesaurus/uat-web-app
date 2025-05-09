@@ -25,6 +25,28 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
 
                 treeData = j;
 
+                if (treeData.name !== "root") {
+                    var rootNode = {};
+                    rootNode["name"] = "root";
+                    rootNode["children"] = [];
+                    rootNode["children"].push(
+                        {
+                            "name": "branch",
+                            "children": JSON.parse(JSON.stringify(treeData))
+                        },
+                        {
+                            "name": "recycle",
+                            "children": {
+                                "name": "recycle"
+                            }
+                        },
+                        {
+                            "name": "orig",
+                            "children": treeData
+                        }
+                    );
+                    j = rootNode;
+                }
                 try {
                     for (let index = 0; index < j["children"].length; index++) {
 

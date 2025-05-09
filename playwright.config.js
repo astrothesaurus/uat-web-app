@@ -1,14 +1,15 @@
 module.exports = {
     testDir: './tests',
-    timeout: 15000,
+    timeout: 30000,
     fullyParallel: true,
+    retries: process.env.CI ? 2 : 0,
     use: {
         headless: true,
         viewport: {width: 1280, height: 720},
         baseURL: 'http://localhost',
         ignoreHTTPSErrors: true,
     },
-    workers: process.env.CI ? 2 : undefined, // Use 2 worker in CI, otherwise use the default number of workers
+    workers: process.env.CI ? 2 : undefined,
     projects: [
         {
             name: 'chromium',

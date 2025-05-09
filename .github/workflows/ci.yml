@@ -112,5 +112,18 @@ jobs:
         run: npx playwright install
       - name: Install Playwright dependencies
         run: npx playwright install-deps
+      - name: Check server health
+        run: |
+          for i in {1..10}; do
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q "200"; then
+              echo "Server is up!"
+              exit 0
+            fi
+            echo "Waiting for server..."
+            sleep 5
+          done
+          echo "Server failed to start."
+          docker compose logs
+          exit 1
       - name: Run Playwright tests
         run: npm run test:playwright

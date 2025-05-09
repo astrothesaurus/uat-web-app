@@ -19,12 +19,18 @@ class TestDataGenerator(unittest.TestCase):
 
     @patch("os.listdir")
     def test_retrieve_sorting_tool_data(self, mock_listdir):
-        mock_listdir.return_value = ["concept1.json", "concept2.json"]
+        filelist = {
+            "name": "root",
+            "children": [
+                {
+                    "name": "branch",
+                    "children": {
+                        "name": "Cosmology", }}]}
 
-        result = data_generator.retrieve_sorting_tool_data(self.app, "v.5.1.0")
+        result = data_generator.retrieve_sorting_tool_data(self.app, "v.5.1.0", filelist)
 
         self.assertEqual(2, len(result["filelist"]))
-        self.assertEqual("Concept1", result["filelist"][0]["name"])
+        self.assertEqual(filelist, result["filelist"])
 
     def test_build_html_list_without_children(self):
         term_list = {
@@ -206,7 +212,7 @@ class TestDataGenerator(unittest.TestCase):
 
         results = data_generator.search_terms(lookup_term, alpha_terms)
 
-        self.assertTrue(expected_results, results)
+        self.assertEqual(expected_results, results)
 
 
 if __name__ == "__main__":

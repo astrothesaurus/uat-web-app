@@ -1,10 +1,8 @@
 const {test, expect} = require("@playwright/test");
 
-test("Alphabetical index test", async ({page}) => {
-    // Navigate to the URL
+test("Alphabetical index contains at least 26 items", async ({ page }) => {
     await page.goto("/uat/");
 
-    const listLength = await page.$eval("ul.alpha", el => el.querySelectorAll("li").length);
-
+    const listLength = await page.locator("ul.alpha li").count();
     expect(listLength).toBeGreaterThanOrEqual(26);
 });

@@ -1,7 +1,6 @@
 """
 This module's purpose is generating data for pages for the Flask application.
 """
-import os
 import string
 
 from flask import request
@@ -180,7 +179,7 @@ def get_element_and_status(uat_id, alpha_terms, view_type):
     return element, unknown_status
 
 
-def retrieve_sorting_tool_data(app, tag):
+def retrieve_sorting_tool_data(app, tag, file_list):
     """
     Retrieves data for the sorting tool page.
 
@@ -191,15 +190,8 @@ def retrieve_sorting_tool_data(app, tag):
     Returns:
         dict: The data for the sorting tool page.
         tag: The tag for the UAT version.
+        file_list: Sorting data
     """
-    file_names = os.listdir(os.path.join(app.static_folder, "topconcepts"))
-    file_list = []
-    for file_name in file_names:
-        file_dict = {"name": file_name.capitalize().replace("_", " ").replace(".json", ""),
-                     "file": file_name,
-                     "value": file_name.replace(".", "").replace("json", "")}
-        file_list.append(file_dict)
-
     return {
         "filelist": file_list,
         "shortname": UAT_SHORTNAME,

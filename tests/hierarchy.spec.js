@@ -1,9 +1,9 @@
 const {test, expect} = require("@playwright/test");
 
-test("Hierarchy view test", async ({page}) => {
+test("Hierarchy view test", async ({ page }) => {
     await page.goto("/uat/?view=hierarchy");
 
-    const listLength = await page.$eval("ul#treemenu1", el => el.querySelectorAll("li").length);
+    const listLength = await page.locator("ul#treemenu1 li").count();
     expect(listLength).toBeGreaterThan(1);
 });
 
@@ -23,20 +23,19 @@ test("Hierarchy exoplanet test", async ({page}) => {
     const pText = await getTextContent(contentDiv, "p");
     expect(pText).toContain("Exoplanet");
 
-    // Verify the mainstuff section
+    // Verify mainstuff section and strong elements
     const mainstuff = await page.$(".mainstuff");
     expect(mainstuff).not.toBeNull();
 
-    // Verify strong elements
     const strongElements = await mainstuff.$$("strong");
-    expect(strongElements).toHaveLength(4);
-
     const expectedStrongTexts = [
         "Broader Concept",
         "Narrower Concept",
         "Related Concept",
         "Alternate Term",
     ];
+    expect(strongElements).toHaveLength(expectedStrongTexts.length);
+
     const strongTexts = await Promise.all(
         strongElements.map((el) => el.innerText())
     );
@@ -55,6 +54,7 @@ test("Hierarchy exoplanet test", async ({page}) => {
     expect(ddElement).not.toBeNull();
     const ddText = await ddElement.innerText();
     expect(ddText).not.toBeNull();
+
     const citeText = await getTextContent(ddElement, "cite");
     expect(citeText).not.toBeNull();
 

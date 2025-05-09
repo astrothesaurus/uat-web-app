@@ -43,6 +43,7 @@ UAT Web App is a Flask web application that includes the following features:
 **Using Docker:**
 ```sh
 docker compose up
+```
 
 ### Running Unit Tests
 

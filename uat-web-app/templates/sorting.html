@@ -39,7 +39,7 @@
 
 <script type="text/javascript">
     {% for x in filelist %}
-        var {{x.value}} = "../topconcepts/{{x.file}}";
+        var {{x.value}} = {{x.file|safe}};
     {% endfor %}
 
     savefile = "{{savefile}}";

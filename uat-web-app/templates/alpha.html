@@ -64,10 +64,10 @@
     <div class="row">
 
         <!-- left side bar -->
-        <div class="newsidebar col-xl-3 col-lg-4 col-md-4 col-12">
+        <div id="uatSideBar" class="newsidebar col-xl-3 col-lg-4 col-md-4 col-12">
 
             <!-- non-mobile tabs -->
-            <div class="d-none d-sm-none d-md-block">
+            <div class="d-none d-sm-none d-md-block sticky-tabs">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link alpha-tab2 {% if gtype == 'alpha' %} active{% endif %}" id="alpha-tab"
@@ -398,7 +398,7 @@
 
 <script>
 
-
+    const STICKY_TAB_HEIGHT = 48; // Height of the sticky tab in pixels
     $(document).ready(function () {
 
         localStorage.setItem("currentTab", "{{gtype}}");
@@ -422,12 +422,14 @@
                 thisletter = event.target.innerHTML;
                 event.preventDefault();
                 document.getElementById(thisletter).scrollIntoView(true);
+                document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
                 $("#letter" + thisletter).focus();
             }
         }).on("click", function () {
             thisletter = event.target.innerHTML;
             event.preventDefault();
             document.getElementById(thisletter).scrollIntoView(true);
+            document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
             $("#letter" + thisletter).focus();
         });
 
@@ -435,18 +437,18 @@
             if (event.keyCode === 13) {
                 event.preventDefault();
                 document.getElementById("alpha-tab").scrollIntoView(true);
-                $("#alpha-tab").focus();
+                document.getElementById('uatSideBar').scrollTop = 0;
             }
         }).on("click", function () {
             event.preventDefault();
             document.getElementById("alpha-tab").scrollIntoView(true);
-            $("#alpha-tab").focus();
+            document.getElementById('uatSideBar').scrollTop = 0;
         });
 
         $(".totopimgm").on("click", function () {
             event.preventDefault();
             document.getElementById("topm").scrollIntoView(true);
-            $("#alpha-tab").focus();
+            document.getElementById('uatSideBar').scrollTop = 0;
         });
 
 
@@ -529,6 +531,7 @@
     <script>
 
         $("#{{element.uri[30:]}}").get(0).scrollIntoView();
+        document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
         $("#{{element.uri[30:]}}").css("background-color", "lightgrey");
 
         $("#{{element.uri[30:]}}").append(`<span class="text-right d-none d-sm-none d-md-block" style="float:right"><img tabindex=0 class="totopimg" style="width:0.9rem;cursor:pointer;" src='{{ url_for("static", filename="/img/totop1.png" ) }}' alt="To Top"></span>`);
@@ -544,6 +547,7 @@
             {% endfor%}
 
             $("#li-{{path|last}}-{{element.uri[30:]}}").get(0).scrollIntoView();
+            document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
             $("#li-{{path|last}}-{{element.uri[30:]}}").css("background-color", "lightgrey");
             $("#ul-{{path|last}}-{{element.uri[30:]}}").attr("rel", "open").css("display", "block");
 
@@ -552,6 +556,7 @@
 
             console.log("{{element.uri[30:]}}");
             $("#li-{{element.uri[30:]}}").get(0).scrollIntoView();
+            document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
             $("#li-{{element.uri[30:]}}").css("background-color", "lightgrey");
             $("#ul-{{element.uri[30:]}}").attr("rel", "open").css("display", "block");
 

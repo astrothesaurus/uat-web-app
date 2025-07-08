@@ -1,12 +1,15 @@
 """
 This module's purpose is generating data for pages for the Flask application.
 """
+import re
 import string
 
+import inflect
 from flask import request
 
 from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META, HOMEPAGE_DIR
 
+p = inflect.engine()
 
 def build_html_list(term_list, previous_path):
     """
@@ -57,7 +60,8 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
     """
     view_type = request.args.get("view", "alpha")
     lookup_term = request.args.get("lookup") if view_type == "search" else None
-    results = search_terms(lookup_term, alpha_terms) if view_type == "search" else []
+    sort_direction = request.args.get("sort", "alpha") if view_type == "search" else None
+    results = search_terms(lookup_term, alpha_terms, sort_direction) if view_type == "search" else []
     all_paths = get_paths(request.args.get("path")) if view_type == "hierarchy" else []
     element, unknown_status = get_element_and_status(uat_id, alpha_terms, view_type)
 
@@ -73,57 +77,84 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
         "alpha": alpha_terms,
         "gtype": view_type,
         "element": element,
-        "alphabet": alphabet
+        "alphabet": alphabet,
+        "sort": sort_direction,
     }
 
-
-def search_terms(lookup_term, alpha_terms):
+def normalize_term(term):
     """
-    Searches for terms in the alpha terms list.
+    Normalizes a term for comparison:
+    - Lowercases
+    - Removes common punctuation
+    - Converts plurals to singular using inflect
+    """
+    term = term.lower()
+    term = re.sub(r"[\s\-_'\"/.,!?;:()“”’‘]", "", term)
+    singular = p.singular_noun(term)
+    if singular:
+        term = singular
+    return term
 
-    Args:
-        lookup_term (str): The term to look up.
-        alpha_terms (list): List of alpha terms.
-
-    Returns:
-        list: The search results.
+def search_terms(lookup_term, alpha_terms, sort_direction):
+    """
+    Searches for terms in the alpha terms list, ignoring plural/singular, spaces, hyphens, apostrophes.
+    // TODO: Implement sorting based on sort_direction.
     """
     results = []
     if lookup_term:
         lookup_term = lookup_term.strip()
+        normalized_lookup = normalize_term(lookup_term)
         lookup_variants = [lookup_term.lower(), lookup_term.title(),
                            lookup_term.capitalize(), lookup_term.upper()]
 
         for term in alpha_terms:
-            term_dict = {}
             try:
                 if term["status"] != "deprecated":
                     pass
             except KeyError:
-                if lookup_term in str(term["uri"][30:]):
-                    term_dict["uri"] = str(term["uri"][30:]).replace(lookup_term, "<mark>" +
-                                                                     lookup_term + "</mark>")
-                    term_dict["name"] = term["name"]
-                    results.append(term_dict)
-                elif lookup_term.lower() in (term["name"]).lower():
-                    term_dict["uri"] = term["uri"][30:]
-                    for variant in lookup_variants:
-                        if variant in term["name"]:
-                            term_dict["name"] = (term["name"]).replace(variant, "<mark>" +
-                                                                       variant + "</mark>")
-                    results.append(term_dict)
+                normalized_name = normalize_term(term["name"])
+                normalized_uri = normalize_term(str(term["uri"][30:]))
+
+                matched = False
+                term_dict = {}
+
+                # Check in URI
+                if normalized_lookup in normalized_uri:
+                    term_dict["uri"] = str(term["uri"][30:]).replace(lookup_term, "<mark>" + lookup_term + "</mark>")
+                    matched = True
                 else:
-                    term_dict["name"] = term["name"]
                     term_dict["uri"] = term["uri"][30:]
-                    if not term["altNames"]:
-                        continue
+
+                # Check in name
+                for variant in lookup_variants:
+                    if variant in term["name"]:
+                        term_dict["name"] = term["name"].replace(variant, "<mark>" + variant + "</mark>")
+                        matched = True
+                        break
+                else:
+                    if normalized_lookup in normalized_name:
+                        term_dict["name"] = term["name"]
+                        matched = True
+                    else:
+                        term_dict["name"] = term["name"]
+
+                # Check in altNames
+                highlighted_alts = []
+                if term.get("altNames"):
                     for alt_name in term["altNames"]:
+                        highlighted_alt = alt_name
                         for variant in lookup_variants:
-                            if variant in alt_name:
-                                term_dict["altNames"] = alt_name.replace(variant, "<mark>" +
-                                                                         variant + "</mark>")
-                                results.append(term_dict)
-                                break
+                            if variant in highlighted_alt:
+                                highlighted_alt = highlighted_alt.replace(variant, "<mark>" + variant + "</mark>")
+                                matched = True
+                        normalized_alt = normalize_term(alt_name)
+                        if normalized_lookup in normalized_alt:
+                            highlighted_alts.append(highlighted_alt)
+                    if highlighted_alts:
+                        term_dict["altNames"] = highlighted_alts
+
+                if matched:
+                    results.append(term_dict)
     return results
 
 

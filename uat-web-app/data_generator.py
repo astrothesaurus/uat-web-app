@@ -11,6 +11,7 @@ from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META
 
 p = inflect.engine()
 
+
 def build_html_list(term_list, previous_path):
     """
     Recursively builds an HTML list from a term list.
@@ -61,7 +62,8 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
     view_type = request.args.get("view", "alpha")
     lookup_term = request.args.get("lookup") if view_type == "search" else None
     sort_direction = request.args.get("sort", "alpha") if view_type == "search" else None
-    results = search_terms(lookup_term, alpha_terms, sort_direction) if view_type == "search" else []
+    results = search_terms(lookup_term, alpha_terms, sort_direction) \
+        if view_type == "search" else []
     all_paths = get_paths(request.args.get("path")) if view_type == "hierarchy" else []
     element, unknown_status = get_element_and_status(uat_id, alpha_terms, view_type)
 
@@ -81,6 +83,7 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
         "sort": sort_direction,
     }
 
+
 def normalize_term(term):
     """
     Normalizes a term for comparison:
@@ -95,10 +98,11 @@ def normalize_term(term):
         term = singular
     return term
 
-def search_terms(lookup_term, alpha_terms, sort_direction):
+
+def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
     """
-    Searches for terms in the alpha terms list, ignoring plural/singular, spaces, hyphens, apostrophes.
-    // TODO: Implement sorting based on sort_direction.
+    Searches for terms in the alpha terms list
+    Ignores plural/singular, spaces, hyphens, apostrophes.
     """
     results = []
     if lookup_term:
@@ -115,47 +119,112 @@ def search_terms(lookup_term, alpha_terms, sort_direction):
                 normalized_name = normalize_term(term["name"])
                 normalized_uri = normalize_term(str(term["uri"][30:]))
 
-                matched = False
-                term_dict = {}
+                result = search_term(lookup_term, lookup_variants, normalized_lookup,
+                                     normalized_name, normalized_uri, term)
+                if result is not None:
+                    results.append(result)
 
-                # Check in URI
-                if normalized_lookup in normalized_uri:
-                    term_dict["uri"] = str(term["uri"][30:]).replace(lookup_term, "<mark>" + lookup_term + "</mark>")
-                    matched = True
-                else:
-                    term_dict["uri"] = term["uri"][30:]
-
-                # Check in name
-                for variant in lookup_variants:
-                    if variant in term["name"]:
-                        term_dict["name"] = term["name"].replace(variant, "<mark>" + variant + "</mark>")
-                        matched = True
-                        break
-                else:
-                    if normalized_lookup in normalized_name:
-                        term_dict["name"] = term["name"]
-                        matched = True
-                    else:
-                        term_dict["name"] = term["name"]
-
-                # Check in altNames
-                highlighted_alts = []
-                if term.get("altNames"):
-                    for alt_name in term["altNames"]:
-                        highlighted_alt = alt_name
-                        for variant in lookup_variants:
-                            if variant in highlighted_alt:
-                                highlighted_alt = highlighted_alt.replace(variant, "<mark>" + variant + "</mark>")
-                                matched = True
-                        normalized_alt = normalize_term(alt_name)
-                        if normalized_lookup in normalized_alt:
-                            highlighted_alts.append(highlighted_alt)
-                    if highlighted_alts:
-                        term_dict["altNames"] = highlighted_alts
-
-                if matched:
-                    results.append(term_dict)
+    if sort_direction == "relevance":
+        results.sort(key=lambda x: (x["_rank"], x["_type"]))
     return results
+
+
+def search_term(lookup_term, lookup_variants, normalized_lookup,
+                normalized_name, normalized_uri, term):
+    matched = False
+    term_dict = {}
+    best_rank = 100
+    best_type = 3  # 0=uri, 1=name, 2=alt, higher is worse
+    # URI matching
+    uri = str(term["uri"][30:])
+    if lookup_term == uri:
+        rank, mtype, matched = 1, 0, True
+    elif uri.startswith(lookup_term):
+        rank, mtype, matched = 2, 0, True
+    elif lookup_term in uri:
+        rank, mtype, matched = 3, 0, True
+    elif normalized_lookup == normalized_uri:
+        rank, mtype, matched = 4, 0, True
+    elif normalized_lookup in normalized_uri:
+        rank, mtype, matched = 5, 0, True
+    else:
+        rank, mtype = 100, 3
+    if matched and (rank < best_rank or (rank == best_rank and mtype < best_type)):
+        best_rank, best_type = rank, mtype
+        term_dict["uri"] = uri.replace(lookup_term, "<mark>" +
+                                       lookup_term + "</mark>")
+    # Name matching
+    matched_name = False
+    for variant in lookup_variants:
+        if variant == term["name"]:
+            rank, mtype, matched_name = 1, 1, True
+            term_dict["name"] = highlight_text(term["name"], variant)
+            break
+        elif term["name"].startswith(variant):
+            rank, mtype, matched_name = 2, 1, True
+            term_dict["name"] = highlight_text(term["name"], variant)
+            break
+        elif variant in term["name"]:
+            rank, mtype, matched_name = 3, 1, True
+            term_dict["name"] = highlight_text(term["name"], variant)
+            break
+    if not matched_name:
+        if normalized_lookup == normalized_name:
+            rank, mtype, matched_name = 4, 1, True
+            term_dict["name"] = term["name"]
+        elif normalized_lookup in normalized_name:
+            rank, mtype, matched_name = 5, 1, True
+            term_dict["name"] = term["name"]
+    if matched_name and (rank < best_rank or (rank == best_rank and mtype < best_type)):
+        best_rank, best_type, matched = rank, mtype, True
+    # altNames matching
+    highlighted_alts = []
+    if term.get("altNames"):
+        for alt_name in term["altNames"]:
+            alt_matched = False
+            for variant in lookup_variants:
+                if variant == alt_name:
+                    rank, mtype, alt_matched = 1, 2, True
+                    highlighted_alts.append(highlight_text(alt_name, variant))
+                    break
+                elif alt_name.startswith(variant):
+                    rank, mtype, alt_matched = 2, 2, True
+                    highlighted_alts.append(highlight_text(alt_name, variant))
+                    break
+                elif variant in alt_name:
+                    rank, mtype, alt_matched = 3, 2, True
+                    highlighted_alts.append(highlight_text(alt_name, variant))
+                    break
+            if not alt_matched:
+                normalized_alt = normalize_term(alt_name)
+                if normalized_lookup == normalized_alt:
+                    rank, mtype, alt_matched = 4, 2, True
+                    highlighted_alts.append(alt_name)
+                elif normalized_lookup in normalized_alt:
+                    rank, mtype, alt_matched = 5, 2, True
+                    highlighted_alts.append(alt_name)
+            if alt_matched and (rank < best_rank or (rank == best_rank and mtype < best_type)):
+                best_rank, best_type, matched = rank, mtype, True
+
+        if highlighted_alts:
+            term_dict["altNames"] = highlighted_alts
+    if matched:
+        term_dict["_rank"] = best_rank
+        term_dict["_type"] = best_type
+        if term_dict.get("uri") is None:
+            term_dict["uri"] = uri
+        if term_dict.get("name") is None:
+            term_dict["name"] = term["name"]
+        return term_dict
+
+
+def highlight_text(name, variant):
+    return re.sub(
+        r'({})'.format(re.escape(variant)),
+        r'<mark>\1</mark>',
+        name,
+        flags=re.IGNORECASE
+    )
 
 
 def get_paths(path):

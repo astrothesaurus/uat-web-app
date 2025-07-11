@@ -247,6 +247,9 @@
                 {% if lookup %}
 
                     <b>Search Query: {{ lookup }}</b>
+                    {% if results is defined %}
+                        <span>({{ results|length }} result{{ 's' if results|length != 1 else '' }})</span>
+                    {% endif %}
                     <br/><br/>
 
                     {% for y in results %}

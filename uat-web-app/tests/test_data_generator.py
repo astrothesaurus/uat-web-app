@@ -27,7 +27,7 @@ class TestDataGenerator(unittest.TestCase):
                     "children": {
                         "name": "Cosmology", }}]}
 
-        result = data_generator.retrieve_sorting_tool_data(self.app, "v.5.1.0", filelist)
+        result = data_generator.retrieve_sorting_tool_data("v.5.1.0", filelist)
 
         self.assertEqual(2, len(result["filelist"]))
         self.assertEqual(filelist, result["filelist"])
@@ -173,12 +173,13 @@ class TestDataGenerator(unittest.TestCase):
              "altNames": []},
             {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
              "altNames": ["Magnetics", "Magnetics fields", "Milky Way Galaxy magnetics fields",
-                          "Magentic"]}
+                          "Magnetic"]}
         ]
         lookup_term = "Magnetics"
         expected_results = [{'_rank': 1,
                              'altNames': ['<mark>Magnetics</mark>',
                                           '<mark>Magnetics</mark> fields',
+                                          'Magnetic',
                                           'Milky Way Galaxy <mark>magnetics</mark> fields'],
                              'name': 'Cosmic magnetic fields theory',
                              'uri': '321'}]

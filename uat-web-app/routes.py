@@ -90,7 +90,7 @@ def sorting_tool():
     Returns:
         str: Rendered HTML template for the sorting tool page with data.
     """
-    data = retrieve_sorting_tool_data(app, uat_manager.current_tag, uat_manager.file_list)
+    data = retrieve_sorting_tool_data(uat_manager.current_tag, uat_manager.file_list)
     return render_template("sorting.html", title="UAT Web App - Sorting Tool", **data)
 
 

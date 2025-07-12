@@ -9,7 +9,7 @@ from flask import request
 
 from config import UAT_SHORTNAME, UAT_LONGNAME, UAT_LOGO, UAT_SAVEFILE, UAT_META, HOMEPAGE_DIR
 
-p = inflect.engine()
+inflector = inflect.engine()
 
 
 def build_html_list(term_list, previous_path):
@@ -93,7 +93,7 @@ def normalize_term(term):
     """
     term = term.lower()
     term = re.sub(r"[\s\-_'\"/.,!?;:()“”’‘]", "", term)
-    singular = p.singular_noun(term)
+    singular = inflector.singular_noun(term)
     if singular:
         term = singular
     return term
@@ -101,8 +101,19 @@ def normalize_term(term):
 
 def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
     """
-    Searches for terms in the alpha terms list
-    Ignores plural/singular, spaces, hyphens, apostrophes.
+    Searches for terms in the provided list that match the lookup term,
+    using various normalization and matching strategies.
+    Supports sorting results by relevance or alphabetically.
+
+    Args:
+        lookup_term (str): The search term entered by the user.
+        alpha_terms (list): List of term dictionaries to search within.
+        sort_direction (str, optional): Sorting method for results;
+        "relevance" sorts by match rank, "alpha" sorts alphabetically. Defaults to "alpha".
+
+    Returns:
+        list: A list of dictionaries representing matched terms,
+        each with highlighting and ranking information.
     """
     results = []
     if lookup_term:
@@ -130,6 +141,21 @@ def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
 
 
 def search_term(lookup_term, lookup_variants, normalized_lookup, term):
+    """
+    Searches for a match between the lookup term and a given term's name, URI,
+    and alternative names.
+    Assigns a relevance rank based on the type of match and highlights matched substrings.
+
+    Args:
+        lookup_term (str): The original search term entered by the user.
+        lookup_variants (list): List of case-variant forms of the lookup term.
+        normalized_lookup (str): Normalized version of the lookup term for loose matching.
+        term (dict): The term dictionary containing 'name', 'uri', and optionally 'altNames'.
+
+    Returns:
+        dict or None: A dictionary with highlighted and ranked match information
+        if a match is found, otherwise None.
+    """
     normalized_name = normalize_term(term["name"])
     normalized_uri = normalize_term(str(term["uri"][30:]))
 
@@ -220,6 +246,17 @@ def search_term(lookup_term, lookup_variants, normalized_lookup, term):
 
 
 def highlight_text(name, variant):
+    """
+    Highlights all case-insensitive occurrences of `variant`
+    in `name` by wrapping them in <mark> tags.
+
+    Args:
+        name (str): The text in which to highlight matches.
+        variant (str): The substring to highlight.
+
+    Returns:
+        str: The input text with all matches of `variant` wrapped in <mark> tags.
+    """
     return re.sub(
         r'({})'.format(re.escape(variant)),
         r'<mark>\1</mark>',
@@ -280,13 +317,13 @@ def get_element_and_status(uat_id, alpha_terms, view_type):
     return element, unknown_status
 
 
-def retrieve_sorting_tool_data(app, tag, file_list):
+def retrieve_sorting_tool_data(tag, file_list):
     """
     Retrieves data for the sorting tool page.
 
     Args:
-        app (Flask): The Flask application instance.
         tag (str): The tag for the UAT version.
+        file_list (list): The list of files for sorting.
 
     Returns:
         dict: The data for the sorting tool page.

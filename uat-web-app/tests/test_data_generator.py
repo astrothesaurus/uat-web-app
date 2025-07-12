@@ -176,8 +176,7 @@ class TestDataGenerator(unittest.TestCase):
                           "Magnetic"]}
         ]
         lookup_term = "Magnetics"
-        expected_results = [{'_rank': 1,
-                             'altNames': ['<mark>Magnetics</mark>',
+        expected_results = [{'altNames': ['<mark>Magnetics</mark>',
                                           '<mark>Magnetics</mark> fields',
                                           'Magnetic',
                                           'Milky Way Galaxy <mark>magnetics</mark> fields'],
@@ -198,8 +197,7 @@ class TestDataGenerator(unittest.TestCase):
              "altNames": ["Magnetic fields"]}
         ]
         lookup_term = "321"
-        expected_results = [{'_rank': 1,
-                             'name': 'Cosmic magnetic fields theory',
+        expected_results = [{'name': 'Cosmic magnetic fields theory',
                              'uri': '<mark>321</mark>'}]
 
         results = data_generator.search_terms(lookup_term, alpha_terms)
@@ -216,12 +214,11 @@ class TestDataGenerator(unittest.TestCase):
              "altNames": ["Magnetic fields"]}
         ]
         lookup_term = "Astro processes"
-        expected_results = [{'_rank': 1,
-                             'altNames': ['Astro-processes'],
+        expected_results = [{'altNames': ['Astro-processes'],
                              'name': '<mark>Astro processes</mark>',
                              'uri': '104'}]
 
-        results = data_generator.search_terms(lookup_term, alpha_terms)
+        results = data_generator.search_terms(lookup_term, alpha_terms, "relevance")
 
         self.assertEqual(expected_results, results)
 

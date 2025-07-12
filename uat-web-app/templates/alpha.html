@@ -220,7 +220,7 @@
                         <br/><br/>
                         <label for="searchButton"></label><input type="submit" id="searchButton" value="Search"
                                                                  {% if lookup is none %}disabled {% endif %}/>
-                        <input type="reset" value="Reset" onclick="setTimeout(checkInput, 0)"/>
+                        <input type="reset" value="Reset" onclick="checkInput()"/>
                         <input type="button" value="Clear" onclick="clearSearchForm()" />
                     </form>
                     <br/><br/>

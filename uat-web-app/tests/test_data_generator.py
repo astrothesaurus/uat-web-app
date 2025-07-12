@@ -177,7 +177,6 @@ class TestDataGenerator(unittest.TestCase):
         ]
         lookup_term = "Magnetics"
         expected_results = [{'_rank': 1,
-                             '_type': 2,
                              'altNames': ['<mark>Magnetics</mark>',
                                           '<mark>Magnetics</mark> fields',
                                           'Milky Way Galaxy <mark>magnetics</mark> fields'],
@@ -199,7 +198,6 @@ class TestDataGenerator(unittest.TestCase):
         ]
         lookup_term = "321"
         expected_results = [{'_rank': 1,
-                             '_type': 0,
                              'name': 'Cosmic magnetic fields theory',
                              'uri': '<mark>321</mark>'}]
 
@@ -218,7 +216,6 @@ class TestDataGenerator(unittest.TestCase):
         ]
         lookup_term = "Astro processes"
         expected_results = [{'_rank': 1,
-                             '_type': 1,
                              'altNames': ['Astro-processes'],
                              'name': '<mark>Astro processes</mark>',
                              'uri': '104'}]

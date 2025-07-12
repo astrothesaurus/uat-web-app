@@ -107,6 +107,8 @@ def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
     results = []
     if lookup_term:
         lookup_term = lookup_term.strip()
+        # Limit input length to 256 characters to prevent ReDoS
+        lookup_term = lookup_term[:256]
         normalized_lookup = normalize_term(lookup_term)
         lookup_variants = [lookup_term.lower(), lookup_term.title(),
                            lookup_term.capitalize(), lookup_term.upper()]
@@ -116,67 +118,65 @@ def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
                 if term["status"] != "deprecated":
                     pass
             except KeyError:
-                normalized_name = normalize_term(term["name"])
-                normalized_uri = normalize_term(str(term["uri"][30:]))
-
-                result = search_term(lookup_term, lookup_variants, normalized_lookup,
-                                     normalized_name, normalized_uri, term)
+                result = search_term(lookup_term, lookup_variants, normalized_lookup, term)
                 if result is not None:
                     results.append(result)
 
     if sort_direction == "relevance":
-        results.sort(key=lambda x: (x["_rank"], x["_type"]))
+        results.sort(key=lambda x: (x["_rank"], x["name"].lower()))
+    else:
+        results.sort(key=lambda x: (x["name"].lower()))
     return results
 
 
-def search_term(lookup_term, lookup_variants, normalized_lookup,
-                normalized_name, normalized_uri, term):
+def search_term(lookup_term, lookup_variants, normalized_lookup, term):
+    normalized_name = normalize_term(term["name"])
+    normalized_uri = normalize_term(str(term["uri"][30:]))
+
     matched = False
     term_dict = {}
     best_rank = 100
-    best_type = 3  # 0=uri, 1=name, 2=alt, higher is worse
     # URI matching
     uri = str(term["uri"][30:])
     if lookup_term == uri:
-        rank, mtype, matched = 1, 0, True
+        rank, matched = 1, True
     elif uri.startswith(lookup_term):
-        rank, mtype, matched = 2, 0, True
+        rank, matched = 2, True
     elif lookup_term in uri:
-        rank, mtype, matched = 3, 0, True
+        rank, matched = 3, True
     elif normalized_lookup == normalized_uri:
-        rank, mtype, matched = 4, 0, True
+        rank, matched = 4, True
     elif normalized_lookup in normalized_uri:
-        rank, mtype, matched = 5, 0, True
+        rank, matched = 5, True
     else:
-        rank, mtype = 100, 3
-    if matched and (rank < best_rank or (rank == best_rank and mtype < best_type)):
-        best_rank, best_type = rank, mtype
-        term_dict["uri"] = uri.replace(lookup_term, "<mark>" +
-                                       lookup_term + "</mark>")
+        rank = 100
+    if matched and rank < best_rank:
+        best_rank = rank
+        term_dict["uri"] = uri.replace(lookup_term, "<mark>" + lookup_term + "</mark>")
     # Name matching
     matched_name = False
     for variant in lookup_variants:
         if variant == term["name"]:
-            rank, mtype, matched_name = 1, 1, True
+            rank, matched_name = 1, True
             term_dict["name"] = highlight_text(term["name"], variant)
             break
         elif term["name"].startswith(variant):
-            rank, mtype, matched_name = 2, 1, True
+            rank, matched_name = 2, True
             term_dict["name"] = highlight_text(term["name"], variant)
             break
         elif variant in term["name"]:
-            rank, mtype, matched_name = 3, 1, True
+            rank, matched_name = 3, True
             term_dict["name"] = highlight_text(term["name"], variant)
             break
     if not matched_name:
         if normalized_lookup == normalized_name:
-            rank, mtype, matched_name = 4, 1, True
+            rank, matched_name = 4, True
             term_dict["name"] = term["name"]
         elif normalized_lookup in normalized_name:
-            rank, mtype, matched_name = 5, 1, True
+            rank, matched_name = 5, True
             term_dict["name"] = term["name"]
-    if matched_name and (rank < best_rank or (rank == best_rank and mtype < best_type)):
-        best_rank, best_type, matched = rank, mtype, True
+    if matched_name and rank < best_rank:
+        best_rank, matched = rank, True
     # altNames matching
     highlighted_alts = []
     if term.get("altNames"):
@@ -184,33 +184,34 @@ def search_term(lookup_term, lookup_variants, normalized_lookup,
             alt_matched = False
             for variant in lookup_variants:
                 if variant == alt_name:
-                    rank, mtype, alt_matched = 1, 2, True
+                    rank, alt_matched = 1, True
                     highlighted_alts.append(highlight_text(alt_name, variant))
                     break
                 elif alt_name.startswith(variant):
-                    rank, mtype, alt_matched = 2, 2, True
+                    rank, alt_matched = 2, True
                     highlighted_alts.append(highlight_text(alt_name, variant))
                     break
                 elif variant in alt_name:
-                    rank, mtype, alt_matched = 3, 2, True
+                    rank, alt_matched = 3, True
                     highlighted_alts.append(highlight_text(alt_name, variant))
                     break
             if not alt_matched:
                 normalized_alt = normalize_term(alt_name)
                 if normalized_lookup == normalized_alt:
-                    rank, mtype, alt_matched = 4, 2, True
+                    rank, alt_matched = 4, True
                     highlighted_alts.append(alt_name)
                 elif normalized_lookup in normalized_alt:
-                    rank, mtype, alt_matched = 5, 2, True
+                    rank, alt_matched = 5, True
                     highlighted_alts.append(alt_name)
-            if alt_matched and (rank < best_rank or (rank == best_rank and mtype < best_type)):
-                best_rank, best_type, matched = rank, mtype, True
+            if alt_matched and rank < best_rank:
+                best_rank, matched = rank, True
 
         if highlighted_alts:
+            # Sort the highlighted alternatives alphabetically only
+            highlighted_alts.sort(key=lambda x: x.lower())
             term_dict["altNames"] = highlighted_alts
     if matched:
         term_dict["_rank"] = best_rank
-        term_dict["_type"] = best_type
         if term_dict.get("uri") is None:
             term_dict["uri"] = uri
         if term_dict.get("name") is None:

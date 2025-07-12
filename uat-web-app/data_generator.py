@@ -135,7 +135,7 @@ def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
 
     if sort_direction == "relevance":
         results.sort(key=lambda x: (x["_rank"], x["name"].lower()))
-    for result in results: # Remove the _rank key from the result
+    for result in results:  # Remove the _rank key from the result
         result.pop("_rank", None)
     return results
 

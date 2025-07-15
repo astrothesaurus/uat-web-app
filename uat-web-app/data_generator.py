@@ -61,7 +61,7 @@ def retrieve_alpha_page_data(uat_id, alpha_terms, html_tree):
     """
     view_type = request.args.get("view", "alpha")
     lookup_term = request.args.get("lookup") if view_type == "search" else None
-    sort_direction = request.args.get("sort", "alpha") if view_type == "search" else None
+    sort_direction = request.args.get("sort", "relevance") if view_type == "search" else None
     results = search_terms(lookup_term, alpha_terms, sort_direction) \
         if view_type == "search" else []
     all_paths = get_paths(request.args.get("path")) if view_type == "hierarchy" else []
@@ -92,14 +92,14 @@ def normalize_term(term):
     - Converts plurals to singular using inflect
     """
     term = term.lower()
-    term = re.sub(r"[\s\-_'\"/.,!?;:()“”’‘]", "", term)
+    term = re.sub(r"[\s\-_'\"\/.,!?;:()“”’‘]", "", term)
     singular = inflector.singular_noun(term)
     if singular:
         term = singular
     return term
 
 
-def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
+def search_terms(lookup_term, alpha_terms, sort_direction="relevance"):
     """
     Searches for terms in the provided list that match the lookup term,
     using various normalization and matching strategies.
@@ -109,7 +109,7 @@ def search_terms(lookup_term, alpha_terms, sort_direction="alpha"):
         lookup_term (str): The search term entered by the user.
         alpha_terms (list): List of term dictionaries to search within.
         sort_direction (str, optional): Sorting method for results;
-        "relevance" sorts by match rank, "alpha" sorts alphabetically. Defaults to "alpha".
+        "relevance" sorts by match rank, "alpha" sorts alphabetically.
 
     Returns:
         list: A list of dictionaries representing matched terms,

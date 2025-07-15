@@ -6,5 +6,5 @@ test("Search functionality test", async ({ page }) => {
     await page.locator('input[name="lookup"]').fill("galaxy");
     await page.locator('input[type="submit"]').click();
 
-    await expect(page).toHaveURL(/\/uat\/\?view=search&lookup=galaxy&sort=alpha/);
+    await expect(page).toHaveURL(/\/uat\/\?view=search&lookup=galaxy&sort=relevance/);
 });

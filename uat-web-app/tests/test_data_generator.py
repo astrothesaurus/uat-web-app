@@ -218,7 +218,7 @@ class TestDataGenerator(unittest.TestCase):
                              'name': '<mark>Astro processes</mark>',
                              'uri': '104'}]
 
-        results = data_generator.search_terms(lookup_term, alpha_terms, "relevance")
+        results = data_generator.search_terms(lookup_term, alpha_terms, "alpha")
 
         self.assertEqual(expected_results, results)
 

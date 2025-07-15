@@ -61,8 +61,8 @@
 
     function clearSearchForm() {
         document.getElementById("uatlookup").value = "";
-        document.getElementById("sortOrder").value = "alpha";
-        checkInput();
+        document.getElementById("sortOrder").value = "relevance";
+        document.getElementById("searchButton").disabled = true;
     }
 </script>
 <span id="topm"></span>
@@ -207,20 +207,17 @@
 
                     <form action="" name="searchform">
                         <input type="hidden" id="uatview" name="view" value="search"/>
-                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()"
-                        {% if lookup %} value="{{ lookup }}" {% endif %}/>
+                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()"/>
                         <br/><br/>
                         <label for="sortOrder">Sort by:</label>
                         <select id="sortOrder" name="sort">
-                            <option value="alpha" {% if sort is none or sort == 'alpha' %}selected{% endif %}>Alphabetical</option>
-                            <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>Best Match</option>
+                            <option value="alpha">Alphabetical</option>
+                            <option value="relevance">Best Match</option>
                         </select>
                         <!--                         <br>
                                                 <input type="checkbox" id="searchdef" name="searchdef"> Also search defintions? -->
                         <br/><br/>
-                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search"
-                                                                 {% if lookup is none %}disabled {% endif %}/>
-                        <input type="reset" value="Reset" onclick="checkInput()"/>
+                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search"/>
                         <input type="button" value="Clear" onclick="clearSearchForm()" />
                     </form>
                     <br/><br/>
@@ -417,6 +414,25 @@
 
 
 <script>
+    function setFormFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const sort = params.get("sort");
+        if (sort !== null) {
+            document.getElementById("sortOrder").value = sort;
+        } else {
+            document.getElementById("sortOrder").value = "relevance";
+        }
+        const lookup = params.get("lookup");
+        if (lookup !== null) {
+            document.getElementById("uatlookup").value = lookup;
+        } else {
+            document.getElementById("uatlookup").value = "";
+        }
+        checkInput();
+    }
+
+    document.addEventListener("DOMContentLoaded", setFormFromUrl);
+    window.addEventListener("pageshow", setFormFromUrl);
 
     const STICKY_TAB_HEIGHT = 48; // Height of the sticky tab in pixels
     $(document).ready(function () {

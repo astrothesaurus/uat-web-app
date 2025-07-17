@@ -58,6 +58,12 @@
         const button = document.getElementById("searchButton");
         button.disabled = input.trim() === "";
     }
+
+    function clearSearchForm() {
+        document.getElementById("uatlookup").value = "";
+        document.getElementById("sortOrder").value = "relevance";
+        document.getElementById("searchButton").disabled = true;
+    }
 </script>
 <span id="topm"></span>
 <div class="container-fluid">
@@ -202,11 +208,17 @@
                     <form action="" name="searchform">
                         <input type="hidden" id="uatview" name="view" value="search"/>
                         <input type="text" id="uatlookup" name="lookup" oninput="checkInput()"/>
+                        <br/><br/>
+                        <label for="sortOrder">Sort by:</label>
+                        <select id="sortOrder" name="sort">
+                            <option value="alpha">Alphabetical</option>
+                            <option value="relevance">Best Match</option>
+                        </select>
                         <!--                         <br>
                                                 <input type="checkbox" id="searchdef" name="searchdef"> Also search defintions? -->
                         <br/><br/>
-                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search"
-                                                                 disabled/>
+                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search"/>
+                        <input type="button" value="Clear" onclick="clearSearchForm()" />
                     </form>
                     <br/><br/>
 
@@ -232,6 +244,9 @@
                 {% if lookup %}
 
                     <b>Search Query: {{ lookup }}</b>
+                    {% if results is defined %}
+                        <span aria-live="polite">({{ results|length }} result{{ 's' if results|length != 1 else '' }})</span>
+                    {% endif %}
                     <br/><br/>
 
                     {% for y in results %}
@@ -240,7 +255,9 @@
                                     href="{{ y.uri|replace('<mark>', '')|replace('</mark>', '') }}">{{ y.name|safe }}</a></strong>
                             (https://astrothesaurus.org/uat/{{ y.uri|safe }})
                             {% if y.altNames %}
-                                <br/><i>Alternate term:</i> {{ y.altNames|safe }}
+                                {% for value in y.altNames %}
+                                    <br/><i>Alternate term:</i> {{ value|safe }}
+                                {% endfor %}
                             {% endif %}
                             {% if y.definition %}
                                 <br/><i>Definition:</i> {{ y.definition|safe }}
@@ -397,6 +414,25 @@
 
 
 <script>
+    function setFormFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const sort = params.get("sort");
+        if (sort !== null) {
+            document.getElementById("sortOrder").value = sort;
+        } else {
+            document.getElementById("sortOrder").value = "relevance";
+        }
+        const lookup = params.get("lookup");
+        if (lookup !== null) {
+            document.getElementById("uatlookup").value = lookup;
+        } else {
+            document.getElementById("uatlookup").value = "";
+        }
+        checkInput();
+    }
+
+    document.addEventListener("DOMContentLoaded", setFormFromUrl);
+    window.addEventListener("pageshow", setFormFromUrl);
 
     const STICKY_TAB_HEIGHT = 48; // Height of the sticky tab in pixels
     $(document).ready(function () {

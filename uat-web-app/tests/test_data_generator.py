@@ -27,7 +27,7 @@ class TestDataGenerator(unittest.TestCase):
                     "children": {
                         "name": "Cosmology", }}]}
 
-        result = data_generator.retrieve_sorting_tool_data(self.app, "v.5.1.0", filelist)
+        result = data_generator.retrieve_sorting_tool_data("v.5.1.0", filelist)
 
         self.assertEqual(2, len(result["filelist"]))
         self.assertEqual(filelist, result["filelist"])
@@ -172,10 +172,16 @@ class TestDataGenerator(unittest.TestCase):
             {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
              "altNames": []},
             {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
-             "altNames": ["Magnetic fields"]}
+             "altNames": ["Magnetics", "Magnetics fields", "Milky Way Galaxy magnetics fields",
+                          "Magnetic"]}
         ]
-        lookup_term = "Magnetic"
-        expected_results = [{'name': 'Cosmic <mark>magnetic</mark> fields theory', 'uri': '321'}]
+        lookup_term = "Magnetics"
+        expected_results = [{'altNames': ['<mark>Magnetics</mark>',
+                                          '<mark>Magnetics</mark> fields',
+                                          'Magnetic',
+                                          'Milky Way Galaxy <mark>magnetics</mark> fields'],
+                             'name': 'Cosmic magnetic fields theory',
+                             'uri': '321'}]
 
         results = data_generator.search_terms(lookup_term, alpha_terms)
 
@@ -191,7 +197,8 @@ class TestDataGenerator(unittest.TestCase):
              "altNames": ["Magnetic fields"]}
         ]
         lookup_term = "321"
-        expected_results = [{'name': 'Cosmic magnetic fields theory', 'uri': '<mark>321</mark>'}]
+        expected_results = [{'name': 'Cosmic magnetic fields theory',
+                             'uri': '<mark>321</mark>'}]
 
         results = data_generator.search_terms(lookup_term, alpha_terms)
 
@@ -199,18 +206,19 @@ class TestDataGenerator(unittest.TestCase):
 
     def test_search_terms_alt_name_no_status(self):
         alpha_terms = [
-            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
-             "altNames": ["Astro processes"]},
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astro processes",
+             "altNames": ["Astro-processes"]},
             {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
              "altNames": []},
             {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
              "altNames": ["Magnetic fields"]}
         ]
         lookup_term = "Astro processes"
-        expected_results = [{'altNames': '<mark>Astro processes</mark>',
-                             'name': 'Astrophysical processes', 'uri': '104'}]
+        expected_results = [{'altNames': ['Astro-processes'],
+                             'name': '<mark>Astro processes</mark>',
+                             'uri': '104'}]
 
-        results = data_generator.search_terms(lookup_term, alpha_terms)
+        results = data_generator.search_terms(lookup_term, alpha_terms, "alpha")
 
         self.assertEqual(expected_results, results)
 

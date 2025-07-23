@@ -58,70 +58,59 @@
         {% endif %}
     </div>
 
-    <div id="leftside">
-
-
-        <div id="menu">
-            {% if logo == "" %}
-                <h3>{{ longname }}</h3><a href="{{ homepageDir }}">return home</a><br/><br/>
-            {% else %}
-                <img width="300px" src="{{ url_for('static', filename='img/') }}{{ logo }}" alt="Logo"/><br/>
-                <a href="{{ homepageDir }}">return home</a><br/><br/>
-            {% endif %}
-
-            <label for="opts">Choose a branch of the
-                {{ shortname }}{% if version == "" %}{% else %} ({{ version }}){% endif %}:</label>
-            <br/>
-            <select id="opts">
-                <option value="blank" selected="selected" disabled="disabled"></option>
-                {% for x in filelist %}
-                    <option id="{{ x.value }}" value="{{ x.value }}">{{ x.name }}</option>
-                {% endfor %}
-            </select>
-            <br/>OR<br/>
-            <label for="saveopts">Choose a previous save:</label><br/><select id="saveopts">
-            <option id="nosave" value="none" selected="selected" disabled="disabled">No saves yet!</option>
-        </select>
-            <br/>OR<br/>
-            <label for="browsebutton">Load a previous export:</label><br/><input type="file" accept=".json" value="Load"
-                                                                                 id="browsebutton"/> <input
-                type="button" value="Load" id="loadbutton" disabled>
-            <br/>OR<br/>
-            <input value="Start with a blank workspace" type=button id="blankspace"/>
-
-            <div id="treeoptions">
-                <hr>
-                <input type="button" value="Save As..." id="savebutton"/>
-                <input type="button" value="Save" id="overridebutton"/>
-                <input type="button" value="Delete" id="deletebutton"/>
-                <br/>
-                <input type="button" value="Export" id="exportbutton"/>
-
-                <br/>
-                <hr>
-                <input type="button" value="Expand all" id="fullex"/>
-                <input type="button" value="Collapse all" id="fullcollapse"/>
-                <br/><br/>
-                <input type="button" value="Undo" id="undobutton"/>
-                <input type="button" value="Redo" id="redobutton"/>
-                <br/><br/>
-                <label for="newnode">Add Concept: </label><br/><input type="text" id="newnode"/><input type="button"
-                                                                                                       value="Add Node"
-                                                                                                       id="add_node"
-                                                                                                       disabled/>
-
-                <br/>
-                <hr>
-                <!-- <input type="button" value="Show Feedback Form" id="showbutton"/>
-                <input type="button" value="Hide Feedback Form" id="hidebutton"/> -->
+    <div id="leftside" class="card h-100">
+        <div class="card-body">
+            <div id="menu">
+                <img width="300px" src="{{ url_for('static', filename='img/') }}{{ logo }}" alt="Logo" class="img-fluid mb-3"/>
+                <a href="{{ homepageDir }}" class="btn btn-link p-0 mb-3">return home</a>
+                <div class="form-group mb-3">
+                    <label for="opts">Choose a branch of the
+                        {{ shortname }}{% if version == "" %}{% else %} ({{ version }}){% endif %}:
+                    </label>
+                    <select id="opts" class="form-control mb-2" style="max-width: 95%;">
+                        <option value="blank" selected="selected" disabled="disabled"></option>
+                        {% for x in filelist %}
+                            <option id="{{ x.value }}" value="{{ x.value }}">{{ x.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="saveopts">Choose a previous save:</label>
+                    <select id="saveopts" class="form-control mb-2" style="max-width: 95%;">
+                        <option id="nosave" value="none" selected="selected" disabled="disabled">No saves yet!</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="browsebutton">Load a previous export:</label>
+                    <input type="file" accept=".json" id="browsebutton" class="form-control-file mb-2"/>
+                    <input type="button" value="Load" id="loadbutton" class="btn btn-secondary btn-sm" disabled>
+                </div>
+                <input value="Start with a blank workspace" type="button" id="blankspace" class="btn btn-outline-primary btn-block mb-3"/>
+                <div id="treeoptions" class="mt-4">
+                    <hr>
+                    <input type="button" value="Save As..." id="savebutton" class="btn btn-primary btn-sm mb-1"/>
+                    <input type="button" value="Save" id="overridebutton" class="btn btn-primary btn-sm mb-1"/>
+                    <input type="button" value="Delete" id="deletebutton" class="btn btn-danger btn-sm mb-1"/>
+                    <br/>
+                    <input type="button" value="Export" id="exportbutton" class="btn btn-info btn-sm mb-3"/>
+                    <hr>
+                    <input type="button" value="Expand all" id="fullex" class="btn btn-link btn-sm"/>
+                    <input type="button" value="Collapse all" id="fullcollapse" class="btn btn-link btn-sm"/>
+                    <input type="button" value="Undo" id="undobutton" class="btn btn-link btn-sm"/>
+                    <input type="button" value="Redo" id="redobutton" class="btn btn-link btn-sm"/>
+                    <br/><br/>
+                    <label for="newnode">Add Concept: </label>
+                    <div class="d-flex align-items-stretch mb-3">
+                        <input type="text" id="newnode" class="form-control mr-2 h-100" style="width:75%;" />
+                        <input type="button" value="Add Node" id="add_node" class="btn btn-success btn-sm h-100" disabled />
+                    </div>
+                    <hr>
+                </div>
             </div>
-
-
+            <div id="closeleft" class="mt-3">
+                <img width="25px" src="{{ url_for('static', filename='img/left.png') }}" alt="Close Menu"/>
+            </div>
         </div>
-        <div id=closeleft><img width="25px" src="{{ url_for('static', filename='img/left.png') }}" alt="Close Menu"/>
-        </div>
-
-
     </div>
 
     <div id="secondleft">

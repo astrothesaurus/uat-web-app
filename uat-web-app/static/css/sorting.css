@@ -17,6 +17,13 @@ html {
     overflow-y: auto;
 }
 
+#newnode,
+#add_node {
+    height: 38px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 #title {
     display: none;
     z-index: 9;

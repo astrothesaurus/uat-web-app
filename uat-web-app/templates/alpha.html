@@ -64,6 +64,41 @@
         document.getElementById("sortOrder").value = "relevance";
         document.getElementById("searchButton").disabled = true;
     }
+    function formatExportedData(obj) {
+        if (typeof obj === "string") {
+            return obj.replace(/<\/?mark>/g, "");
+        } else if (Array.isArray(obj)) {
+            return obj.map(formatExportedData);
+        } else if (obj && typeof obj === "object") {
+            const newObj = {};
+            for (const key in obj) {
+                if (key === "uri" && typeof obj[key] === "string") {
+                    newObj[key] = "https://astrothesaurus.org/uat/" + formatExportedData(obj[key]);
+                } else {
+                    newObj[key] = formatExportedData(obj[key]);
+                }
+            }
+            return newObj;
+        }
+        return obj;
+    }
+
+    function exportResults() {
+        const cleanedResults = formatExportedData(resultsData);
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cleanedResults, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", "uat_results.json");
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        document.body.removeChild(dlAnchor);
+    }
+    // Inject results from Flask as a JS variable
+    {% if results is defined %}
+    var resultsData = {{ results|tojson }};
+    {% else %}
+    var resultsData = [];
+    {% endif %}
 </script>
 <span id="topm"></span>
 <div class="container-fluid">
@@ -98,7 +133,18 @@
 
             <!-- mobile pills -->
             <div class="d-sm-block d-md-none">
-
+                <!-- Mobile pills (visible on sm and below) -->
+                <div class="d-sm-block d-md-none">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link alpha-tab {% if gtype == 'alpha' %} active{% endif %}" id="alpha-tab"
+                           href="{{ url_for('alpha_page') }}" role="tab" aria-controls="v-pills-alpha" aria-selected="false">By Index</a>
+                        <a class="nav-link hierarchy-tab {% if gtype == 'hierarchy' %} active{% endif %}" id="hierarchy-tab"
+                           href="{{ url_for('alpha_page') }}?view=hierarchy" role="tab" aria-controls="v-pills-hierarchy" aria-selected="false">By Hierarchy</a>
+                        <a class="nav-link search-tab {% if gtype == 'search' %} active{% endif %}" id="search-tab"
+                           href="{{ url_for('alpha_page') }}?view=search" role="tab" aria-controls="v-pills-search" aria-selected="false">Search</a>
+                    </div>
+                </div>
+                <hr/>
                 <!--     <p class="h4">Browse & Search UAT Concepts</p> -->
                 {% if ( (element == "noelement") and (lookup == None) ) %}
                     <p>The full list of UAT Concepts can be viewed alphabetically via the Index view, or by its
@@ -110,20 +156,6 @@
                         view. Clicking on arrow icons will open or close a list of child concepts. Clicking on the name
                         of a concept will take you to more details about that concept.</p>
                 {% endif %}
-                <hr/>
-                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-                    <a class="nav-link alpha-tab {% if gtype == 'alpha' %} active{% endif %}" id="alpha-tab"
-                       data-toggle="pill" href="#alpha" role="tab" aria-controls="v-pills-alpha" aria-selected="false">By
-                        Index</a>
-                    <a class="nav-link hierarchy-tab {% if gtype == 'hierarchy' %} active{% endif %}" id="hierarchy-tab"
-                       data-toggle="pill" href="#hierarchy" role="tab" aria-controls="v-pills-hierarchy"
-                       aria-selected="false">By Hierarchy</a>
-                    <a class="nav-link search-tab {% if gtype == 'search' %} active{% endif %}" id="search-tab"
-                       data-toggle="pill" href="#search" role="tab" aria-controls="v-pills-search"
-                       aria-selected="false">Search</a>
-
-                </div>
                 <hr/>
             </div>
             <!-- end mobile pills-->
@@ -184,8 +216,8 @@
                     <div class="d-sm-block d-md-none">Browse By Hierarchy</div>
                     <br/>
                     <div class="advmenu">
-                        <a href="javascript:ddtreemenu.flatten('treemenu1', 'expand')">expand all</a> | <a
-                            href="javascript:ddtreemenu.flatten('treemenu1', 'collapse')">collapse all</a>
+                        <a href="javascript:ddtreemenu.flatten('treemenu1', 'expand')" class="btn btn-link p-0">expand all</a> |
+                        <a href="javascript:ddtreemenu.flatten('treemenu1', 'collapse')" class="btn btn-link p-0">collapse all</a>
                     </div>
 
                     {{ htree|safe }}
@@ -201,24 +233,26 @@
                 <!-- search -->
                 <div class="tab-pane fade{% if gtype == 'search' %} show active{% endif %}" id="search" role="tabpanel"
                      aria-labelledby="search-tab">
-                    <label for="uatlookup">Search for UAT Concepts</label>
-
-                    <br/>
-
-                    <form action="" name="searchform">
+                    <form action="" name="searchform" class="mt-3">
                         <input type="hidden" id="uatview" name="view" value="search"/>
-                        <input type="text" id="uatlookup" name="lookup" oninput="checkInput()"/>
-                        <br/><br/>
-                        <label for="sortOrder">Sort by:</label>
-                        <select id="sortOrder" name="sort">
-                            <option value="alpha">Alphabetical</option>
-                            <option value="relevance">Best Match</option>
-                        </select>
-                        <!--                         <br>
-                                                <input type="checkbox" id="searchdef" name="searchdef"> Also search defintions? -->
-                        <br/><br/>
-                        <label for="searchButton"></label><input type="submit" id="searchButton" value="Search"/>
-                        <input type="button" value="Clear" onclick="clearSearchForm()" />
+                        <div class="form-group">
+                            <label for="uatlookup">Search for UAT Concepts</label>
+                            <input type="text" id="uatlookup" name="lookup" class="form-control" oninput="checkInput()" placeholder="Enter concept..."/>
+                        </div>
+                        <div class="form-group">
+                            <label for="sortOrder">Sort by:</label>
+                            <select id="sortOrder" name="sort" class="form-control">
+                                <option value="alpha">Alphabetical</option>
+                                <option value="relevance">Best Match</option>
+                            </select>
+                        </div>
+                        <div class="form-group d-flex flex-wrap gap-2">
+                            <input type="submit" id="searchButton" value="Search" class="btn btn-primary mr-2"/>
+                            <input type="button" value="Clear" onclick="clearSearchForm()" class="btn btn-outline-secondary mr-2"/>
+                            {% if lookup and results is defined and results|length > 0 %}
+                                <button id="exportJsonBtn" type="button" class="btn btn-secondary" onclick="exportResults()">Export as JSON</button>
+                            {% endif %}
+                        </div>
                     </form>
                     <br/><br/>
 

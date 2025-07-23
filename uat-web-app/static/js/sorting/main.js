@@ -139,7 +139,7 @@ class NewBranchEntry {
 
         $("#newnode").on("input", function () {
             const newNodeInput = $(this).val().trim();
-            $("#add_node").prop("disabled", newNodeInput === "");
+            $("#add-node").prop("disabled", newNodeInput === "");
         });
 
         // Load button functionality
@@ -237,10 +237,10 @@ class NewBranchEntry {
         });
 
         // Add node functionality
-        $("#add_node").click(function () {
+        $("#add-node").click(function () {
             AddNode();
             $("#newnode").val("");
-            $("#add_node").prop("disabled", true);
+            $("#add-node").prop("disabled", true);
         });
 
         // Toggle feedback section

@@ -18,26 +18,28 @@
 <body>
 
 <div class="container">
-    <div class="row">
+    <div class="row my-4">
         <div class="col-3">
-            <img src="{{ url_for('static', filename='img/uat-logo.png') }}" width="100%" alt="UAT Logo"/>
+            <img src="{{ url_for('static', filename='img/uat-logo.png') }}" class="img-fluid" alt="UAT Logo"/>
         </div>
         <div class="col-9">
             <p class="h2">You've reached the UAT Web Apps Home Page!</p>
             <br/><br/>
             <p>You can find a few different web applications here:</p>
-            <ul>
-                <li><a href="/sort/">UAT Sorting Tool</a></li>
-                <li><a href="/uat/">UAT Alphabetical Browser</a></li>
-                <li><a href="/uat/?view=hierarchy">UAT Hierarchical Browser</a></li>
-                <li><a href="/uat/?view=search">Search the UAT</a></li>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/sort/">UAT Sorting Tool</a></li>
+                <li class="list-group-item"><a href="/uat/">UAT Alphabetical Browser</a></li>
+                <li class="list-group-item"><a href="/uat/?view=hierarchy">UAT Hierarchical Browser</a></li>
+                <li class="list-group-item"><a href="/uat/?view=search">Search the UAT</a></li>
             </ul>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-12">
-            <p class="text-center">To learn more about the Unified Astronomy Thesaurus, visit the <a
-                    href="https://astrothesaurus.org">main website</a>.</p>
+            <p class="text-center">
+                To learn more about the Unified Astronomy Thesaurus, visit the
+                <a href="https://astrothesaurus.org" class="text-danger p-0 align-baseline">main website</a>.
+            </p>
         </div>
     </div>
 </div>

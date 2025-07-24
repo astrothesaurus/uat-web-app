@@ -14,6 +14,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function handleTabClick(tabName, inactive1, inactive2, tabSelector, contentSelector) {
+    localStorage.setItem("currentTab", tabName);
+    localStorage.setItem("inactive1", inactive1);
+    localStorage.setItem("inactive2", inactive2);
+
+    if ($(tabSelector).hasClass("active")) {
+        $(contentSelector).removeClass("active");
+        event.preventDefault();
+        event.stopPropagation();
+        $(tabSelector).removeClass("active").attr("aria-selected", "false");
+    }
+}
+
+function scrollToLetter(letter) {
+    document.getElementById(letter).scrollIntoView(true);
+    document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
+    $("#letter" + letter).focus();
+}
+
 function getlink(id) {
     const elementId = "-" + id;
 
@@ -110,20 +129,18 @@ $(document).ready(function () {
         }
     }
 
-    $(".letter").on("keyup", function () {
-        if (event.keyCode === 13) {
-            thisletter = event.target.innerHTML;
-            event.preventDefault();
-            document.getElementById(thisletter).scrollIntoView(true);
-            document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
-            $("#letter" + thisletter).focus();
-        }
-    }).on("click", function () {
-        thisletter = event.target.innerHTML;
+    $(".letter").on("click", function (event) {
         event.preventDefault();
-        document.getElementById(thisletter).scrollIntoView(true);
-        document.getElementById('uatSideBar').scrollTop -= STICKY_TAB_HEIGHT;
-        $("#letter" + thisletter).focus();
+        const letter = $(event.currentTarget).find("span").text().trim();
+        scrollToLetter(letter);
+    });
+
+    $(".letter").on("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " " || event.keyCode === 13 || event.keyCode === 32) {
+            event.preventDefault();
+            const letter = $(event.currentTarget).find("span").text().trim();
+            scrollToLetter(letter);
+        }
     });
 
     $(".totopimg").on("keyup", function () {
@@ -138,54 +155,29 @@ $(document).ready(function () {
         document.getElementById('uatSideBar').scrollTop = 0;
     });
 
-    $(".totopimgm").on("click", function () {
+    $(".totopimgm").on("click", function (event) {
         event.preventDefault();
         document.getElementById("topm").scrollIntoView(true);
         document.getElementById('uatSideBar').scrollTop = 0;
-    });
-
-
-    $(".alpha-tab").click(function (e) {
-        localStorage.setItem("currentTab", "alpha");
-        localStorage.setItem("inactive1", "hierarchy");
-        localStorage.setItem("inactive2", "search");
-
-        if ($(this).hasClass("active")) {
-            console.log("has class");
-
-            $("#alpha").removeClass("active");
-            e.preventDefault();
-            e.stopPropagation();
-            $(".alpha-tab").removeClass("active").attr("aria-selected", "false");
+    }).on("keydown", function (event) {
+        if (event.key === "Enter" || event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("topm").scrollIntoView(true);
+            document.getElementById('uatSideBar').scrollTop = 0;
         }
     });
 
-    $(".hierarchy-tab").click(function (e) {
-        localStorage.setItem("currentTab", "hierarchy");
-        localStorage.setItem("inactive1", "search");
-        localStorage.setItem("inactive2", "alpha");
 
-        if ($(this).hasClass("active")) {
-
-            $("#hierarchy").removeClass("active");
-            e.preventDefault();
-            e.stopPropagation();
-            $(".hierarchy-tab").removeClass("active").attr("aria-selected", "false");
-        }
+    $(".alpha-tab").click(function () {
+        handleTabClick("alpha", "hierarchy", "search", ".alpha-tab", "#alpha");
     });
 
-    $(".search-tab").click(function (e) {
-        localStorage.setItem("currentTab", "search");
-        localStorage.setItem("inactive1", "hierarchy");
-        localStorage.setItem("inactive2", "alpha");
+    $(".hierarchy-tab").click(function () {
+        handleTabClick("hierarchy", "search", "alpha", ".hierarchy-tab", "#hierarchy");
+    });
 
-        if ($(this).hasClass("active")) {
-
-            $("#search").removeClass("active");
-            e.preventDefault();
-            e.stopPropagation();
-            $(".search-tab").removeClass("active").attr("aria-selected", "false");
-        }
+    $(".search-tab").click(function () {
+        handleTabClick("search", "hierarchy", "alpha", ".search-tab", "#search");
     });
 
     $(window).on("resize", function (e) {
@@ -214,6 +206,8 @@ $(document).ready(function () {
 
 try {
     module.exports = {
+        handleTabClick,
+        scrollToLetter,
         getlink,
         checkInput,
         clearSearchForm,

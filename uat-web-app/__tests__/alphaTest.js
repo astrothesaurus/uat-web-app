@@ -1,5 +1,7 @@
 // uat-web-app/__tests__/alphaTest.js
 const {
+    handleTabClick,
+    scrollToLetter,
     getlink,
     checkInput,
     clearSearchForm,
@@ -60,7 +62,7 @@ describe("Alpha page Functions", () => {
     });
 
     test("exportResults should trigger download", () => {
-        global.resultsData = [{name: "Test"}];
+        global.resultsData = [{name: "Test", uri: "test-uri", altNames: ["alt1", "alt2"]}];
 
         const a = document.createElement("a");
         jest.spyOn(a, "click");
@@ -89,5 +91,41 @@ describe("Alpha page Functions", () => {
         setFormFromUrl();
         expect(document.getElementById("uatlookup").value).toBe("testval");
         expect(document.getElementById("sortOrder").value).toBe("other");
+    });
+
+    test("should deactivate tab and content when already active", () => {
+        document.body.innerHTML = `
+            <div class="alpha-tab active" aria-selected="true"></div>
+            <div id="alpha" class="active"></div>
+        `;
+        // Simulate event object
+        const event = new Event("click");
+        event.preventDefault = jest.fn();
+        event.stopPropagation = jest.fn();
+        // Patch global event
+        global.event = event;
+
+        handleTabClick("alpha", "hierarchy", "search", ".alpha-tab", "#alpha");
+
+        expect(document.querySelector(".alpha-tab").classList.contains("active")).toBe(false);
+        expect(document.querySelector(".alpha-tab").getAttribute("aria-selected")).toBe("false");
+        expect(document.querySelector("#alpha").classList.contains("active")).toBe(false);
+    });
+
+    test("should scroll to letter and focus", () => {
+        document.body.innerHTML = `
+            <div id="A"></div>
+            <div id="uatSideBar"></div>
+            <div id="letterA" tabindex="0"></div>
+        `;
+        window.STICKY_TAB_HEIGHT = 48;
+        document.getElementById('uatSideBar').scrollTop = 100;
+        document.getElementById('letterA').focus = jest.fn();
+        document.getElementById('A').scrollIntoView = jest.fn();
+
+        scrollToLetter("A");
+        expect(document.getElementById("A").scrollIntoView).toHaveBeenCalledWith(true);
+        expect(document.getElementById("uatSideBar").scrollTop).toBe(52);
+        expect(document.getElementById("letterA").focus).toHaveBeenCalled();
     });
 });

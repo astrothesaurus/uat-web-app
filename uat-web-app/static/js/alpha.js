@@ -12,9 +12,13 @@ document.addEventListener("DOMContentLoaded", function () {
         folder.style.backgroundImage = "url('/img/closed.gif')";
         folder.setAttribute("aria-label", "Expand folder");
     });
+    var exportBtn = document.getElementById("exportJsonBtn");
+    if (exportBtn) {
+        exportBtn.addEventListener("click", exportResults);
+    }
 });
 
-function handleTabClick(tabName, inactive1, inactive2, tabSelector, contentSelector) {
+function handleTabClick(tabName, inactive1, inactive2, tabSelector, contentSelector, event) {
     localStorage.setItem("currentTab", tabName);
     localStorage.setItem("inactive1", inactive1);
     localStorage.setItem("inactive2", inactive2);
@@ -168,16 +172,16 @@ $(document).ready(function () {
     });
 
 
-    $(".alpha-tab").click(function () {
-        handleTabClick("alpha", "hierarchy", "search", ".alpha-tab", "#alpha");
+    $(".alpha-tab").click(function (event) {
+        handleTabClick("alpha", "hierarchy", "search", ".alpha-tab", "#alpha", event);
     });
 
-    $(".hierarchy-tab").click(function () {
-        handleTabClick("hierarchy", "search", "alpha", ".hierarchy-tab", "#hierarchy");
+    $(".hierarchy-tab").click(function (event) {
+        handleTabClick("hierarchy", "search", "alpha", ".hierarchy-tab", "#hierarchy", event);
     });
 
-    $(".search-tab").click(function () {
-        handleTabClick("search", "hierarchy", "alpha", ".search-tab", "#search");
+    $(".search-tab").click(function (event) {
+        handleTabClick("search", "hierarchy", "alpha", ".search-tab", "#search", event);
     });
 
     $(window).on("resize", function (e) {

@@ -102,10 +102,8 @@ describe("Alpha page Functions", () => {
         const event = new Event("click");
         event.preventDefault = jest.fn();
         event.stopPropagation = jest.fn();
-        // Patch global event
-        global.event = event;
 
-        handleTabClick("alpha", "hierarchy", "search", ".alpha-tab", "#alpha");
+        handleTabClick("alpha", "hierarchy", "search", ".alpha-tab", "#alpha", event);
 
         expect(document.querySelector(".alpha-tab").classList.contains("active")).toBe(false);
         expect(document.querySelector(".alpha-tab").getAttribute("aria-selected")).toBe("false");

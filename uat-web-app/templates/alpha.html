@@ -188,7 +188,7 @@ $(document).ready(function () {
                             <input type="submit" id="searchButton" value="Search" class="btn btn-primary mr-2"/>
                             <input type="button" value="Clear" onclick="clearSearchForm()" class="btn btn-outline-secondary mr-2"/>
                             {% if lookup and results is defined and results|length > 0 %}
-                                <button id="exportJsonBtn" type="button" class="btn btn-secondary" onclick="exportResults()">Export as JSON</button>
+                                <button id="exportJsonBtn" type="button" class="btn btn-secondary">Export as JSON</button>
                             {% endif %}
                         </div>
                     </form>

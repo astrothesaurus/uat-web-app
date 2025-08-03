@@ -28,6 +28,27 @@ a:active, .advmenu a:hover {
   color: #fff !important;
 }
 
+.hierarchy-tab.active,
+.hierarchy-tab:focus,
+.hierarchy-tab:hover {
+  background-color: #0056b3 !important;
+  color: #fff !important;
+}
+
+.alpha-tab.active,
+.alpha-tab:focus,
+.alpha-tab:hover {
+  background-color: #0056b3 !important;
+  color: #fff !important;
+}
+
+.search-tab.active,
+.search-tab:focus,
+.search-tab:hover {
+  background-color: #0056b3 !important;
+  color: #fff !important;
+}
+
 .advmenu a:link {
     color: #24041b;
     text-decoration: underline;

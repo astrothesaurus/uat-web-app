@@ -15,6 +15,19 @@ a:active, .advmenu a:hover {
     text-decoration: none;
 }
 
+.btn-primary {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #fff !important;
+}
+
+.btn-primary:focus,
+.btn-primary:hover {
+  background-color: #036 !important;
+  border-color: #036 !important;
+  color: #fff !important;
+}
+
 .advmenu a:link {
     color: #24041b;
     text-decoration: underline;

@@ -8,7 +8,7 @@ const {
     formatExportedData,
     exportResults,
     setFormFromUrl
-} = require("../static/js/alpha");
+} = require("../static/js/alphaUtils");
 
 describe("Alpha page Functions", () => {
     beforeEach(() => {

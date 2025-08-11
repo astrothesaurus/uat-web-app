@@ -8,7 +8,7 @@ const {
     openAlertModal,
     showConfirmModal,
     showPromptModal
-} = require("../static/js/sorting/main.js");
+} = require("../static/js/sorting/mainUtils.js");
 
 describe("storenewsave", () => {
     test("should store new save data into localStorage", () => {

@@ -187,6 +187,28 @@ class TestDataGenerator(unittest.TestCase):
 
         self.assertEqual(expected_results, results)
 
+    def test_search_terms_name_normalized(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
+             "altNames": ["Astro processes"]},
+            {"uri": "http://astrothesaurus.org/uat/102", "name": "Astrophysical magnetism",
+             "altNames": []},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetics", "Magnetics fields", "Milky Way Galaxy magnetics fields",
+                          "Magnetic"]}
+        ]
+        lookup_term = "Magnetic's"
+        expected_results = [{'altNames': ['Magnetic',
+                                          'Magnetics',
+                                          'Magnetics fields',
+                                          'Milky Way Galaxy magnetics fields'],
+                             'name': 'Cosmic magnetic fields theory',
+                             'uri': '321'}]
+
+        results = data_generator.search_terms(lookup_term, alpha_terms, "magnetic")
+
+        self.assertEqual(expected_results, results)
+
     def test_search_terms_uri_no_status(self):
         alpha_terms = [
             {"uri": "http://astrothesaurus.org/uat/104", "name": "Astrophysical processes",
@@ -219,6 +241,66 @@ class TestDataGenerator(unittest.TestCase):
                              'uri': '104'}]
 
         results = data_generator.search_terms(lookup_term, alpha_terms, "alpha")
+
+        self.assertEqual(expected_results, results)
+
+    def test_search_terms_uri_starts_with(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astro processes",
+             "altNames": ["Astro-processes"]},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "3"
+        expected_results = [{'name': 'Cosmic magnetic fields theory',
+                             'uri': '<mark>3</mark>21'}]
+
+        results = data_generator.search_terms(lookup_term, alpha_terms)
+
+        self.assertEqual(expected_results, results)
+
+    def test_search_terms_uri_contains(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astro processes",
+             "altNames": ["Astro-processes"]},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "2"
+        expected_results = [{'name': 'Cosmic magnetic fields theory',
+                             'uri': '3<mark>2</mark>1'}]
+
+        results = data_generator.search_terms(lookup_term, alpha_terms)
+
+        self.assertEqual(expected_results, results)
+
+    def test_search_terms_uri_contains_normalized(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astro processes",
+             "altNames": ["Astro-processes"]},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "2"
+        expected_results = [{'name': 'Cosmic magnetic fields theory',
+                             'uri': '321'}]
+
+        results = data_generator.search_terms(lookup_term + "'", alpha_terms, lookup_term)
+
+        self.assertEqual(expected_results, results)
+
+    def test_search_terms_uri_equals_normalized(self):
+        alpha_terms = [
+            {"uri": "http://astrothesaurus.org/uat/104", "name": "Astro processes",
+             "altNames": ["Astro-processes"]},
+            {"uri": "http://astrothesaurus.org/uat/321", "name": "Cosmic magnetic fields theory",
+             "altNames": ["Magnetic fields"]}
+        ]
+        lookup_term = "321"
+        expected_results = [{'name': 'Cosmic magnetic fields theory',
+                             'uri': '321'}]
+
+        results = data_generator.search_terms(lookup_term + "'", alpha_terms, lookup_term)
 
         self.assertEqual(expected_results, results)
 

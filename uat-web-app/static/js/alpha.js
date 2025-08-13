@@ -21,14 +21,19 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", setFormFromUrl);
 window.addEventListener("pageshow", setFormFromUrl);
 
+const MOBILE_MAX_WIDTH = 767;
+
+function isMobile() {
+    return $(window).width() <= MOBILE_MAX_WIDTH;
+}
+
 $(document).ready(function () {
 
     let currentTab = localStorage.getItem("currentTab");
     let currentElement = localStorage.getItem("currentElement");
 
     if (currentElement != "noelement") {
-        let windowSize = $(window).width();
-        if (windowSize < 768) {
+        if (isMobile()) {
             $("#hierarchy").removeClass("active");
             $("#search").removeClass("active");
             $("#alpha").removeClass("active");
@@ -50,13 +55,13 @@ $(document).ready(function () {
         }
     });
 
-    $(".totopimg").on("keyup", function () {
+    $(".totopimg").on("keyup", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
             document.getElementById("alpha-tab").scrollIntoView(true);
             document.getElementById('uatSideBar').scrollTop = 0;
         }
-    }).on("click", function () {
+    }).on("click", function (event) {
         event.preventDefault();
         document.getElementById("alpha-tab").scrollIntoView(true);
         document.getElementById('uatSideBar').scrollTop = 0;

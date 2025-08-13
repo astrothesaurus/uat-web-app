@@ -69,7 +69,14 @@ function formatExportedData(obj) {
 }
 
 function exportResults() {
-    const cleanedResults = formatExportedData(resultsData);
+    let cleanedResults;
+    try {
+        cleanedResults = formatExportedData(resultsData);
+    } catch (e) {
+        alert("An error occurred while formatting the exported data.");
+        console.error("Error in formatExportedData:", e);
+        return;
+    }
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cleanedResults, null, 2));
     const dlAnchor = document.createElement('a');
     dlAnchor.setAttribute("href", dataStr);

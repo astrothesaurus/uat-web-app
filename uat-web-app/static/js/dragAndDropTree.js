@@ -783,6 +783,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
             $("#fullcollapse").on("click", function () {
                 var root = getRoot();
                 fullcollapse(root);
+                expand(root);
                 update(root);
                 centerNode(root);
             });

@@ -120,7 +120,6 @@ class UATManager:
                 if tag_data["is_latest"]:
                     return {"status": "success", "current_tag": self.current_tag}
                 self.current_tag = tag_data["new_tag"]
-
             self.alphabetical_terms = sorted(self.get_latest_uat_file("UAT_list.json"),
                                              key=lambda k: k["name"])
             hierarchy_data = self.get_latest_uat_file("UAT.json")

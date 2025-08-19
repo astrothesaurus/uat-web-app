@@ -6,15 +6,89 @@ html {
     z-index: 10;
     width: auto;
     height: auto;
-    max-height: 100%;
-    max-width: 23.75rem;
+    max-height: 99%;
     position: absolute;
     top: 0.3rem;
     left: 0.3rem;
-
-    /* bottom: 5px;
-    right: 5px; */
+    background-color: rgb(255 255 255 / 70%);
+    border-radius: 1.6rem;
+    padding: 1.3rem 0.6rem;
+    max-width: 22.5rem;
     overflow-y: auto;
+}
+
+.btn-link {
+  color: #0056b3 !important;
+}
+
+.btn-link:focus,
+.btn-link:hover {
+  color: #036 !important;
+  text-decoration: underline;
+}
+
+.btn-outline-primary {
+  color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+
+.btn-outline-primary:focus,
+.btn-outline-primary:hover {
+  color: #fff !important;
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+}
+
+.btn-info {
+  background-color: #00657a !important;
+  border-color: #00657a !important;
+  color: #fff !important;
+}
+
+.btn-info:focus,
+.btn-info:hover {
+  background-color: #004d5c !important;
+  border-color: #004d5c !important;
+  color: #fff !important;
+}
+
+.btn-primary {
+  background-color: #0056b3 !important;
+  border-color: #0056b3 !important;
+  color: #fff !important;
+}
+
+.btn-primary:focus,
+.btn-primary:hover {
+  background-color: #036 !important;
+  border-color: #036 !important;
+  color: #fff !important;
+}
+
+.or-divider {
+    text-align: center;
+    margin: 1rem 0;
+    font-weight: bold;
+    color: #888;
+    position: relative;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    display: inline-block;
+    width: 40%;
+    height: 1px;
+    background: #ccc;
+    vertical-align: middle;
+    margin: 0 0.5em;
+}
+
+#newnode,
+#add-node {
+    height: 38px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 #title {
@@ -100,8 +174,11 @@ html {
     display: none;
 }
 
-#loadbutton, #exportbutton {
-    margin-top: 0.3rem;
+hr {
+    border: none;
+    border-top: 1px dashed #bbb;
+    margin: 1.5rem 0;
+    opacity: 0.7;
 }
 
 #history {
@@ -134,9 +211,8 @@ html {
     font-weight: bold;
 }
 
-#feedback, #menu {
+#feedback {
     border-radius: 1.6rem;
-    background-color: rgb(255 255 255 / 70%);
     padding: 1.3rem 0.6rem;
     max-width: 22.5rem;
 }

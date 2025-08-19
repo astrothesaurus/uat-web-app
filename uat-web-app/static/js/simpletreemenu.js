@@ -40,7 +40,7 @@ ddtreemenu.preventpropagate = function (e) {
     if (typeof e !== "undefined") {
         e.stopPropagation();
     } else {
-        event.cancelBubble = true;
+        e.cancelBubble = true;
     }
 };
 

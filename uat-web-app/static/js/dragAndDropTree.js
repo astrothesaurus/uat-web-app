@@ -16,7 +16,8 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
             var changenum = 1;
 
             $("#history").hide()
-
+            $("#undobutton").prop("disabled", true);
+            $("#redobutton").prop("disabled", true);
 
             //if i'm sending an actual json string instead of a file....
             if (typeof treeData == "undefined") {
@@ -341,10 +342,12 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
                             $("#closeright").show();
                         }
                         $("#undosection").show();
+                        $("#undobutton").prop("disabled", false);
 
                         clear_history("redo");
                         redo_list = [];
                         $("#redosection").hide();
+                        $("#redobutton").prop("disabled", true);
 
                         endDrag();
                     } else {
@@ -783,6 +786,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
             $("#fullcollapse").on("click", function () {
                 var root = getRoot();
                 fullcollapse(root);
+                expand(root);
                 update(root);
                 centerNode(root);
             });
@@ -891,6 +895,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
 
                     add_to_history("redo", oldparent, newparents, newchild);
                     $("#redosection").show();
+                    $("#redobutton").prop("disabled", false);
 
                     update(oldparent);
                     endDrag();
@@ -899,6 +904,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
 
                     if (undo_list.length == 0) {
                         $("#undosection").hide();
+                        $("#undobutton").prop("disabled", true);
                     }
                 } catch (err) {
                     console.error("Error performing undo: " + err);
@@ -938,6 +944,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
 
                     add_to_history("undo", oldparent, newparents, newchild);
                     $("#undosection").show();
+                    $("#undobutton").prop("disabled", false);
 
                     update(oldparent);
                     endDrag();
@@ -945,6 +952,7 @@ function renderTree(j) { // eslint-disable-line no-unused-vars
                     //console.log(redo_list.length);
                     if (redo_list.length == 0) {
                         $("#redosection").hide();
+                        $("#redobutton").prop("disabled", true);
                     }
                 } catch (err) {
                     console.error("Error performing Redo: " + err);

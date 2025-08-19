@@ -65,6 +65,14 @@ class TestUtils(unittest.TestCase):
 
         mock_stderr.assert_called_once()
 
+    @patch('inspect.getsourcefile', return_value=None)
+    @patch('inspect.stack')
+    def test_getsourcefile_none_raises_exception(self, mock_stack, mock_getsourcefile):
+        mock_stack.return_value = [(object(),)] * 5
+        with self.assertRaises(Exception) as context:
+            utils._get_project_home_directory()
+        self.assertIn("wasn't able to guess your location", str(context.exception))
+
     @patch("os.path.exists", return_value=True)
     @patch("os.path.abspath", side_effect=lambda x: x)
     @patch("inspect.getsourcefile", return_value="/path/to/module.py")

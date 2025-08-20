@@ -25,12 +25,6 @@ describe("Form Operations", () => {
         global.getRoot = jest.fn().mockReturnValue({}); // Mock getRoot function
         global.getOrig = jest.fn().mockReturnValue({}); // Mock getOrig function
         global.difftree = jest.fn().mockReturnValue("diff"); // Mock difftree function
-        global.d3 = {
-            xhr: jest.fn().mockReturnValue({
-                header: jest.fn().mockReturnThis(),
-                post: jest.fn()
-            })
-        };
 
         document.getElementById = jest.fn((id) => {
             if (id === "first_name") return {value: "John"};
@@ -39,13 +33,12 @@ describe("Form Operations", () => {
             if (id === "notes") return {value: "Some notes"};
         });
 
+        delete window.location;
+        window.location = { href: "" };
+
         TestForm();
 
-        expect(global.d3.xhr).toHaveBeenCalledWith("/email");
-        expect(global.d3.xhr().header).toHaveBeenCalledWith("Content-Type", "application/x-www-form-urlencoded");
-        expect(global.d3.xhr().post).toHaveBeenCalledWith(
-            "testarg=Name: John\nInstituion: Institution\nEmail: john@example.com\nNotes: Some notes\n\nDifference File:\ndiff"
-        );
+        expect(window.location.href).toMatch(/^mailto:/);
     });
 
 });

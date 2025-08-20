@@ -2,7 +2,7 @@ html {
     overflow-y: hidden;
 }
 
-#leftside {
+#leftside, #secondleft {
     z-index: 10;
     width: auto;
     height: auto;
@@ -170,7 +170,7 @@ html {
     overflow-y: hidden;
 }
 
-#hidebutton, #openleft, #treeoptions, #treeoptions1, #feedback, #history, #closeleft, #closeright, #openright {
+#hidebutton, #openleft, #treeoptions, #treeoptions1, #secondleft, #history, #closeleft, #closeright, #openright {
     display: none;
 }
 

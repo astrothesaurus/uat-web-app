@@ -4,15 +4,16 @@
 function TestForm() {
     let root = getRoot();
     let orig = getOrig();
-    let diffStr = difftree(orig, root);
-    let url = "/email";
+    let diffStr = decodeURIComponent(difftree(orig, root));
     let name = document.getElementById("first_name").value;
     let inst = document.getElementById("yourinst").value;
-    let uremail = document.getElementById("youremail").value;
     let urnotes = document.getElementById("notes").value;
-    d3.xhr(url)
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .post(`testarg=Name: ${name}\nInstituion: ${inst}\nEmail: ${uremail}\nNotes: ${urnotes}\n\nDifference File:\n${diffStr}`);
+    let subject = encodeURIComponent("Suggestions from Sorting Tool");
+    let body = encodeURIComponent(
+        `Name: ${name}\nInstitution: ${inst}\nNotes: ${urnotes}\n\nDifference File:\n${diffStr}`
+    );
+    const email = "uat-curation@googlegroups.com";
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
 }
 
 /**
@@ -29,8 +30,8 @@ function checkform(theform) {
             why += "Robot Check code should not be empty.";
         }
         if (theform.txtInput.value !== "") {
-            if (ValidCaptcha(theform.txtInput.value)) {
-                why += "Thank you for your feedback!";
+            if (ValidCaptcha()) {
+                why += "Thank you for your feedback!<br>Your email client should have opened.<br>Please review and send the email to complete your submission.";
                 TestForm();
             } else {
                 why += "Robot Check code did not match.";

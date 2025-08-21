@@ -158,9 +158,8 @@
             $("#treeoptions, #closeleft").show();
         });
 
-        // Initialize options and generate captcha code
+        // Initialize options
         $("opts[value='0']").attr("selected", "selected");
-        GenerateCode();
 
         // Change event for options
         $("#opts").on("change", function () {

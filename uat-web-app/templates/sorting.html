@@ -124,10 +124,8 @@
             <h3 class="card-title mb-3">Send Your Feedback</h3>
             <div id="error"></div>
             <p class="mb-3">
-                Changes made using the sorting tool will be automatically included in your feedback when you submit this
-                form.
+                Changes made using the sorting tool will be automatically included in your feedback when you send your email.
             </p>
-            <form name="review" onsubmit="checkform(this); return false;">
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="first_name">Your Name:</label>
@@ -142,21 +140,17 @@
                     <label for="notes">Additional Notes/Comments:</label>
                     <textarea class="form-control" id="notes" rows="3"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>
-                        Robot Check<span class="text-danger">*</span>:
-                    </label>
-                    <div>
-                        <span class="text-danger">Enter This Code &gt;&gt;</span>
-                        <span id="txtCaptchaDiv" class="font-weight-bold"></span>
-                    </div>
-                    <input type="hidden" id="txtCaptcha"/>
-                    <input type="text" class="form-control mt-2" name="txtInput" id="txtInput" size="15"
-                           placeholder="Enter code here"/>
+                <p><strong>Choose how you'd like to send your feedback. Your changes and comments will be pre-filled in the email draft:</strong></p>
+                <div class="btn-group-vertical mb-3" role="group" aria-label="Email options">
+                    <button type="button" class="btn btn-secondary mb-1" onclick="openEmail()" title="Opens your device's default email application with feedback pre-filled.">Open in Default Email App</button>
+                    <small class="text-muted mb-2">Use your installed email program (e.g., Outlook, Apple Mail, Thunderbird).</small>
+                    <button type="button" class="btn btn-danger mb-1" onclick="openGmail()" title="Opens Gmail in your browser with feedback pre-filled.">Open Gmail Webmail</button>
+                    <small class="text-muted mb-2">Use your Gmail account in a web browser.</small>
+                    <button type="button" class="btn btn-primary mb-1" style="background-color:#0072C6; border-color:#0072C6;" onclick="openOutlook()" title="Opens Outlook 365 in your browser with feedback pre-filled.">Open Outlook 365 Webmail</button>
+                    <small class="text-muted mb-2">Use your Outlook 365 account in a web browser.</small>
+                    <button type="button" class="btn btn-secondary" onclick="downloadEML()" title="Download a .eml file to open in any email client.">Download Email (.eml file)</button>
+                    <small class="text-muted mb-2">Download the email to send later or from another device.</small>
                 </div>
-                <button id="submitemail" type="submit" class="btn btn-primary">Send Email</button>
-            </form>
-            <span class="text-danger">*</span><i>Required</i><br/>
         </div>
     </div>
 

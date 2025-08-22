@@ -35,13 +35,20 @@ function openGmail() {
     window.open(gmailUrl, '_blank');
 }
 
+function getRFC2822Date() {
+    // Returns current date in RFC 2822 format
+    return new Date().toUTCString();
+}
+
 function downloadEML() {
     const { name, inst, urnotes } = getFormValues();
     const diffStr = decodeURIComponent(difftree(getOrig(), getRoot()));
     const body = buildBody(name, inst, urnotes, diffStr);
     const emlContent = [
+        `From: `,
         `To: ${email}`,
         `Subject: ${subject}`,
+        `Date: ${getRFC2822Date()}`,
         'Content-Type: text/plain; charset=UTF-8',
         '',
         body

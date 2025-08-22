@@ -140,7 +140,7 @@ function openAlertModal(message) {
         backdrop: 'static',
         keyboard: false
     });
-    document.getElementById("modalBodyContent").textContent = message;
+    document.getElementById("modalBodyContent").innerHTML = message;
     myModal.show();
 }
 

@@ -1,51 +1,96 @@
 const {
-    checkform,
-    TestForm
+    buildBody,
+    openEmail,
+    openOutlook,
+    openGmail,
+    downloadEML
 } = require("../static/js/sorting/formOperations.js");
 
 describe("Form Operations", () => {
-    beforeAll(() => {
-        global.openAlertModal = jest.fn(); // Mock openAlertModal function
+    test("should build email body with correct format", () => {
+        const name = "Test User";
+        const inst = "Test Institution";
+        const urnotes = "Test notes";
+        const diffStr = "Differences in tree structure";
+
+        const expectedBody = `Name: ${name}\nInstitution: ${inst}\nNotes: ${urnotes}\n\nDifference File:\n${diffStr}`;
+        const body = buildBody(name, inst, urnotes, diffStr);
+
+        expect(body).toBe(expectedBody);
     });
 
-    test("should not send feedback if captcha is invalid", () => {
-        global.getRoot = jest.fn().mockReturnValue({});
-        global.ValidCaptcha = jest.fn().mockReturnValue(false); // Ensure ValidCaptcha returns false
-        global.TestForm = jest.fn();
-        let form = {txtInput: {value: "12345"}};
+    test("should open email client with correct parameters", () => {
+        document.body.innerHTML = '<textarea id="notes"></textarea>';
+        document.getElementById("notes").value = "Test notes";
 
-        let result = checkform(form);
+        global.getOrig = jest.fn().mockReturnValue({ name: "Original Tree" });
+        global.getRoot = jest.fn().mockReturnValue({ name: "Current Tree" });
+        global.difftree = jest.fn().mockReturnValue("Differences in tree structure");
 
-        expect(result).toBe(false);
-        expect(global.TestForm).not.toHaveBeenCalled();
-        expect(global.openAlertModal).toHaveBeenCalled();
+        const originalLocation = window.location;
+        delete window.location;
+        window.location = { href: "" };
+
+        openEmail();
+
+        expect(window.location.href).toContain("mailto:");
+
+        window.location = originalLocation; // Restore after test
     });
 
-    test("should send form data and tree differences via HTTP POST request", () => {
-        global.getRoot = jest.fn().mockReturnValue({}); // Mock getRoot function
-        global.getOrig = jest.fn().mockReturnValue({}); // Mock getOrig function
-        global.difftree = jest.fn().mockReturnValue("diff"); // Mock difftree function
-        global.d3 = {
-            xhr: jest.fn().mockReturnValue({
-                header: jest.fn().mockReturnThis(),
-                post: jest.fn()
-            })
-        };
+    test("should open Outlook with correct parameters", () => {
+        document.body.innerHTML = '<textarea id="notes"></textarea>';
+        document.getElementById("notes").value = "Test notes";
 
-        document.getElementById = jest.fn((id) => {
-            if (id === "first_name") return {value: "John"};
-            if (id === "yourinst") return {value: "Institution"};
-            if (id === "youremail") return {value: "john@example.com"};
-            if (id === "notes") return {value: "Some notes"};
-        });
+        global.getOrig = jest.fn().mockReturnValue({ name: "Original Tree" });
+        global.getRoot = jest.fn().mockReturnValue({ name: "Current Tree" });
+        global.difftree = jest.fn().mockReturnValue("Differences in tree structure");
 
-        TestForm();
+        const openSpy = jest.fn();
+        window.open = openSpy;
 
-        expect(global.d3.xhr).toHaveBeenCalledWith("/email");
-        expect(global.d3.xhr().header).toHaveBeenCalledWith("Content-Type", "application/x-www-form-urlencoded");
-        expect(global.d3.xhr().post).toHaveBeenCalledWith(
-            "testarg=Name: John\nInstituion: Institution\nEmail: john@example.com\nNotes: Some notes\n\nDifference File:\ndiff"
-        );
+        openOutlook();
+
+        expect(openSpy).toHaveBeenCalledWith(expect.stringContaining("outlook.office.com"), '_blank');
+    });
+
+    test("should open Gmail with correct parameters", () => {
+        document.body.innerHTML = '<textarea id="notes"></textarea>';
+        document.getElementById("notes").value = "Test notes";
+
+        global.getOrig = jest.fn().mockReturnValue({ name: "Original Tree" });
+        global.getRoot = jest.fn().mockReturnValue({ name: "Current Tree" });
+        global.difftree = jest.fn().mockReturnValue("Differences in tree structure");
+
+        const openSpy = jest.fn();
+        window.open = openSpy;
+
+        openGmail();
+
+        expect(openSpy).toHaveBeenCalledWith(expect.stringContaining("mail.google.com"), '_blank');
+
+    });
+
+    test("should download EML file with correct content", () => {
+        document.body.innerHTML = '<textarea id="notes"></textarea>';
+        document.getElementById("notes").value = "Test notes";
+
+        global.getOrig = jest.fn().mockReturnValue({ name: "Original Tree" });
+        global.getRoot = jest.fn().mockReturnValue({ name: "Current Tree" });
+        global.difftree = jest.fn().mockReturnValue("Differences in tree structure");
+
+        const anchor = document.createElement('a');
+        jest.spyOn(anchor, 'click').mockImplementation(() => {});
+        jest.spyOn(anchor, 'setAttribute').mockImplementation(() => {});
+
+        const createElementSpy = jest.spyOn(document, 'createElement').mockReturnValue(anchor);
+
+        global.URL.createObjectURL = jest.fn(() => 'blob:mock-url');
+        global.URL.revokeObjectURL = jest.fn();
+
+        downloadEML();
+
+        expect(createElementSpy).toHaveBeenCalledWith('a');
     });
 
 });

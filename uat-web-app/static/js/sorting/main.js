@@ -25,7 +25,7 @@
         // Toggle left side panel
         $("#closeleft").on("click", function () {
             $("#leftside, #openleft").toggle();
-            $("#feedback, #hidebutton").hide();
+            $("#secondleft, #hidebutton").hide();
             $("#showbutton, #title").show();
         });
 
@@ -158,9 +158,8 @@
             $("#treeoptions, #closeleft").show();
         });
 
-        // Initialize options and generate captcha code
+        // Initialize options
         $("opts[value='0']").attr("selected", "selected");
-        GenerateCode();
 
         // Change event for options
         $("#opts").on("change", function () {
@@ -234,11 +233,11 @@
 
         // Toggle feedback section
         $("#hidebutton").on("click", function () {
-            $("#feedback, #showbutton, #hidebutton").toggle();
+            $("#secondleft, #showbutton, #hidebutton").toggle();
         });
 
         $("#showbutton").on("click", function () {
-            $("#feedback, #showbutton, #hidebutton").toggle();
+            $("#secondleft, #showbutton, #hidebutton").toggle();
         });
     });
 })(jQuery);

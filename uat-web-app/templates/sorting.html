@@ -109,6 +109,9 @@
                     <input type="button" value="Add Node" id="add-node" class="btn btn-success btn-sm h-100" disabled />
                 </div>
                 <hr>
+                <input type="button" value="Show Feedback Form" id="showbutton" class="btn btn-primary btn-sm mb-1"/>
+                <input type="button" value="Hide Feedback Form" id="hidebutton" class="btn btn-secondary btn-sm mb-1"/>
+                <hr>
             </div>
             <div id="closeleft" class="mt-3">
                 <img width="25px" src="{{ url_for('static', filename='img/left.png') }}" alt="Close Menu"/>
@@ -116,47 +119,39 @@
         </div>
     </div>
 
-    <div id="secondleft">
-
-        <div id="feedback">
-            <h3>Send Your Feedback</h3>
-
+    <div id="secondleft" class="card h-100">
+        <div id="feedback" class="card-body">
+            <h3 class="card-title mb-3">Send Your Feedback</h3>
             <div id="error"></div>
-
-            Changes made using the sorting tool will be automatically included in your feedback when you submit this
-            form.<br/><br/>
-            <form name="review" method="POST" onsubmit="checkform(this); return false;">
-                <table cellspacing=0 border=0 cellpadding=0>
-                    <tr>
-                        <td>Your Name:</td>
-                        <td><label for="first_name"></label><input type="text" id="first_name"/></td>
-                    </tr>
-                    <tr>
-                        <td>Your Institution:&nbsp;</td>
-                        <td><label for="yourinst"></label><input type="text" id="yourinst"/></td>
-                    </tr>
-                    <tr>
-                        <td>Your Email:</td>
-                        <td><label for="youremail"></label><input type="text" id="youremail"/></td>
-                    </tr>
-                </table>
-                <br/>
-                Additional Notes/Comments:<br/><label for="notes"></label><textarea cols="35" rows="3"
-                                                                                    id="notes"></textarea>
-                <br/><br/>
-                Robot Check<span style="color: #DD0000; ">*</span>:<br/>
-                <span style="color: #DD0000; ">Enter This Code >></span> <span id="txtCaptchaDiv"
-                                                                               style="color:#000000"></span>
-                <input type="hidden" id="txtCaptcha"/>
-                <label for="txtInput"></label><input type="text" name="txtInput" id="txtInput" size="15"/>
-                <br/><br/>
-                <input id="submitemail" type="submit" value="Submit">
-            </form>
-            <span style="color: #DD0000; ">*</span><i>Required</i><br/>
-
+            <p class="mb-3">
+                Changes made using the sorting tool will be automatically included in your feedback when you send your email.
+            </p>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="first_name">Your Name:</label>
+                        <input type="text" class="form-control" id="first_name"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="yourinst" class="text-nowrap">Your Institution:</label>
+                        <input type="text" class="form-control" id="yourinst"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Additional Notes/Comments:</label>
+                    <textarea class="form-control" id="notes" rows="3"></textarea>
+                </div>
+                <p><strong>Choose how you'd like to send your feedback. Your changes and comments will be pre-filled in the email draft:</strong></p>
+                <div class="btn-group-vertical mb-3" role="group" aria-label="Email options">
+                    <button type="button" class="btn btn-secondary mb-1" onclick="openEmail()" title="Opens your device's default email application with feedback pre-filled.">Open in Default Email App</button>
+                    <small class="text-muted mb-2">Use your installed email program (e.g., Outlook, Apple Mail, Thunderbird).</small>
+                    <button type="button" class="btn btn-danger mb-1" onclick="openGmail()" title="Opens Gmail in your browser with feedback pre-filled.">Open Gmail Webmail</button>
+                    <small class="text-muted mb-2">Use your Gmail account in a web browser.</small>
+                    <button type="button" class="btn btn-primary mb-1" style="background-color:#0072C6; border-color:#0072C6;" onclick="openOutlook()" title="Opens Outlook 365 in your browser with feedback pre-filled.">Open Outlook 365 Webmail</button>
+                    <small class="text-muted mb-2">Use your Outlook 365 account in a web browser.</small>
+                    <button type="button" class="btn btn-secondary" onclick="downloadEML()" title="Download a .eml file to open in any email client.">Download Email (.eml file)</button>
+                    <small class="text-muted mb-2">Download the email to send later or from another device.</small>
+                </div>
         </div>
-
-
     </div>
 
     <div id="main">

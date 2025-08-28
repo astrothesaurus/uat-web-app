@@ -1,56 +1,78 @@
-/**
- * Sends form data and tree differences via an HTTP POST request.
- */
-function TestForm() {
-    let root = getRoot();
-    let orig = getOrig();
-    let diffStr = difftree(orig, root);
-    let url = "/email";
-    let name = document.getElementById("first_name").value;
-    let inst = document.getElementById("yourinst").value;
-    let uremail = document.getElementById("youremail").value;
-    let urnotes = document.getElementById("notes").value;
-    d3.xhr(url)
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .post(`testarg=Name: ${name}\nInstituion: ${inst}\nEmail: ${uremail}\nNotes: ${urnotes}\n\nDifference File:\n${diffStr}`);
+const email = "uat-curation@googlegroups.com";
+const subject = "Suggestions from Sorting Tool";
+
+function buildBody(name, inst, urnotes, diffStr) {
+    return `Name: ${name}\nInstitution: ${inst}\nNotes: ${urnotes}\n\nDifference File:\n${diffStr}`;
 }
 
-/**
- * Validates the form and sends feedback if valid.
- * @param {HTMLFormElement} theform - The form element.
- * @returns {boolean} - True if the form is valid, false otherwise.
- */
-function checkform(theform) {
-    let why = "";
+function getFormValues() {
+    const name = document.getElementById("first_name")?.value || "";
+    const inst = document.getElementById("yourinst")?.value || "";
+    const urnotes = document.getElementById("notes")?.value || "";
+    return { name, inst, urnotes };
+}
 
-    try {
+function openEmail() {
+    const { name, inst, urnotes } = getFormValues();
+    const diffStr = decodeURIComponent(difftree(getOrig(), getRoot()));
+    const body = encodeURIComponent(buildBody(name, inst, urnotes, diffStr));
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+}
 
-        if (theform.txtInput.value === "") {
-            why += "Robot Check code should not be empty.";
-        }
-        if (theform.txtInput.value !== "") {
-            if (ValidCaptcha(theform.txtInput.value)) {
-                why += "Thank you for your feedback!";
-                TestForm();
-            } else {
-                why += "Robot Check code did not match.";
-            }
-        }
-    } catch (error) {
-        console.error("Error in checkform: ", error);
-        why += "You must select a branch to give feedback on";
-    }
+function openOutlook() {
+    const { name, inst, urnotes } = getFormValues();
+    const diffStr = decodeURIComponent(difftree(getOrig(), getRoot()));
+    const body = encodeURIComponent(buildBody(name, inst, urnotes, diffStr));
+    const outlookUrl = `https://outlook.office.com/mail/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}&body=${body}`;
+    window.open(outlookUrl, '_blank');
+}
 
-    if (why !== "") {
-        openAlertModal(why);
-        return false;
-    }
+function openGmail() {
+    const { name, inst, urnotes } = getFormValues();
+    const diffStr = decodeURIComponent(difftree(getOrig(), getRoot()));
+    const body = encodeURIComponent(buildBody(name, inst, urnotes, diffStr));
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${body}`;
+    window.open(gmailUrl, '_blank');
+}
+
+function getRFC2822Date() {
+    // Returns current date in RFC 2822 format
+    return new Date().toUTCString();
+}
+
+function downloadEML() {
+    const { name, inst, urnotes } = getFormValues();
+    const diffStr = decodeURIComponent(difftree(getOrig(), getRoot()));
+    const body = buildBody(name, inst, urnotes, diffStr);
+    const emlContent = [
+        `From: `,
+        `To: ${email}`,
+        `Subject: ${subject}`,
+        `Date: ${getRFC2822Date()}`,
+        'Content-Type: text/plain; charset=UTF-8',
+        '',
+        body
+    ].join('\r\n');
+
+    const blob = new Blob([emlContent], { type: 'message/rfc822' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'feedback.eml';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 try {
     module.exports = {
-        checkform,
-        TestForm
+        buildBody,
+        openEmail,
+        openOutlook,
+        openGmail,
+        downloadEML
     };
 } catch {
     // Do Nothing. This is only for tests
